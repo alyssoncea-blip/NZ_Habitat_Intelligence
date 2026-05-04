@@ -208,4 +208,4 @@ jobs:
 
       - name: Verify container starts
         run: |
-          docker run --rm nz-habitat-intelligence:latest python -c "from app.main import app; print('Container OK')"
+          docker run --rm nz-habitat-intelligence:latest -c "from app.main import app; print('Container OK')"
