@@ -292,17 +292,19 @@ class ExecutiveKPICard:
                             className="text-center mb-3",
                         ),
                         # Sparkline container (placeholder for mini chart)
-                        html.Div(
-                            id="pressure-sparkline",
-                            className="sparkline-container",
-                            style={
-                                "height": "40px",
-                                "background": "#f8f9fa",
-                                "borderRadius": "4px",
-                            },
-                        )
-                        if sparkline_data
-                        else None,
+                        (
+                            html.Div(
+                                id="pressure-sparkline",
+                                className="sparkline-container",
+                                style={
+                                    "height": "40px",
+                                    "background": "#f8f9fa",
+                                    "borderRadius": "4px",
+                                },
+                            )
+                            if sparkline_data
+                            else None
+                        ),
                     ],
                     className="p-4",
                 )
@@ -893,17 +895,19 @@ class HousingKPICard:
                             className="text-center mb-3",
                         ),
                         # Sparkline placeholder
-                        html.Div(
-                            id="kpi-07-sparkline",
-                            className="sparkline-container",
-                            style={
-                                "height": "36px",
-                                "background": "#f8f9fa",
-                                "borderRadius": "4px",
-                            },
-                        )
-                        if sparkline_data
-                        else None,
+                        (
+                            html.Div(
+                                id="kpi-07-sparkline",
+                                className="sparkline-container",
+                                style={
+                                    "height": "36px",
+                                    "background": "#f8f9fa",
+                                    "borderRadius": "4px",
+                                },
+                            )
+                            if sparkline_data
+                            else None
+                        ),
                     ],
                     className="p-4",
                 )
@@ -1085,17 +1089,19 @@ class HousingKPICard:
                             className="text-center mb-2",
                         ),
                         # Mini bar chart placeholder
-                        html.Div(
-                            id="kpi-09-bar-chart",
-                            className="sparkline-container",
-                            style={
-                                "height": "36px",
-                                "background": "#f8f9fa",
-                                "borderRadius": "4px",
-                            },
-                        )
-                        if weekly_data
-                        else None,
+                        (
+                            html.Div(
+                                id="kpi-09-bar-chart",
+                                className="sparkline-container",
+                                style={
+                                    "height": "36px",
+                                    "background": "#f8f9fa",
+                                    "borderRadius": "4px",
+                                },
+                            )
+                            if weekly_data
+                            else None
+                        ),
                     ],
                     className="p-4",
                 )
@@ -1664,37 +1670,46 @@ class TourismKPICard:
                             ],
                             className="text-center mb-3",
                         ),
-                        TourismKPICard._sparkline_bars(sparkline, 90, 32, color=accent)
-                        if sparkline
-                        else None,
+                        (
+                            TourismKPICard._sparkline_bars(
+                                sparkline, 90, 32, color=accent
+                            )
+                            if sparkline
+                            else None
+                        ),
                         html.Hr(style={"margin": "10px 0 8px"}),
-                        html.Div(
-                            [
-                                html.Span(
-                                    "Highest: ",
-                                    style={"fontSize": "0.7rem", "color": "#8898aa"},
-                                ),
-                                html.Span(
-                                    top_region[0],
-                                    style={
-                                        "fontSize": "0.75rem",
-                                        "fontWeight": "600",
-                                        "color": accent,
-                                    },
-                                ),
-                                html.Span(
-                                    f" {top_region[1]:.1f}",
-                                    style={
-                                        "fontSize": "0.75rem",
-                                        "fontWeight": "700",
-                                        "color": accent,
-                                    },
-                                ),
-                            ],
-                            className="text-center",
-                        )
-                        if top_region
-                        else None,
+                        (
+                            html.Div(
+                                [
+                                    html.Span(
+                                        "Highest: ",
+                                        style={
+                                            "fontSize": "0.7rem",
+                                            "color": "#8898aa",
+                                        },
+                                    ),
+                                    html.Span(
+                                        top_region[0],
+                                        style={
+                                            "fontSize": "0.75rem",
+                                            "fontWeight": "600",
+                                            "color": accent,
+                                        },
+                                    ),
+                                    html.Span(
+                                        f" {top_region[1]:.1f}",
+                                        style={
+                                            "fontSize": "0.75rem",
+                                            "fontWeight": "700",
+                                            "color": accent,
+                                        },
+                                    ),
+                                ],
+                                className="text-center",
+                            )
+                            if top_region
+                            else None
+                        ),
                     ],
                     className="p-3",
                 )
@@ -1837,36 +1852,45 @@ class TourismKPICard:
                             ],
                             className="text-center",
                         ),
-                        TourismKPICard._sparkline_bars(sparkline, 90, 28, color=accent)
-                        if sparkline
-                        else None,
-                        html.Div(
-                            [
-                                html.Span(
-                                    "Highest: ",
-                                    style={"fontSize": "0.7rem", "color": "#8898aa"},
-                                ),
-                                html.Span(
-                                    top_region[0],
-                                    style={
-                                        "fontSize": "0.75rem",
-                                        "fontWeight": "600",
-                                        "color": accent,
-                                    },
-                                ),
-                                html.Span(
-                                    f" {top_region[1]:.1f}%",
-                                    style={
-                                        "fontSize": "0.75rem",
-                                        "fontWeight": "700",
-                                        "color": accent,
-                                    },
-                                ),
-                            ],
-                            className="text-center mt-2",
-                        )
-                        if top_region
-                        else None,
+                        (
+                            TourismKPICard._sparkline_bars(
+                                sparkline, 90, 28, color=accent
+                            )
+                            if sparkline
+                            else None
+                        ),
+                        (
+                            html.Div(
+                                [
+                                    html.Span(
+                                        "Highest: ",
+                                        style={
+                                            "fontSize": "0.7rem",
+                                            "color": "#8898aa",
+                                        },
+                                    ),
+                                    html.Span(
+                                        top_region[0],
+                                        style={
+                                            "fontSize": "0.75rem",
+                                            "fontWeight": "600",
+                                            "color": accent,
+                                        },
+                                    ),
+                                    html.Span(
+                                        f" {top_region[1]:.1f}%",
+                                        style={
+                                            "fontSize": "0.75rem",
+                                            "fontWeight": "700",
+                                            "color": accent,
+                                        },
+                                    ),
+                                ],
+                                className="text-center mt-2",
+                            )
+                            if top_region
+                            else None
+                        ),
                     ],
                     className="p-3",
                 )
@@ -1934,9 +1958,13 @@ class TourismKPICard:
                             ],
                             className="d-flex align-items-center justify-content-center mb-2",
                         ),
-                        TourismKPICard._sparkline_bars(sparkline, 90, 28, color=accent)
-                        if sparkline
-                        else None,
+                        (
+                            TourismKPICard._sparkline_bars(
+                                sparkline, 90, 28, color=accent
+                            )
+                            if sparkline
+                            else None
+                        ),
                         html.Hr(style={"margin": "10px 0 8px"}),
                         # Mini timeline: Tourism peak → Rent increase
                         html.Div(
@@ -1970,22 +1998,29 @@ class TourismKPICard:
                         ),
                         html.Div(
                             [
-                                html.Span(
-                                    f"Fast: {', '.join(fast_regions[:3]) if fast_regions else 'N/A'}",
-                                    style={
-                                        "fontSize": "0.68rem",
-                                        "color": "#28a745",
-                                        "marginRight": "8px",
-                                    },
-                                )
-                                if fast_regions
-                                else None,
-                                html.Span(
-                                    f"Slow: {', '.join(slow_regions[:2]) if slow_regions else 'N/A'}",
-                                    style={"fontSize": "0.68rem", "color": "#dc3545"},
-                                )
-                                if slow_regions
-                                else None,
+                                (
+                                    html.Span(
+                                        f"Fast: {', '.join(fast_regions[:3]) if fast_regions else 'N/A'}",
+                                        style={
+                                            "fontSize": "0.68rem",
+                                            "color": "#28a745",
+                                            "marginRight": "8px",
+                                        },
+                                    )
+                                    if fast_regions
+                                    else None
+                                ),
+                                (
+                                    html.Span(
+                                        f"Slow: {', '.join(slow_regions[:2]) if slow_regions else 'N/A'}",
+                                        style={
+                                            "fontSize": "0.68rem",
+                                            "color": "#dc3545",
+                                        },
+                                    )
+                                    if slow_regions
+                                    else None
+                                ),
                             ],
                             className="text-center mt-2",
                         ),
@@ -2077,14 +2112,16 @@ class TourismKPICard:
                                                 "width": "52px",
                                             },
                                         ),
-                                        TourismKPICard._sparkline_bars(
-                                            sparklines.get(o, []),
-                                            60,
-                                            20,
-                                            color=origin_colors.get(o, "#6c757d"),
-                                        )
-                                        if sparklines
-                                        else None,
+                                        (
+                                            TourismKPICard._sparkline_bars(
+                                                sparklines.get(o, []),
+                                                60,
+                                                20,
+                                                color=origin_colors.get(o, "#6c757d"),
+                                            )
+                                            if sparklines
+                                            else None
+                                        ),
                                         html.Span(
                                             f"{origins[o]:.0f}",
                                             style={
@@ -2196,9 +2233,11 @@ class TourismKPICard:
                                     style={"fontSize": "0.7rem", "color": "#8898aa"},
                                 ),
                                 html.Span(
-                                    ", ".join(list(by_region.keys())[:3])
-                                    if by_region
-                                    else "",
+                                    (
+                                        ", ".join(list(by_region.keys())[:3])
+                                        if by_region
+                                        else ""
+                                    ),
                                     style={
                                         "fontSize": "0.72rem",
                                         "fontWeight": "600",
@@ -2358,9 +2397,13 @@ class MacroKPICard:
                             ],
                             className="text-center mb-2",
                         ),
-                        MacroKPICard._sparkline_bars(sparkline, 100, 30, color=accent)
-                        if sparkline
-                        else None,
+                        (
+                            MacroKPICard._sparkline_bars(
+                                sparkline, 100, 30, color=accent
+                            )
+                            if sparkline
+                            else None
+                        ),
                         html.Hr(style={"margin": "8px 0 6px"}),
                         html.Div(
                             [
@@ -2662,9 +2705,13 @@ class MacroKPICard:
                             ],
                             className="text-center mb-2",
                         ),
-                        MacroKPICard._sparkline_bars(sparkline, 100, 28, color=accent)
-                        if sparkline
-                        else None,
+                        (
+                            MacroKPICard._sparkline_bars(
+                                sparkline, 100, 28, color=accent
+                            )
+                            if sparkline
+                            else None
+                        ),
                     ],
                     className="p-3",
                 )
@@ -2956,11 +3003,13 @@ class AffordabilityKPICard:
                             ],
                             className="text-center mb-2",
                         ),
-                        AffordabilityKPICard._sparkline_bars(
-                            sparkline, 100, 28, color=color_scale
-                        )
-                        if sparkline
-                        else None,
+                        (
+                            AffordabilityKPICard._sparkline_bars(
+                                sparkline, 100, 28, color=color_scale
+                            )
+                            if sparkline
+                            else None
+                        ),
                         html.Hr(style={"margin": "8px 0 6px"}),
                         html.Div(
                             [
@@ -3185,11 +3234,13 @@ class AffordabilityKPICard:
                             ],
                             className="text-center mb-2",
                         ),
-                        AffordabilityKPICard._sparkline_bars(
-                            sparkline, 90, 24, color=accent
-                        )
-                        if sparkline
-                        else None,
+                        (
+                            AffordabilityKPICard._sparkline_bars(
+                                sparkline, 90, 24, color=accent
+                            )
+                            if sparkline
+                            else None
+                        ),
                         html.Hr(style={"margin": "8px 0 6px"}),
                         html.Div(
                             [
@@ -3406,9 +3457,9 @@ class AffordabilityKPICard:
                                         "fontSize": "2.8rem",
                                         "fontWeight": "700",
                                         "lineHeight": "1",
-                                        "color": "#28a745"
-                                        if is_positive
-                                        else "#dc3545",
+                                        "color": (
+                                            "#28a745" if is_positive else "#dc3545"
+                                        ),
                                     },
                                 ),
                                 html.Span(
@@ -3667,11 +3718,13 @@ class ForecastKPICard:
                             ],
                             className="text-center mb-2",
                         ),
-                        ForecastKPICard._sparkline_line(
-                            sparkline, 100, 28, color=accent
-                        )
-                        if sparkline
-                        else None,
+                        (
+                            ForecastKPICard._sparkline_line(
+                                sparkline, 100, 28, color=accent
+                            )
+                            if sparkline
+                            else None
+                        ),
                         html.Hr(style={"margin": "8px 0 6px"}),
                         html.Div(
                             [
@@ -3905,9 +3958,11 @@ class ForecastKPICard:
                         html.Div(
                             [
                                 html.Span(
-                                    f"+{value:.0f}"
-                                    if direction == "up"
-                                    else f"{value:.0f}",
+                                    (
+                                        f"+{value:.0f}"
+                                        if direction == "up"
+                                        else f"{value:.0f}"
+                                    ),
                                     style={
                                         "fontSize": "2.8rem",
                                         "fontWeight": "700",

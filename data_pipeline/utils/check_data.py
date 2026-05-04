@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
-
 EXPECTED_FILES = [
     "kpis-01-executive_complete.parquet",
     "kpis-02-housing_complete.parquet",

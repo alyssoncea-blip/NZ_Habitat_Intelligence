@@ -87,9 +87,7 @@ class SchemaValidator:
         "required": ["date", "indicator", "value"],
         "optional": [],
         "types": {"date": "datetime", "indicator": "string", "value": "float"},
-        "constraints": {
-            "value": {"min": -5, "max": 25}  # Reasonable OCR range
-        },
+        "constraints": {"value": {"min": -5, "max": 25}},  # Reasonable OCR range
     }
 
     TOURISM_SCHEMA = {

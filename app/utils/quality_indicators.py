@@ -133,21 +133,23 @@ def show_data_source_info(dashboard_name):
                     ],
                     className="quality-stats",
                 ),
-                html.Div(
-                    [
-                        html.Small("Sources:", className="sources-label"),
-                        html.Ul(
-                            [
-                                html.Li(f"{source} ({count} KPIs)")
-                                for source, count in sources[:3]
-                            ],
-                            className="sources-list",
-                        ),
-                    ],
-                    className="quality-sources",
-                )
-                if sources
-                else html.Div(),
+                (
+                    html.Div(
+                        [
+                            html.Small("Sources:", className="sources-label"),
+                            html.Ul(
+                                [
+                                    html.Li(f"{source} ({count} KPIs)")
+                                    for source, count in sources[:3]
+                                ],
+                                className="sources-list",
+                            ),
+                        ],
+                        className="quality-sources",
+                    )
+                    if sources
+                    else html.Div()
+                ),
                 html.Div(
                     [
                         html.Small(
@@ -361,18 +363,21 @@ def create_data_health_dashboard():
                                         html.Small(
                                             "Missing Fields:", className="health-label"
                                         ),
-                                        html.Ul(
-                                            [
-                                                html.Li(f"{field}: {count}")
-                                                for field, count in completeness[
-                                                    "missing_fields"
-                                                ].items()
-                                            ],
-                                            className="health-list",
-                                        )
-                                        if completeness["missing_fields"]
-                                        else html.Span(
-                                            "All fields present", className="health-ok"
+                                        (
+                                            html.Ul(
+                                                [
+                                                    html.Li(f"{field}: {count}")
+                                                    for field, count in completeness[
+                                                        "missing_fields"
+                                                    ].items()
+                                                ],
+                                                className="health-list",
+                                            )
+                                            if completeness["missing_fields"]
+                                            else html.Span(
+                                                "All fields present",
+                                                className="health-ok",
+                                            )
                                         ),
                                     ],
                                     className="health-details",

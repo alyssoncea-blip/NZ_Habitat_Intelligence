@@ -10,7 +10,6 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
-
 TIMEFRAME_MONTHS = {
     "3M": 3,
     "6M": 6,

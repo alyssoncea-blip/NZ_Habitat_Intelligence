@@ -13,7 +13,6 @@ from datetime import datetime
 from typing import Dict, List, Any
 from pathlib import Path
 
-
 try:
     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 

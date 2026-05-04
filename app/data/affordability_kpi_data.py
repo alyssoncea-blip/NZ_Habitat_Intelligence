@@ -112,45 +112,55 @@ def load_affordability_data() -> Dict[str, Any]:
             "value": nat_avg,
             "trend": "up" if nat_avg > 7 else "down",
             "change": 0.5,
-            "status": "Expensive"
-            if nat_avg > 8
-            else ("Moderate" if nat_avg > 6 else "Affordable"),
-            "color_scale": "#e74c3c"
-            if nat_avg > 8
-            else ("#ffc107" if nat_avg > 6 else "#28a745"),
+            "status": (
+                "Expensive"
+                if nat_avg > 8
+                else ("Moderate" if nat_avg > 6 else "Affordable")
+            ),
+            "color_scale": (
+                "#e74c3c" if nat_avg > 8 else ("#ffc107" if nat_avg > 6 else "#28a745")
+            ),
             "sparkline": aff_ts if aff_ts else None,
-            "by_region": years_to_buy
-            if years_to_buy
-            else {r: nat_avg + (i - 8) * 1.5 for i, r in enumerate(NZ_REGIONS)},
+            "by_region": (
+                years_to_buy
+                if years_to_buy
+                else {r: nat_avg + (i - 8) * 1.5 for i, r in enumerate(NZ_REGIONS)}
+            ),
         },
         "rent_burden": {
-            "value": sum(rent_burden.values()) / max(1, len(rent_burden))
-            if rent_burden
-            else 30.0,
-            "trend": "up",
-            "change": 1.2,
-            "status": "Critical"
-            if (
+            "value": (
                 sum(rent_burden.values()) / max(1, len(rent_burden))
                 if rent_burden
                 else 30.0
-            )
-            > 35
-            else (
-                "Warning"
+            ),
+            "trend": "up",
+            "change": 1.2,
+            "status": (
+                "Critical"
                 if (
                     sum(rent_burden.values()) / max(1, len(rent_burden))
                     if rent_burden
                     else 30.0
                 )
-                > 30
-                else "Healthy"
+                > 35
+                else (
+                    "Warning"
+                    if (
+                        sum(rent_burden.values()) / max(1, len(rent_burden))
+                        if rent_burden
+                        else 30.0
+                    )
+                    > 30
+                    else "Healthy"
+                )
             ),
             "threshold": 30,
             "sparkline": rent_ts if rent_ts else None,
-            "by_region": rent_burden
-            if rent_burden
-            else {r: 30.0 + (i - 8) * 2 for i, r in enumerate(NZ_REGIONS)},
+            "by_region": (
+                rent_burden
+                if rent_burden
+                else {r: 30.0 + (i - 8) * 2 for i, r in enumerate(NZ_REGIONS)}
+            ),
         },
         "ranking": {
             "value": 8.0,

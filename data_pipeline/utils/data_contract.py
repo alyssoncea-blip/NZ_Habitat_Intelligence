@@ -257,12 +257,16 @@ def analyze_dataframe(df: pd.DataFrame, artifact_name: str) -> Dict[str, Any]:
             null_count=int(null_count),
             null_percentage=float(null_count / len(df) * 100) if len(df) > 0 else 0.0,
             unique_count=int(col_data.nunique()),
-            min_value=float(col_data.min())
-            if col_data.dtype in ["int64", "float64"]
-            else None,
-            max_value=float(col_data.max())
-            if col_data.dtype in ["int64", "float64"]
-            else None,
+            min_value=(
+                float(col_data.min())
+                if col_data.dtype in ["int64", "float64"]
+                else None
+            ),
+            max_value=(
+                float(col_data.max())
+                if col_data.dtype in ["int64", "float64"]
+                else None
+            ),
             sample_values=col_data.dropna().head(5).tolist(),
         )
         column_contracts.append(col_contract)
@@ -289,9 +293,9 @@ def analyze_dataframe(df: pd.DataFrame, artifact_name: str) -> Dict[str, Any]:
     return {
         "record_count": len(df),
         "column_count": len(df.columns),
-        "null_percentage": float(null_cells / total_cells * 100)
-        if total_cells > 0
-        else 0.0,
+        "null_percentage": (
+            float(null_cells / total_cells * 100) if total_cells > 0 else 0.0
+        ),
         "columns": column_contracts,
         "data_from_date": data_from_date,
         "data_to_date": data_to_date,

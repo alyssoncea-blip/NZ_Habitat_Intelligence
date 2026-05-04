@@ -7,7 +7,6 @@ from typing import Any, Dict, List
 import plotly.graph_objects as go
 from dash import dcc, html
 
-
 NAME_MAPPING = {
     "Southland": "Southland",
     "Marlborough District": "Marlborough",

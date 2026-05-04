@@ -180,23 +180,25 @@ def get_kpi_color(kpi_name, value, category=None):
     # 6. Fallback baseado em category
     elif category:
         if category in ["economic", "growth"]:
-            return "Positive" if val_float > 0 else "Challenging", COLORS["success"][
-                "primary"
-            ] if val_float > 0 else COLORS["danger"]["primary"]
+            return "Positive" if val_float > 0 else "Challenging", (
+                COLORS["success"]["primary"]
+                if val_float > 0
+                else COLORS["danger"]["primary"]
+            )
         elif category in ["risk", "volatility"]:
             color = (
                 COLORS["danger"]["primary"]
                 if val_float > 50
-                else COLORS["warning"]["primary"]
-                if val_float > 25
-                else COLORS["success"]["primary"]
+                else (
+                    COLORS["warning"]["primary"]
+                    if val_float > 25
+                    else COLORS["success"]["primary"]
+                )
             )
             status = (
                 "High Risk"
                 if val_float > 50
-                else "Moderate Risk"
-                if val_float > 25
-                else "Low Risk"
+                else "Moderate Risk" if val_float > 25 else "Low Risk"
             )
             return status, color
 

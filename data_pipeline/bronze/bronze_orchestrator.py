@@ -435,9 +435,11 @@ class BronzeOrchestrator:
                 "age_days": round(file_age_days, 1),
                 "max_age_days": max_age_days,
                 "latest_file": latest_file.name,
-                "issues": []
-                if status == "fresh"
-                else [f"Data is {file_age_days:.0f} days old (max: {max_age_days})"],
+                "issues": (
+                    []
+                    if status == "fresh"
+                    else [f"Data is {file_age_days:.0f} days old (max: {max_age_days})"]
+                ),
             }
 
             total_score += score

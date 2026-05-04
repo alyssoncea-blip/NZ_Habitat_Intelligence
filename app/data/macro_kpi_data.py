@@ -98,12 +98,16 @@ def load_macro_data() -> Dict[str, Any]:
     hero_kpis = {
         "ocr": {
             "value": ocr,
-            "trend": "up"
-            if (len(ocr_history) >= 2 and ocr_history[-1] > ocr_history[0])
-            else "down",
-            "change": round(ocr_history[-1] - ocr_history[0], 2)
-            if len(ocr_history) >= 2
-            else 0.0,
+            "trend": (
+                "up"
+                if (len(ocr_history) >= 2 and ocr_history[-1] > ocr_history[0])
+                else "down"
+            ),
+            "change": (
+                round(ocr_history[-1] - ocr_history[0], 2)
+                if len(ocr_history) >= 2
+                else 0.0
+            ),
             "next_decision": "2026-05-28",
             "sparkline": ocr_history,
         },

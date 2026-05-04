@@ -127,9 +127,11 @@ def load_tourism_data() -> Dict[str, Any]:
         "correlation": {
             "value": visitor_dom_corr,
             "trend": "negative",
-            "strength": "Strong"
-            if abs(visitor_dom_corr) > 0.5
-            else ("Moderate" if abs(visitor_dom_corr) > 0.3 else "Weak"),
+            "strength": (
+                "Strong"
+                if abs(visitor_dom_corr) > 0.5
+                else ("Moderate" if abs(visitor_dom_corr) > 0.3 else "Weak")
+            ),
             "by_region": {
                 r: visitor_dom_corr + (i - 8) * 0.05 for i, r in enumerate(NZ_REGIONS)
             },
@@ -139,9 +141,9 @@ def load_tourism_data() -> Dict[str, Any]:
     chart_data = {
         "dual_axis": {
             "months": months,
-            "visitors": tourism_ts
-            if tourism_ts
-            else [30000 + i * 2000 for i in range(12)],
+            "visitors": (
+                tourism_ts if tourism_ts else [30000 + i * 2000 for i in range(12)]
+            ),
             "rent": rent_ts if rent_ts else [500 + i * 15 for i in range(12)],
         },
         "seasonality_lines": {

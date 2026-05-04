@@ -83,9 +83,11 @@ def create_tourism_dashboard():
             # Callbacks
             dcc.Store(
                 id="tourism-kpis-data",
-                data=processed_kpis.get("kpis", [])
-                if isinstance(processed_kpis, dict)
-                else processed_kpis.to_dict("records"),
+                data=(
+                    processed_kpis.get("kpis", [])
+                    if isinstance(processed_kpis, dict)
+                    else processed_kpis.to_dict("records")
+                ),
             ),
             dcc.Store(
                 id="tourism-filter-state", data={"timeframe": "12M", "region": "All"}
@@ -134,9 +136,11 @@ def create_tourism_stats(kpis_df):
             stats_data.append(
                 {
                     "title": kpi_name[:18] + "..." if len(kpi_name) > 18 else kpi_name,
-                    "value": round(float(kpi_value), 1)
-                    if isinstance(kpi_value, (int, float))
-                    else kpi_value,
+                    "value": (
+                        round(float(kpi_value), 1)
+                        if isinstance(kpi_value, (int, float))
+                        else kpi_value
+                    ),
                     "unit": kpi_unit,
                     "trend": kpi.get("trend", "neutral"),
                 }

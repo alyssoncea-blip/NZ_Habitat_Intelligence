@@ -178,14 +178,14 @@ def load_housing_data() -> Dict[str, Any]:
     hero_kpis = {
         "median_price": {
             "value": median_price,
-            "trend": "up"
-            if (len(price_ts) >= 2 and price_ts[-1] > price_ts[0])
-            else "down",
-            "change": round(
-                ((price_ts[-1] - price_ts[0]) / max(1, price_ts[0])) * 100, 1
-            )
-            if len(price_ts) >= 2
-            else 0.0,
+            "trend": (
+                "up" if (len(price_ts) >= 2 and price_ts[-1] > price_ts[0]) else "down"
+            ),
+            "change": (
+                round(((price_ts[-1] - price_ts[0]) / max(1, price_ts[0])) * 100, 1)
+                if len(price_ts) >= 2
+                else 0.0
+            ),
             "sparkline": price_ts if price_ts else [median_price] * 12,
             "subtitle": "National median asking price",
         },
@@ -193,18 +193,22 @@ def load_housing_data() -> Dict[str, Any]:
             "value": dom,
             "trend": "down" if dom < 50 else "up",
             "status": "fast" if dom < 40 else ("normal" if dom < 60 else "slow"),
-            "sparkline": [dom + i * (-0.5) for i in range(12)]
-            if not supply_ts
-            else supply_ts[:12],
+            "sparkline": (
+                [dom + i * (-0.5) for i in range(12)]
+                if not supply_ts
+                else supply_ts[:12]
+            ),
             "subtitle": "Average days to sell",
         },
         "new_listings": {
             "value": listings,
             "trend": "up",
             "change": 5.0,
-            "weekly_data": [listings + i * 50 for i in range(-5, 7)]
-            if not rent_ts
-            else rent_ts[:12],
+            "weekly_data": (
+                [listings + i * 50 for i in range(-5, 7)]
+                if not rent_ts
+                else rent_ts[:12]
+            ),
             "subtitle": "New listings per week",
         },
         "property_type": {
@@ -222,12 +226,14 @@ def load_housing_data() -> Dict[str, Any]:
         "supply_gap": {
             "value": supply_deficit,
             "trend": "up" if supply_deficit > 50 else "down",
-            "status": "critical"
-            if supply_deficit > 70
-            else ("warning" if supply_deficit > 40 else "balanced"),
-            "severity": 0.85
-            if supply_deficit > 70
-            else (0.55 if supply_deficit > 40 else 0.25),
+            "status": (
+                "critical"
+                if supply_deficit > 70
+                else ("warning" if supply_deficit > 40 else "balanced")
+            ),
+            "severity": (
+                0.85 if supply_deficit > 70 else (0.55 if supply_deficit > 40 else 0.25)
+            ),
             "subtitle": "Housing supply deficit score",
         },
     }
