@@ -1,4 +1,5 @@
 """Unit tests for Silver layer feature engineering."""
+
 import json
 from pathlib import Path
 
@@ -25,56 +26,102 @@ class TestFeatureEngineer:
         """Create sample bronze data for testing."""
         return {
             "world_bank": {
-                "gdp": pd.DataFrame({
-                    "year": [2020, 2021, 2022, 2023],
-                    "value": [40000000000.0, 42000000000.0, 44000000000.0, 45000000000.0],
-                }),
-                "population": pd.DataFrame({
-                    "year": [2020, 2021, 2022, 2023],
-                    "value": [5000000, 5060000, 5120000, 5190000],
-                }),
-                "inflation": pd.DataFrame({
-                    "year": [2020, 2021, 2022, 2023],
-                    "value": [1.5, 4.0, 7.2, 5.7],
-                }),
-                "unemployment": pd.DataFrame({
-                    "year": [2020, 2021, 2022, 2023],
-                    "value": [4.5, 4.0, 3.3, 3.9],
-                }),
-                "interest_rate": pd.DataFrame({
-                    "year": [2020, 2021, 2022, 2023],
-                    "value": [2.5, 2.5, 4.5, 7.0],
-                }),
+                "gdp": pd.DataFrame(
+                    {
+                        "year": [2020, 2021, 2022, 2023],
+                        "value": [
+                            40000000000.0,
+                            42000000000.0,
+                            44000000000.0,
+                            45000000000.0,
+                        ],
+                    }
+                ),
+                "population": pd.DataFrame(
+                    {
+                        "year": [2020, 2021, 2022, 2023],
+                        "value": [5000000, 5060000, 5120000, 5190000],
+                    }
+                ),
+                "inflation": pd.DataFrame(
+                    {
+                        "year": [2020, 2021, 2022, 2023],
+                        "value": [1.5, 4.0, 7.2, 5.7],
+                    }
+                ),
+                "unemployment": pd.DataFrame(
+                    {
+                        "year": [2020, 2021, 2022, 2023],
+                        "value": [4.5, 4.0, 3.3, 3.9],
+                    }
+                ),
+                "interest_rate": pd.DataFrame(
+                    {
+                        "year": [2020, 2021, 2022, 2023],
+                        "value": [2.5, 2.5, 4.5, 7.0],
+                    }
+                ),
             },
             "rbnz": {
-                "ocr": pd.DataFrame({
-                    "date": pd.date_range("2020-01-01", periods=48, freq="M"),
-                    "ocr_rate": [0.25] * 24 + [0.50] * 24,
-                }),
+                "ocr": pd.DataFrame(
+                    {
+                        "date": pd.date_range("2020-01-01", periods=48, freq="M"),
+                        "ocr_rate": [0.25] * 24 + [0.50] * 24,
+                    }
+                ),
             },
             "stats_nz": {
-                "income": pd.DataFrame({
-                    "region": ["Auckland", "Wellington", "Canterbury"] * 2,
-                    "year": [2020, 2020, 2020, 2021, 2021, 2021],
-                    "median_household_income": [92000, 85000, 72000, 95000, 88000, 75000],
-                }),
-                "building_consents": pd.DataFrame({
-                    "region": ["Auckland", "Wellington", "Canterbury"] * 2,
-                    "year": [2020, 2020, 2020, 2021, 2021, 2021],
-                    "consents": [14500, 4200, 3800, 15200, 4500, 4000],
-                }),
-                "population": pd.DataFrame({
-                    "region": ["Auckland", "Wellington", "Canterbury"] * 2,
-                    "year": [2020, 2020, 2020, 2021, 2021, 2021],
-                    "population": [1570000, 500000, 600000, 1590000, 510000, 610000],
-                }),
+                "income": pd.DataFrame(
+                    {
+                        "region": ["Auckland", "Wellington", "Canterbury"] * 2,
+                        "year": [2020, 2020, 2020, 2021, 2021, 2021],
+                        "median_household_income": [
+                            92000,
+                            85000,
+                            72000,
+                            95000,
+                            88000,
+                            75000,
+                        ],
+                    }
+                ),
+                "building_consents": pd.DataFrame(
+                    {
+                        "region": ["Auckland", "Wellington", "Canterbury"] * 2,
+                        "year": [2020, 2020, 2020, 2021, 2021, 2021],
+                        "consents": [14500, 4200, 3800, 15200, 4500, 4000],
+                    }
+                ),
+                "population": pd.DataFrame(
+                    {
+                        "region": ["Auckland", "Wellington", "Canterbury"] * 2,
+                        "year": [2020, 2020, 2020, 2021, 2021, 2021],
+                        "population": [
+                            1570000,
+                            500000,
+                            600000,
+                            1590000,
+                            510000,
+                            610000,
+                        ],
+                    }
+                ),
             },
             "mbie": {
-                "regional_tourism": pd.DataFrame({
-                    "region": ["Auckland", "Queenstown", "Rotorua"] * 2,
-                    "year": [2020, 2020, 2020, 2021, 2021, 2021],
-                    "tourism_expenditure_nzd_millions": [4500, 2100, 950, 3800, 1800, 800],
-                }),
+                "regional_tourism": pd.DataFrame(
+                    {
+                        "region": ["Auckland", "Queenstown", "Rotorua"] * 2,
+                        "year": [2020, 2020, 2020, 2021, 2021, 2021],
+                        "tourism_expenditure_nzd_millions": [
+                            4500,
+                            2100,
+                            950,
+                            3800,
+                            1800,
+                            800,
+                        ],
+                    }
+                ),
             },
         }
 
@@ -98,7 +145,10 @@ class TestFeatureEngineer:
                     if pd.api.types.is_datetime64_any_dtype(df_copy[col]):
                         df_copy[col] = df_copy[col].astype(str)
                 records = df_copy.to_dict(orient="records")
-                data = {"data": records, "metadata": {"source": source, "indicator": name}}
+                data = {
+                    "data": records,
+                    "metadata": {"source": source, "indicator": name},
+                }
                 filepath = engineer.bronze_dir / f"{source}_{name}_raw.json"
                 with open(filepath, "w") as f:
                     json.dump(data, f)
@@ -182,8 +232,12 @@ class TestFeatureEngineer:
     def test_get_region_population_share(self, engineer):
         """Test region population share helper."""
         shares = {
-            "Auckland": 0.330, "Wellington": 0.108, "Canterbury": 0.125,
-            "Waikato": 0.088, "Bay of Plenty": 0.065, "Otago": 0.045,
+            "Auckland": 0.330,
+            "Wellington": 0.108,
+            "Canterbury": 0.125,
+            "Waikato": 0.088,
+            "Bay of Plenty": 0.065,
+            "Otago": 0.045,
         }
         for region, expected in shares.items():
             assert engineer._get_region_population_share(region) == expected

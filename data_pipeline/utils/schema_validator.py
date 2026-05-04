@@ -2,6 +2,7 @@
 Schema validation for NZ Habitat Intelligence pipeline.
 Provides validation at Bronze, Silver, and Gold layers to catch data issues early.
 """
+
 import logging
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 class ValidationLevel(Enum):
     """Validation strictness levels."""
+
     LENIENT = "lenient"  # Only critical checks
     MODERATE = "moderate"  # Standard checks
     STRICT = "strict"  # All checks including best practices
@@ -23,6 +25,7 @@ class ValidationLevel(Enum):
 @dataclass
 class ValidationResult:
     """Result of a validation check."""
+
     passed: bool
     level: ValidationLevel
     errors: List[str]
@@ -36,7 +39,7 @@ class ValidationResult:
             level=self.level,
             errors=self.errors + other.errors,
             warnings=self.warnings + other.warnings,
-            info={**self.info, **other.info}
+            info={**self.info, **other.info},
         )
 
 
@@ -53,12 +56,15 @@ class SchemaValidator:
             "country": "string",
             "indicator": "string",
             "year": "integer",
-            "value": "float"
+            "value": "float",
         },
         "constraints": {
             "year": {"min": 1960, "max": 2030},
-            "value": {"min": None, "max": None}  # Allow any value including negative (for growth rates)
-        }
+            "value": {
+                "min": None,
+                "max": None,
+            },  # Allow any value including negative (for growth rates)
+        },
     }
 
     POPULATION_SCHEMA = {
@@ -68,26 +74,22 @@ class SchemaValidator:
             "region": "string",
             "year": "integer",
             "population": "integer",
-            "growth_rate": "float"
+            "growth_rate": "float",
         },
         "constraints": {
             "year": {"min": 1960, "max": 2050},
             "population": {"min": 0, "max": None},
-            "growth_rate": {"min": -20, "max": 30}
-        }
+            "growth_rate": {"min": -20, "max": 30},
+        },
     }
 
     RBNZ_OCR_SCHEMA = {
         "required": ["date", "indicator", "value"],
         "optional": [],
-        "types": {
-            "date": "datetime",
-            "indicator": "string",
-            "value": "float"
-        },
+        "types": {"date": "datetime", "indicator": "string", "value": "float"},
         "constraints": {
             "value": {"min": -5, "max": 25}  # Reasonable OCR range
-        }
+        },
     }
 
     TOURISM_SCHEMA = {
@@ -98,14 +100,14 @@ class SchemaValidator:
             "year": "integer",
             "visitors": "integer",
             "growth_yoy": "float",
-            "seasonal_index": "float"
+            "seasonal_index": "float",
         },
         "constraints": {
             "year": {"min": 1960, "max": 2050},
             "visitors": {"min": 0, "max": None},
             "growth_yoy": {"min": -50, "max": 100},
-            "seasonal_index": {"min": 0, "max": 5}
-        }
+            "seasonal_index": {"min": 0, "max": 5},
+        },
     }
 
     BUILDING_CONSENTS_SCHEMA = {
@@ -115,13 +117,13 @@ class SchemaValidator:
             "region": "string",
             "year": "integer",
             "consents": "integer",
-            "growth_yoy": "float"
+            "growth_yoy": "float",
         },
         "constraints": {
             "year": {"min": 1960, "max": 2050},
             "consents": {"min": 0, "max": None},
-            "growth_yoy": {"min": -50, "max": 100}
-        }
+            "growth_yoy": {"min": -50, "max": 100},
+        },
     }
 
     SCHEMA_MAP = {
@@ -143,10 +145,7 @@ class SchemaValidator:
         self.logger = logging.getLogger(__name__)
 
     def validate_dataframe(
-        self,
-        df: pd.DataFrame,
-        schema_name: str,
-        source_name: Optional[str] = None
+        self, df: pd.DataFrame, schema_name: str, source_name: Optional[str] = None
     ) -> ValidationResult:
         """
         Validate a DataFrame against a known schema.
@@ -166,8 +165,7 @@ class SchemaValidator:
         if schema_name not in self.SCHEMA_MAP:
             warnings.append(f"Unknown schema '{schema_name}', skipping validation")
             return ValidationResult(
-                passed=True, level=self.level,
-                errors=[], warnings=warnings, info=info
+                passed=True, level=self.level, errors=[], warnings=warnings, info=info
             )
 
         schema = self.SCHEMA_MAP[schema_name]
@@ -213,11 +211,7 @@ class SchemaValidator:
             )
 
         return ValidationResult(
-            passed=passed,
-            level=self.level,
-            errors=errors,
-            warnings=warnings,
-            info=info
+            passed=passed, level=self.level, errors=errors, warnings=warnings, info=info
         )
 
     def _check_type(self, series: pd.Series, expected_type: str) -> tuple:
@@ -254,10 +248,7 @@ class SchemaValidator:
         return True, ""
 
     def _check_constraints(
-        self,
-        series: pd.Series,
-        col_name: str,
-        constraints: Dict[str, Any]
+        self, series: pd.Series, col_name: str, constraints: Dict[str, Any]
     ) -> List[str]:
         """Check if series meets constraints."""
         errors = []
@@ -286,7 +277,7 @@ class SchemaValidator:
         df1: pd.DataFrame,
         df2: pd.DataFrame,
         name1: str = "df1",
-        name2: str = "df2"
+        name2: str = "df2",
     ) -> ValidationResult:
         """
         Validate that two DataFrames have compatible schemas.
@@ -323,14 +314,14 @@ class SchemaValidator:
             level=self.level,
             errors=errors,
             warnings=warnings,
-            info={"common_columns": len(common_cols)}
+            info={"common_columns": len(common_cols)},
         )
 
 
 def validate_bronze_ingestion(
     df: pd.DataFrame,
     source_type: str,
-    level: ValidationLevel = ValidationLevel.MODERATE
+    level: ValidationLevel = ValidationLevel.MODERATE,
 ) -> ValidationResult:
     """
     Convenience function to validate bronze layer ingestion.
@@ -350,7 +341,7 @@ def validate_bronze_ingestion(
 def validate_silver_features(
     df: pd.DataFrame,
     feature_name: str,
-    level: ValidationLevel = ValidationLevel.MODERATE
+    level: ValidationLevel = ValidationLevel.MODERATE,
 ) -> ValidationResult:
     """
     Validate silver layer feature data.
@@ -379,12 +370,12 @@ def validate_silver_features(
     for col in df.columns:
         null_pct = df[col].isna().sum() / len(df) if len(df) > 0 else 0
         if null_pct > 0.5:
-            warnings.append(f"Column '{col}' is {null_pct*100:.1f}% null")
+            warnings.append(f"Column '{col}' is {null_pct * 100:.1f}% null")
 
     return ValidationResult(
         passed=len(errors) == 0,
         level=level,
         errors=errors,
         warnings=warnings,
-        info={"numeric_columns": len(numeric_cols), "row_count": len(df)}
+        info={"numeric_columns": len(numeric_cols), "row_count": len(df)},
     )

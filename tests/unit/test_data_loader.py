@@ -1,4 +1,5 @@
-﻿"""Unit tests for DataLoader."""
+"""Unit tests for DataLoader."""
+
 from pathlib import Path
 
 import pandas as pd
@@ -29,15 +30,17 @@ class TestDataLoader:
     def test_load_kpis_for_dashboard_with_data(self, loader, tmp_path):
         """Test loading KPIs when data files exist."""
         gold_dir = Path(loader.base_dir)
-        df = pd.DataFrame({
-            "name": ["Test KPI"],
-            "value": [42.0],
-            "unit": ["score"],
-            "description": ["A test KPI"],
-            "category": ["general"],
-            "source": ["real"],
-            "confidence": [85.0],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["Test KPI"],
+                "value": [42.0],
+                "unit": ["score"],
+                "description": ["A test KPI"],
+                "category": ["general"],
+                "source": ["real"],
+                "confidence": [85.0],
+            }
+        )
         df.to_parquet(gold_dir / "kpis-01-executive_complete.parquet", index=False)
         loader._cache.clear()
 
@@ -49,15 +52,17 @@ class TestDataLoader:
     def test_cache_prevents_reload(self, loader, tmp_path):
         """Test that caching prevents redundant file reads."""
         gold_dir = Path(loader.base_dir)
-        df = pd.DataFrame({
-            "name": ["Cached KPI"],
-            "value": [10.0],
-            "unit": ["score"],
-            "description": ["Cached"],
-            "category": ["general"],
-            "source": ["real"],
-            "confidence": [90.0],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["Cached KPI"],
+                "value": [10.0],
+                "unit": ["score"],
+                "description": ["Cached"],
+                "category": ["general"],
+                "source": ["real"],
+                "confidence": [90.0],
+            }
+        )
         df.to_parquet(gold_dir / "kpis-01-executive_complete.parquet", index=False)
         loader._cache.clear()
 
@@ -79,15 +84,17 @@ class TestDataLoader:
     def test_load_kpis_for_housing(self, loader, tmp_path):
         """Test loading housing KPIs."""
         gold_dir = Path(loader.base_dir)
-        df = pd.DataFrame({
-            "name": ["House Price Index"],
-            "value": [125.5],
-            "unit": ["index"],
-            "description": ["House price index"],
-            "category": ["housing"],
-            "source": ["real"],
-            "confidence": [88.0],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["House Price Index"],
+                "value": [125.5],
+                "unit": ["index"],
+                "description": ["House price index"],
+                "category": ["housing"],
+                "source": ["real"],
+                "confidence": [88.0],
+            }
+        )
         df.to_parquet(gold_dir / "kpis-02-housing_complete.parquet", index=False)
         loader._cache.clear()
 
@@ -98,15 +105,17 @@ class TestDataLoader:
     def test_load_kpis_for_tourism(self, loader, tmp_path):
         """Test loading tourism KPIs."""
         gold_dir = Path(loader.base_dir)
-        df = pd.DataFrame({
-            "name": ["Tourism Pressure"],
-            "value": [65.0],
-            "unit": ["index"],
-            "description": ["Tourism pressure index"],
-            "category": ["tourism"],
-            "source": ["real"],
-            "confidence": [75.0],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["Tourism Pressure"],
+                "value": [65.0],
+                "unit": ["index"],
+                "description": ["Tourism pressure index"],
+                "category": ["tourism"],
+                "source": ["real"],
+                "confidence": [75.0],
+            }
+        )
         df.to_parquet(gold_dir / "kpis-03-tourism_complete.parquet", index=False)
         loader._cache.clear()
 

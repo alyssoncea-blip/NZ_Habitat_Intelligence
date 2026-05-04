@@ -17,14 +17,32 @@ logger = get_logger(__name__)
 
 
 DEFAULT_PREFERRED_TERMS = {
-    "affordability": ["affordability", "price", "income", "ratio", "rent", "burden", "cost"],
-    "forecast": ["forecast", "risk", "volatility", "confidence", "scenario", "outlook", "uncertainty"],
+    "affordability": [
+        "affordability",
+        "price",
+        "income",
+        "ratio",
+        "rent",
+        "burden",
+        "cost",
+    ],
+    "forecast": [
+        "forecast",
+        "risk",
+        "volatility",
+        "confidence",
+        "scenario",
+        "outlook",
+        "uncertainty",
+    ],
     "tourism": ["tourism", "visitor", "accommodation", "seasonal", "growth"],
     "macro": ["gdp", "inflation", "unemployment", "interest", "rate", "economic"],
 }
 
 
-def create_hero_section(hero_kpi: Optional[Dict], title: str, description: str) -> html.Div:
+def create_hero_section(
+    hero_kpi: Optional[Dict], title: str, description: str
+) -> html.Div:
     """Create hero section for dashboard."""
     if not hero_kpi:
         return HeroKPICard.create(
@@ -48,9 +66,7 @@ def create_hero_section(hero_kpi: Optional[Dict], title: str, description: str) 
 
 
 def create_stats_section(
-    kpis_df,
-    preferred_terms: Optional[List[str]] = None,
-    max_stats: int = 4
+    kpis_df, preferred_terms: Optional[List[str]] = None, max_stats: int = 4
 ) -> html.Div:
     """
     Create stats section for dashboard using preferred search terms.
@@ -76,22 +92,26 @@ def create_stats_section(
         if len(stats_data) >= max_stats:
             break
         if any(term in name.lower() for term in preferred_terms):
-            stats_data.append({
-                "title": (name[:20] + "..." if len(name) > 20 else name),
-                "value": kpi.get("value", "N/A"),
-                "unit": kpi.get("unit", ""),
-                "trend": kpi.get("trend", "neutral"),
-            })
+            stats_data.append(
+                {
+                    "title": (name[:20] + "..." if len(name) > 20 else name),
+                    "value": kpi.get("value", "N/A"),
+                    "unit": kpi.get("unit", ""),
+                    "trend": kpi.get("trend", "neutral"),
+                }
+            )
 
     if not stats_data:
         for _, kpi in kpis_df.head(max_stats).iterrows():
             name = str(kpi.get("name", "KPI"))
-            stats_data.append({
-                "title": (name[:20] + "..." if len(name) > 20 else name),
-                "value": kpi.get("value", "N/A"),
-                "unit": kpi.get("unit", ""),
-                "trend": kpi.get("trend", "neutral"),
-            })
+            stats_data.append(
+                {
+                    "title": (name[:20] + "..." if len(name) > 20 else name),
+                    "value": kpi.get("value", "N/A"),
+                    "unit": kpi.get("unit", ""),
+                    "trend": kpi.get("trend", "neutral"),
+                }
+            )
 
     return create_dashboard_stats(stats_data)
 
@@ -114,9 +134,7 @@ def create_kpi_grid(kpis_df, empty_message: str = "No KPIs available") -> dbc.Ro
     for _, kpi in kpis_df.iterrows():
         cards.append(
             dbc.Col(
-                PremiumCard.create_kpi_card(kpi),
-                width=12, md=6, lg=4,
-                className="mb-3"
+                PremiumCard.create_kpi_card(kpi), width=12, md=6, lg=4, className="mb-3"
             )
         )
 
@@ -124,9 +142,7 @@ def create_kpi_grid(kpis_df, empty_message: str = "No KPIs available") -> dbc.Ro
 
 
 def create_insights_section(
-    kpis_df,
-    max_insights: int = 5,
-    prefix: str = "KPI"
+    kpis_df, max_insights: int = 5, prefix: str = "KPI"
 ) -> List[dbc.Card]:
     """
     Create insights section for dashboard.
@@ -149,11 +165,13 @@ def create_insights_section(
 
         insights.append(
             dbc.Card(
-                dbc.CardBody([
-                    html.H6(name, className="card-title"),
-                    html.P(value, className="card-value mb-1"),
-                    dbc.Badge(status, color=color.replace("#", "")),
-                ]),
+                dbc.CardBody(
+                    [
+                        html.H6(name, className="card-title"),
+                        html.P(value, className="card-value mb-1"),
+                        dbc.Badge(status, color=color.replace("#", "")),
+                    ]
+                ),
                 className="mb-2",
             )
         )
@@ -164,7 +182,7 @@ def create_insights_section(
 def find_hero_kpi(
     kpis_df,
     preferred_terms: Optional[List[str]] = None,
-    default_title: str = "Conditions"
+    default_title: str = "Conditions",
 ) -> Optional[Dict]:
     """
     Find hero KPI from processed KPIs based on preferred search terms.
@@ -186,7 +204,7 @@ def find_hero_kpi(
     for _, kpi in kpis_df.iterrows():
         name = str(kpi.get("name", "")).lower()
         if any(term in name for term in preferred_terms):
-            return kpi.to_dict() if hasattr(kpi, 'to_dict') else dict(kpi)
+            return kpi.to_dict() if hasattr(kpi, "to_dict") else dict(kpi)
 
     return kpis_df.iloc[0].to_dict() if len(kpis_df) > 0 else None
 
@@ -219,7 +237,9 @@ class DashboardFactory:
         self.title = title
         self.subtitle = subtitle
         self.hero_terms = hero_terms or DEFAULT_PREFERRED_TERMS.get(dashboard_name, [])
-        self.stats_terms = stats_terms or DEFAULT_PREFERRED_TERMS.get(dashboard_name, [])
+        self.stats_terms = stats_terms or DEFAULT_PREFERRED_TERMS.get(
+            dashboard_name, []
+        )
 
     def create_dashboard(
         self,
@@ -244,33 +264,40 @@ class DashboardFactory:
 
         children = [
             create_section_header(self.title, self.subtitle),
-            html.Div(create_hero_section(hero_kpi, self.title, self.subtitle), id=f"{self.dashboard_name}-hero"),
+            html.Div(
+                create_hero_section(hero_kpi, self.title, self.subtitle),
+                id=f"{self.dashboard_name}-hero",
+            ),
             html.Div(
                 create_stats_section(kpis_df, self.stats_terms),
-                id=f"{self.dashboard_name}-stats"
+                id=f"{self.dashboard_name}-stats",
             ),
         ]
 
         if include_kpi_grid:
             children.append(
                 html.Div(
-                    create_kpi_grid(kpis_df, f"No {self.dashboard_name} KPIs available"),
-                    id=f"{self.dashboard_name}-kpi-grid"
+                    create_kpi_grid(
+                        kpis_df, f"No {self.dashboard_name} KPIs available"
+                    ),
+                    id=f"{self.dashboard_name}-kpi-grid",
                 )
             )
 
         if include_insights:
             children.append(
                 html.Div(
-                    create_insights_section(kpis_df, insights_count, self.title.title()),
-                    id=f"{self.dashboard_name}-insights"
+                    create_insights_section(
+                        kpis_df, insights_count, self.title.title()
+                    ),
+                    id=f"{self.dashboard_name}-insights",
                 )
             )
 
         children.append(
             dcc.Store(
                 id=f"{self.dashboard_name}-kpis-data",
-                data=kpis_df.to_dict("records") if not kpis_df.empty else []
+                data=kpis_df.to_dict("records") if not kpis_df.empty else [],
             )
         )
 

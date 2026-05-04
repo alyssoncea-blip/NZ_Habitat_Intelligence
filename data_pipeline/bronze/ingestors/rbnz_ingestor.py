@@ -4,6 +4,7 @@ Fetches OCR, mortgage rates, and CPI data from RBNZ.
 Uses the RBNZ Data API (data.rbnz.govt.nz) as primary source,
 with CSV endpoints and resilient fallbacks containing real historical data.
 """
+
 import json
 import logging
 import io
@@ -37,100 +38,176 @@ RBNZ_CSV_ENDPOINTS = {
 
 # RBNZ Data API series codes
 RBNZ_SERIES = {
-    "ocr": "F1",                          # Official Cash Rate
+    "ocr": "F1",  # Official Cash Rate
     "mortgage_1yr": "H1_AVERAGE_1_YEAR",  # 1-year fixed mortgage rate
-    "mortgage_2yr": "H1_AVERAGE_2_YEARS", # 2-year fixed mortgage rate
-    "mortgage_5yr": "H1_AVERAGE_5_YEARS", # 5-year fixed mortgage rate
-    "cpi_annual": "CPI_1",                # CPI annual change
+    "mortgage_2yr": "H1_AVERAGE_2_YEARS",  # 2-year fixed mortgage rate
+    "mortgage_5yr": "H1_AVERAGE_5_YEARS",  # 5-year fixed mortgage rate
+    "cpi_annual": "CPI_1",  # CPI annual change
 }
 
 # Real historical OCR data (RBNZ Official Cash Rate, monthly averages)
 _REAL_OCR_DATA = [
-    {"date": "1999-06", "value": 7.00}, {"date": "1999-09", "value": 6.75},
-    {"date": "1999-12", "value": 6.25}, {"date": "2000-03", "value": 6.50},
-    {"date": "2000-06", "value": 6.75}, {"date": "2000-09", "value": 7.25},
-    {"date": "2000-12", "value": 7.50}, {"date": "2001-03", "value": 7.25},
-    {"date": "2001-06", "value": 6.75}, {"date": "2001-09", "value": 6.50},
-    {"date": "2001-12", "value": 6.00}, {"date": "2002-03", "value": 5.50},
-    {"date": "2002-06", "value": 5.25}, {"date": "2002-09", "value": 5.00},
-    {"date": "2002-12", "value": 4.75}, {"date": "2003-03", "value": 5.00},
-    {"date": "2003-06", "value": 5.25}, {"date": "2003-09", "value": 5.50},
-    {"date": "2003-12", "value": 5.75}, {"date": "2004-03", "value": 6.00},
-    {"date": "2004-06", "value": 6.50}, {"date": "2004-09", "value": 7.00},
-    {"date": "2004-12", "value": 7.25}, {"date": "2005-03", "value": 7.50},
-    {"date": "2005-06", "value": 7.75}, {"date": "2005-09", "value": 7.75},
-    {"date": "2005-12", "value": 7.50}, {"date": "2006-03", "value": 7.25},
-    {"date": "2006-06", "value": 7.50}, {"date": "2006-09", "value": 7.75},
-    {"date": "2006-12", "value": 8.00}, {"date": "2007-03", "value": 8.00},
-    {"date": "2007-06", "value": 8.00}, {"date": "2007-09", "value": 8.25},
-    {"date": "2007-12", "value": 8.25}, {"date": "2008-03", "value": 8.25},
-    {"date": "2008-06", "value": 8.25}, {"date": "2008-09", "value": 8.00},
-    {"date": "2008-12", "value": 5.00}, {"date": "2009-03", "value": 3.00},
-    {"date": "2009-06", "value": 2.50}, {"date": "2009-09", "value": 2.50},
-    {"date": "2009-12", "value": 2.50}, {"date": "2010-03", "value": 3.00},
-    {"date": "2010-06", "value": 3.00}, {"date": "2010-09", "value": 3.00},
-    {"date": "2010-12", "value": 3.00}, {"date": "2011-03", "value": 3.00},
-    {"date": "2011-06", "value": 3.00}, {"date": "2011-09", "value": 2.50},
-    {"date": "2011-12", "value": 2.50}, {"date": "2012-03", "value": 2.50},
-    {"date": "2012-06", "value": 2.50}, {"date": "2012-09", "value": 2.50},
-    {"date": "2012-12", "value": 2.50}, {"date": "2013-03", "value": 2.50},
-    {"date": "2013-06", "value": 2.50}, {"date": "2013-09", "value": 3.00},
-    {"date": "2013-12", "value": 3.00}, {"date": "2014-03", "value": 3.25},
-    {"date": "2014-06", "value": 3.50}, {"date": "2014-09", "value": 3.50},
-    {"date": "2014-12", "value": 3.50}, {"date": "2015-03", "value": 3.00},
-    {"date": "2015-06", "value": 2.50}, {"date": "2015-09", "value": 2.50},
-    {"date": "2015-12", "value": 2.50}, {"date": "2016-03", "value": 2.25},
-    {"date": "2016-06", "value": 2.00}, {"date": "2016-09", "value": 1.75},
-    {"date": "2016-12", "value": 1.75}, {"date": "2017-03", "value": 1.75},
-    {"date": "2017-06", "value": 1.75}, {"date": "2017-09", "value": 1.75},
-    {"date": "2017-12", "value": 1.75}, {"date": "2018-03", "value": 1.75},
-    {"date": "2018-06", "value": 1.75}, {"date": "2018-09", "value": 1.75},
-    {"date": "2018-12", "value": 1.75}, {"date": "2019-03", "value": 1.75},
-    {"date": "2019-06", "value": 1.50}, {"date": "2019-09", "value": 1.00},
-    {"date": "2019-12", "value": 1.00}, {"date": "2020-03", "value": 0.25},
-    {"date": "2020-06", "value": 0.25}, {"date": "2020-09", "value": 0.25},
-    {"date": "2020-12", "value": 0.25}, {"date": "2021-03", "value": 0.25},
-    {"date": "2021-06", "value": 0.25}, {"date": "2021-09", "value": 0.50},
-    {"date": "2021-12", "value": 1.00}, {"date": "2022-03", "value": 1.50},
-    {"date": "2022-06", "value": 2.00}, {"date": "2022-09", "value": 3.00},
-    {"date": "2022-12", "value": 4.25}, {"date": "2023-03", "value": 5.00},
-    {"date": "2023-06", "value": 5.50}, {"date": "2023-09", "value": 5.50},
-    {"date": "2023-12", "value": 5.50}, {"date": "2024-03", "value": 5.50},
-    {"date": "2024-06", "value": 5.50}, {"date": "2024-09", "value": 5.00},
-    {"date": "2024-12", "value": 4.25}, {"date": "2025-03", "value": 3.50},
+    {"date": "1999-06", "value": 7.00},
+    {"date": "1999-09", "value": 6.75},
+    {"date": "1999-12", "value": 6.25},
+    {"date": "2000-03", "value": 6.50},
+    {"date": "2000-06", "value": 6.75},
+    {"date": "2000-09", "value": 7.25},
+    {"date": "2000-12", "value": 7.50},
+    {"date": "2001-03", "value": 7.25},
+    {"date": "2001-06", "value": 6.75},
+    {"date": "2001-09", "value": 6.50},
+    {"date": "2001-12", "value": 6.00},
+    {"date": "2002-03", "value": 5.50},
+    {"date": "2002-06", "value": 5.25},
+    {"date": "2002-09", "value": 5.00},
+    {"date": "2002-12", "value": 4.75},
+    {"date": "2003-03", "value": 5.00},
+    {"date": "2003-06", "value": 5.25},
+    {"date": "2003-09", "value": 5.50},
+    {"date": "2003-12", "value": 5.75},
+    {"date": "2004-03", "value": 6.00},
+    {"date": "2004-06", "value": 6.50},
+    {"date": "2004-09", "value": 7.00},
+    {"date": "2004-12", "value": 7.25},
+    {"date": "2005-03", "value": 7.50},
+    {"date": "2005-06", "value": 7.75},
+    {"date": "2005-09", "value": 7.75},
+    {"date": "2005-12", "value": 7.50},
+    {"date": "2006-03", "value": 7.25},
+    {"date": "2006-06", "value": 7.50},
+    {"date": "2006-09", "value": 7.75},
+    {"date": "2006-12", "value": 8.00},
+    {"date": "2007-03", "value": 8.00},
+    {"date": "2007-06", "value": 8.00},
+    {"date": "2007-09", "value": 8.25},
+    {"date": "2007-12", "value": 8.25},
+    {"date": "2008-03", "value": 8.25},
+    {"date": "2008-06", "value": 8.25},
+    {"date": "2008-09", "value": 8.00},
+    {"date": "2008-12", "value": 5.00},
+    {"date": "2009-03", "value": 3.00},
+    {"date": "2009-06", "value": 2.50},
+    {"date": "2009-09", "value": 2.50},
+    {"date": "2009-12", "value": 2.50},
+    {"date": "2010-03", "value": 3.00},
+    {"date": "2010-06", "value": 3.00},
+    {"date": "2010-09", "value": 3.00},
+    {"date": "2010-12", "value": 3.00},
+    {"date": "2011-03", "value": 3.00},
+    {"date": "2011-06", "value": 3.00},
+    {"date": "2011-09", "value": 2.50},
+    {"date": "2011-12", "value": 2.50},
+    {"date": "2012-03", "value": 2.50},
+    {"date": "2012-06", "value": 2.50},
+    {"date": "2012-09", "value": 2.50},
+    {"date": "2012-12", "value": 2.50},
+    {"date": "2013-03", "value": 2.50},
+    {"date": "2013-06", "value": 2.50},
+    {"date": "2013-09", "value": 3.00},
+    {"date": "2013-12", "value": 3.00},
+    {"date": "2014-03", "value": 3.25},
+    {"date": "2014-06", "value": 3.50},
+    {"date": "2014-09", "value": 3.50},
+    {"date": "2014-12", "value": 3.50},
+    {"date": "2015-03", "value": 3.00},
+    {"date": "2015-06", "value": 2.50},
+    {"date": "2015-09", "value": 2.50},
+    {"date": "2015-12", "value": 2.50},
+    {"date": "2016-03", "value": 2.25},
+    {"date": "2016-06", "value": 2.00},
+    {"date": "2016-09", "value": 1.75},
+    {"date": "2016-12", "value": 1.75},
+    {"date": "2017-03", "value": 1.75},
+    {"date": "2017-06", "value": 1.75},
+    {"date": "2017-09", "value": 1.75},
+    {"date": "2017-12", "value": 1.75},
+    {"date": "2018-03", "value": 1.75},
+    {"date": "2018-06", "value": 1.75},
+    {"date": "2018-09", "value": 1.75},
+    {"date": "2018-12", "value": 1.75},
+    {"date": "2019-03", "value": 1.75},
+    {"date": "2019-06", "value": 1.50},
+    {"date": "2019-09", "value": 1.00},
+    {"date": "2019-12", "value": 1.00},
+    {"date": "2020-03", "value": 0.25},
+    {"date": "2020-06", "value": 0.25},
+    {"date": "2020-09", "value": 0.25},
+    {"date": "2020-12", "value": 0.25},
+    {"date": "2021-03", "value": 0.25},
+    {"date": "2021-06", "value": 0.25},
+    {"date": "2021-09", "value": 0.50},
+    {"date": "2021-12", "value": 1.00},
+    {"date": "2022-03", "value": 1.50},
+    {"date": "2022-06", "value": 2.00},
+    {"date": "2022-09", "value": 3.00},
+    {"date": "2022-12", "value": 4.25},
+    {"date": "2023-03", "value": 5.00},
+    {"date": "2023-06", "value": 5.50},
+    {"date": "2023-09", "value": 5.50},
+    {"date": "2023-12", "value": 5.50},
+    {"date": "2024-03", "value": 5.50},
+    {"date": "2024-06", "value": 5.50},
+    {"date": "2024-09", "value": 5.00},
+    {"date": "2024-12", "value": 4.25},
+    {"date": "2025-03", "value": 3.50},
 ]
 
 # Real historical mortgage rates (2-year fixed, quarterly averages)
 _REAL_MORTGAGE_RATES = [
-    {"date": "2019-Q1", "value": 4.20}, {"date": "2019-Q2", "value": 4.10},
-    {"date": "2019-Q3", "value": 3.90}, {"date": "2019-Q4", "value": 3.70},
-    {"date": "2020-Q1", "value": 3.50}, {"date": "2020-Q2", "value": 3.20},
-    {"date": "2020-Q3", "value": 2.80}, {"date": "2020-Q4", "value": 2.60},
-    {"date": "2021-Q1", "value": 2.50}, {"date": "2021-Q2", "value": 2.40},
-    {"date": "2021-Q3", "value": 2.60}, {"date": "2021-Q4", "value": 3.00},
-    {"date": "2022-Q1", "value": 3.60}, {"date": "2022-Q2", "value": 4.50},
-    {"date": "2022-Q3", "value": 5.80}, {"date": "2022-Q4", "value": 6.70},
-    {"date": "2023-Q1", "value": 7.00}, {"date": "2023-Q2", "value": 7.20},
-    {"date": "2023-Q3", "value": 7.40}, {"date": "2023-Q4", "value": 7.30},
-    {"date": "2024-Q1", "value": 7.10}, {"date": "2024-Q2", "value": 6.80},
-    {"date": "2024-Q3", "value": 6.40}, {"date": "2024-Q4", "value": 5.90},
+    {"date": "2019-Q1", "value": 4.20},
+    {"date": "2019-Q2", "value": 4.10},
+    {"date": "2019-Q3", "value": 3.90},
+    {"date": "2019-Q4", "value": 3.70},
+    {"date": "2020-Q1", "value": 3.50},
+    {"date": "2020-Q2", "value": 3.20},
+    {"date": "2020-Q3", "value": 2.80},
+    {"date": "2020-Q4", "value": 2.60},
+    {"date": "2021-Q1", "value": 2.50},
+    {"date": "2021-Q2", "value": 2.40},
+    {"date": "2021-Q3", "value": 2.60},
+    {"date": "2021-Q4", "value": 3.00},
+    {"date": "2022-Q1", "value": 3.60},
+    {"date": "2022-Q2", "value": 4.50},
+    {"date": "2022-Q3", "value": 5.80},
+    {"date": "2022-Q4", "value": 6.70},
+    {"date": "2023-Q1", "value": 7.00},
+    {"date": "2023-Q2", "value": 7.20},
+    {"date": "2023-Q3", "value": 7.40},
+    {"date": "2023-Q4", "value": 7.30},
+    {"date": "2024-Q1", "value": 7.10},
+    {"date": "2024-Q2", "value": 6.80},
+    {"date": "2024-Q3", "value": 6.40},
+    {"date": "2024-Q4", "value": 5.90},
     {"date": "2025-Q1", "value": 5.50},
 ]
 
 # Real historical CPI (annual %, quarterly)
 _REAL_CPI = [
-    {"date": "2019-Q1", "value": 1.4}, {"date": "2019-Q2", "value": 1.5},
-    {"date": "2019-Q3", "value": 1.5}, {"date": "2019-Q4", "value": 1.6},
-    {"date": "2020-Q1", "value": 1.6}, {"date": "2020-Q2", "value": 0.4},
-    {"date": "2020-Q3", "value": 0.7}, {"date": "2020-Q4", "value": 1.4},
-    {"date": "2021-Q1", "value": 1.5}, {"date": "2021-Q2", "value": 3.0},
-    {"date": "2021-Q3", "value": 4.9}, {"date": "2021-Q4", "value": 5.9},
-    {"date": "2022-Q1", "value": 6.9}, {"date": "2022-Q2", "value": 7.3},
-    {"date": "2022-Q3", "value": 7.2}, {"date": "2022-Q4", "value": 7.2},
-    {"date": "2023-Q1", "value": 6.7}, {"date": "2023-Q2", "value": 6.0},
-    {"date": "2023-Q3", "value": 5.6}, {"date": "2023-Q4", "value": 4.7},
-    {"date": "2024-Q1", "value": 4.0}, {"date": "2024-Q2", "value": 3.3},
-    {"date": "2024-Q3", "value": 2.2}, {"date": "2024-Q4", "value": 2.0},
+    {"date": "2019-Q1", "value": 1.4},
+    {"date": "2019-Q2", "value": 1.5},
+    {"date": "2019-Q3", "value": 1.5},
+    {"date": "2019-Q4", "value": 1.6},
+    {"date": "2020-Q1", "value": 1.6},
+    {"date": "2020-Q2", "value": 0.4},
+    {"date": "2020-Q3", "value": 0.7},
+    {"date": "2020-Q4", "value": 1.4},
+    {"date": "2021-Q1", "value": 1.5},
+    {"date": "2021-Q2", "value": 3.0},
+    {"date": "2021-Q3", "value": 4.9},
+    {"date": "2021-Q4", "value": 5.9},
+    {"date": "2022-Q1", "value": 6.9},
+    {"date": "2022-Q2", "value": 7.3},
+    {"date": "2022-Q3", "value": 7.2},
+    {"date": "2022-Q4", "value": 7.2},
+    {"date": "2023-Q1", "value": 6.7},
+    {"date": "2023-Q2", "value": 6.0},
+    {"date": "2023-Q3", "value": 5.6},
+    {"date": "2023-Q4", "value": 4.7},
+    {"date": "2024-Q1", "value": 4.0},
+    {"date": "2024-Q2", "value": 3.3},
+    {"date": "2024-Q3", "value": 2.2},
+    {"date": "2024-Q4", "value": 2.0},
     {"date": "2025-Q1", "value": 1.8},
 ]
 
@@ -146,15 +223,21 @@ class RBNZIngestor:
     @staticmethod
     def _create_session() -> requests.Session:
         session = requests.Session()
-        retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+        retry = Retry(
+            total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504]
+        )
         session.mount("https://", HTTPAdapter(max_retries=retry))
-        session.headers.update({
-            "User-Agent": "NZHabitatIntelligence/2.0",
-            "Accept": "application/json, text/csv, */*",
-        })
+        session.headers.update(
+            {
+                "User-Agent": "NZHabitatIntelligence/2.0",
+                "Accept": "application/json, text/csv, */*",
+            }
+        )
         return session
 
-    def _fetch_rbnz_data_api(self, series_code: str, description: str) -> Optional[List[Dict]]:
+    def _fetch_rbnz_data_api(
+        self, series_code: str, description: str
+    ) -> Optional[List[Dict]]:
         """Fetch data from RBNZ Data API (SDMX-JSON format).
 
         Args:
@@ -179,16 +262,20 @@ class RBNZIngestor:
                     value = obs.get("value", obs.get("obs_value"))
                     if date_str and value is not None:
                         try:
-                            records.append({
-                                "date": str(date_str).strip(),
-                                "value": float(value),
-                            })
+                            records.append(
+                                {
+                                    "date": str(date_str).strip(),
+                                    "value": float(value),
+                                }
+                            )
                         except (ValueError, TypeError):
                             continue
 
             if records:
                 records.sort(key=lambda x: x["date"])
-                logger.info("  %s: %d records from RBNZ Data API", description, len(records))
+                logger.info(
+                    "  %s: %d records from RBNZ Data API", description, len(records)
+                )
                 return records
         except Exception as e:
             logger.debug("  RBNZ Data API fetch failed for %s: %s", description, e)
@@ -206,7 +293,9 @@ class RBNZIngestor:
             logger.debug("  Failed %s: %s", description, e)
             return None
 
-    def _fetch_csv_with_fallback(self, urls: List[str], description: str) -> Optional[pd.DataFrame]:
+    def _fetch_csv_with_fallback(
+        self, urls: List[str], description: str
+    ) -> Optional[pd.DataFrame]:
         """Try multiple CSV URLs, return first success."""
         for url in urls:
             df = self._fetch_csv(url, description)
@@ -220,8 +309,12 @@ class RBNZIngestor:
         data = self._fetch_rbnz_data_api(RBNZ_SERIES["ocr"], "OCR")
         if data and len(data) > 10:
             return {
-                "metadata": {"source": "RBNZ Data API", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(data), "description": "RBNZ Official Cash Rate"},
+                "metadata": {
+                    "source": "RBNZ Data API",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(data),
+                    "description": "RBNZ Official Cash Rate",
+                },
                 "data": data,
             }
 
@@ -229,16 +322,27 @@ class RBNZIngestor:
         df = self._fetch_csv_with_fallback(RBNZ_CSV_ENDPOINTS["ocr"], "OCR CSV")
         if df is not None and not df.empty:
             return {
-                "metadata": {"source": "RBNZ CSV", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(df), "columns": list(df.columns)},
+                "metadata": {
+                    "source": "RBNZ CSV",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(df),
+                    "columns": list(df.columns),
+                },
                 "data": df.to_dict(orient="records"),
             }
 
         # Fallback: real historical OCR data
-        logger.info("  OCR: using real historical fallback (%d data points)", len(_REAL_OCR_DATA))
+        logger.info(
+            "  OCR: using real historical fallback (%d data points)",
+            len(_REAL_OCR_DATA),
+        )
         return {
-            "metadata": {"source": "RBNZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_OCR_DATA), "description": "RBNZ Official Cash Rate 1999-2025"},
+            "metadata": {
+                "source": "RBNZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_OCR_DATA),
+                "description": "RBNZ Official Cash Rate 1999-2025",
+            },
             "data": _REAL_OCR_DATA,
         }
 
@@ -248,25 +352,41 @@ class RBNZIngestor:
         data = self._fetch_rbnz_data_api(RBNZ_SERIES["mortgage_2yr"], "mortgage rates")
         if data and len(data) > 10:
             return {
-                "metadata": {"source": "RBNZ Data API", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(data), "description": "2-year fixed mortgage rates"},
+                "metadata": {
+                    "source": "RBNZ Data API",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(data),
+                    "description": "2-year fixed mortgage rates",
+                },
                 "data": data,
             }
 
         # Strategy 2: CSV endpoints
-        df = self._fetch_csv_with_fallback(RBNZ_CSV_ENDPOINTS["mortgage_rates"], "mortgage rates CSV")
+        df = self._fetch_csv_with_fallback(
+            RBNZ_CSV_ENDPOINTS["mortgage_rates"], "mortgage rates CSV"
+        )
         if df is not None and not df.empty:
             return {
-                "metadata": {"source": "RBNZ CSV", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(df)},
+                "metadata": {
+                    "source": "RBNZ CSV",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(df),
+                },
                 "data": df.to_dict(orient="records"),
             }
 
         # Fallback: real historical mortgage rates
-        logger.info("  Mortgage rates: using real historical fallback (%d data points)", len(_REAL_MORTGAGE_RATES))
+        logger.info(
+            "  Mortgage rates: using real historical fallback (%d data points)",
+            len(_REAL_MORTGAGE_RATES),
+        )
         return {
-            "metadata": {"source": "RBNZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_MORTGAGE_RATES), "description": "2-year fixed mortgage rates 2019-2025"},
+            "metadata": {
+                "source": "RBNZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_MORTGAGE_RATES),
+                "description": "2-year fixed mortgage rates 2019-2025",
+            },
             "data": _REAL_MORTGAGE_RATES,
         }
 
@@ -276,8 +396,12 @@ class RBNZIngestor:
         data = self._fetch_rbnz_data_api(RBNZ_SERIES["cpi_annual"], "CPI")
         if data and len(data) > 10:
             return {
-                "metadata": {"source": "RBNZ Data API", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(data), "description": "CPI annual change"},
+                "metadata": {
+                    "source": "RBNZ Data API",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(data),
+                    "description": "CPI annual change",
+                },
                 "data": data,
             }
 
@@ -285,16 +409,25 @@ class RBNZIngestor:
         df = self._fetch_csv_with_fallback(RBNZ_CSV_ENDPOINTS["cpi"], "CPI CSV")
         if df is not None and not df.empty:
             return {
-                "metadata": {"source": "RBNZ CSV", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(df)},
+                "metadata": {
+                    "source": "RBNZ CSV",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(df),
+                },
                 "data": df.to_dict(orient="records"),
             }
 
         # Fallback: real historical CPI
-        logger.info("  CPI: using real historical fallback (%d data points)", len(_REAL_CPI))
+        logger.info(
+            "  CPI: using real historical fallback (%d data points)", len(_REAL_CPI)
+        )
         return {
-            "metadata": {"source": "RBNZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_CPI), "description": "CPI annual % 2019-2025"},
+            "metadata": {
+                "source": "RBNZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_CPI),
+                "description": "CPI annual % 2019-2025",
+            },
             "data": _REAL_CPI,
         }
 
@@ -328,7 +461,10 @@ class RBNZIngestor:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     ingestor = RBNZIngestor()
     results = ingestor.run_ingestion()
     for name, path in results.items():

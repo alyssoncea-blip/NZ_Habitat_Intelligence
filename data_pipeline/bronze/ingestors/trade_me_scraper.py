@@ -3,6 +3,7 @@
 Scrapes property listings from Trade Me with proper delays, retries,
 and respectful rate limiting. Falls back to cached data when scraping fails.
 """
+
 import json
 import logging
 import os
@@ -15,6 +16,7 @@ from pathlib import Path
 
 try:
     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
+
     HAS_PLAYWRIGHT = True
 except ImportError:
     HAS_PLAYWRIGHT = False
@@ -50,7 +52,9 @@ class TradeMeScraper:
         logger.info("  Waiting %.1f seconds (rate limiting)", delay)
         time.sleep(delay)
 
-    def _scrape_with_playwright(self, url: str, region_name: str) -> List[Dict[str, Any]]:
+    def _scrape_with_playwright(
+        self, url: str, region_name: str
+    ) -> List[Dict[str, Any]]:
         """Scrape a single Trade Me search results page using Playwright."""
         if not HAS_PLAYWRIGHT:
             logger.warning("Playwright not installed — skipping real scrape")
@@ -71,22 +75,38 @@ class TradeMeScraper:
                 time.sleep(3)  # Let JS render
 
                 # Try to extract listing cards
-                cards = page.query_selector_all("[data-testid='listing-card']") or \
-                        page.query_selector_all(".tms-qa-property-listing-card") or \
-                        page.query_selector_all(".listing-card")
+                cards = (
+                    page.query_selector_all("[data-testid='listing-card']")
+                    or page.query_selector_all(".tms-qa-property-listing-card")
+                    or page.query_selector_all(".listing-card")
+                )
 
-                for card in cards[:self.max_listings_per_region]:
+                for card in cards[: self.max_listings_per_region]:
                     try:
-                        title_el = card.query_selector("a") or card.query_selector(".listing-title")
-                        price_el = card.query_selector("[data-testid='price']") or card.query_selector(".price")
-                        address_el = card.query_selector("[data-testid='address']") or card.query_selector(".address")
+                        title_el = card.query_selector("a") or card.query_selector(
+                            ".listing-title"
+                        )
+                        price_el = card.query_selector(
+                            "[data-testid='price']"
+                        ) or card.query_selector(".price")
+                        address_el = card.query_selector(
+                            "[data-testid='address']"
+                        ) or card.query_selector(".address")
 
                         listing = {
                             "region": region_name,
-                            "title": (title_el.inner_text() if title_el else "").strip(),
-                            "price": (price_el.inner_text() if price_el else "").strip(),
-                            "address": (address_el.inner_text() if address_el else "").strip(),
-                            "url": (title_el.get_attribute("href") if title_el else "").strip(),
+                            "title": (
+                                title_el.inner_text() if title_el else ""
+                            ).strip(),
+                            "price": (
+                                price_el.inner_text() if price_el else ""
+                            ).strip(),
+                            "address": (
+                                address_el.inner_text() if address_el else ""
+                            ).strip(),
+                            "url": (
+                                title_el.get_attribute("href") if title_el else ""
+                            ).strip(),
                             "scraped_at": datetime.now().isoformat(),
                         }
                         if listing["title"] or listing["price"]:
@@ -162,7 +182,9 @@ class TradeMeScraper:
         results = {}
 
         if not HAS_PLAYWRIGHT:
-            logger.warning("Playwright not installed. Install with: pip install playwright && playwright install chromium")
+            logger.warning(
+                "Playwright not installed. Install with: pip install playwright && playwright install chromium"
+            )
             results["error"] = "Playwright not available"
             return results
 
@@ -183,7 +205,11 @@ class TradeMeScraper:
 
 if __name__ == "__main__":
     import os
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     scraper = TradeMeScraper()
     results = scraper.run_scraping()
     for name, path in results.items():

@@ -6,6 +6,7 @@ Uses statsmodels ARIMA for time series forecasting with:
 - R² and MAPE reporting
 - Confidence intervals
 """
+
 import logging
 from typing import Any, Dict
 
@@ -55,7 +56,9 @@ class NZPriceForecaster:
             return True
 
         except ImportError:
-            logger.warning("  statsmodels not available — using linear regression fallback")
+            logger.warning(
+                "  statsmodels not available — using linear regression fallback"
+            )
             return self._fit_linear(data)
         except Exception as e:
             logger.error("  ARIMA fit failed: %s — using linear fallback", e)
@@ -115,6 +118,7 @@ class NZPriceForecaster:
         # Fit on train
         try:
             from statsmodels.tsa.arima.model import ARIMA
+
             model = ARIMA(train, order=(1, 1, 1))
             results = model.fit()
             fc = results.get_forecast(steps=test_size)
@@ -129,8 +133,16 @@ class NZPriceForecaster:
         # Calculate metrics
         actual = test.values
         mae = float(np.mean(np.abs(predicted - actual)))
-        mape = float(np.mean(np.abs((actual - predicted) / actual)) * 100) if np.all(actual != 0) else float("inf")
-        r_squared = float(1 - np.sum((actual - predicted) ** 2) / np.sum((actual - np.mean(actual)) ** 2))
+        mape = (
+            float(np.mean(np.abs((actual - predicted) / actual)) * 100)
+            if np.all(actual != 0)
+            else float("inf")
+        )
+        r_squared = float(
+            1
+            - np.sum((actual - predicted) ** 2)
+            / np.sum((actual - np.mean(actual)) ** 2)
+        )
 
         self.backtest_results = {
             "mae": round(mae, 2),
@@ -195,14 +207,20 @@ def run_forecast_pipeline(
 
     # Calculate current values
     latest_gdp_pc = float(gdp_pc.iloc[-1])
-    gdp_growth = float(gdp_pc.pct_change(fill_method=None).iloc[-1] * 100) if len(gdp_pc) >= 2 else 0
+    gdp_growth = (
+        float(gdp_pc.pct_change(fill_method=None).iloc[-1] * 100)
+        if len(gdp_pc) >= 2
+        else 0
+    )
 
     return {
         "current_gdp_per_capita": round(latest_gdp_pc, 0),
         "gdp_growth_yoy": round(gdp_growth, 1),
         "forecast": forecast,
         "backtest": backtest,
-        "model_confidence": round(max(40, min(90, 60 + backtest.get("r_squared", 0) * 30)), 0),
+        "model_confidence": round(
+            max(40, min(90, 60 + backtest.get("r_squared", 0) * 30)), 0
+        ),
         "data_points": len(gdp_pc),
         "year_range": f"{int(gdp_pc.index.min())}-{int(gdp_pc.index.max())}",
     }

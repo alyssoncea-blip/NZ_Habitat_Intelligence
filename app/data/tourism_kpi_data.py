@@ -1,4 +1,5 @@
 """Tourism Dashboard data — loaded from Gold layer parquet with real time series."""
+
 from typing import Any, Dict, List
 import pandas as pd
 
@@ -8,17 +9,34 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 NZ_REGIONS = [
-    "Northland", "Auckland", "Waikato", "Bay of Plenty", "Gisborne",
-    "Hawke's Bay", "Taranaki", "Manawatu-Wanganui", "Wellington",
-    "Tasman", "Nelson", "Marlborough", "West Coast", "Canterbury",
-    "Otago", "Southland",
+    "Northland",
+    "Auckland",
+    "Waikato",
+    "Bay of Plenty",
+    "Gisborne",
+    "Hawke's Bay",
+    "Taranaki",
+    "Manawatu-Wanganui",
+    "Wellington",
+    "Tasman",
+    "Nelson",
+    "Marlborough",
+    "West Coast",
+    "Canterbury",
+    "Otago",
+    "Southland",
 ]
 
 
-def _get_silver_timeseries(feature_name: str, col: str, last_n: int = 12) -> List[float]:
+def _get_silver_timeseries(
+    feature_name: str, col: str, last_n: int = 12
+) -> List[float]:
     try:
         import os
-        silver_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data_pipeline", "silver")
+
+        silver_dir = os.path.join(
+            os.path.dirname(__file__), "..", "..", "data_pipeline", "silver"
+        )
         fp = os.path.join(silver_dir, f"{feature_name}_features.parquet")
         if os.path.exists(fp):
             df = pd.read_parquet(fp)
@@ -56,10 +74,25 @@ def load_tourism_data() -> Dict[str, Any]:
     visitor_dom_corr = _get_val("Visitors × DOM Correlation", -0.3)
 
     # Real time series from Silver
-    tourism_ts = _get_silver_timeseries("tourism_pressure", "tourism_expenditure_millions", 12)
+    tourism_ts = _get_silver_timeseries(
+        "tourism_pressure", "tourism_expenditure_millions", 12
+    )
     rent_ts = _get_silver_timeseries("rent_income_ratio", "weekly_rent", 12)
 
-    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ]
 
     hero_kpis = {
         "pressure": {
@@ -67,14 +100,18 @@ def load_tourism_data() -> Dict[str, Any]:
             "trend": "up" if tour_pressure > 50 else "down",
             "change": 3.2,
             "sparkline": tourism_ts[:12] if tourism_ts else None,
-            "by_region": {r: tour_pressure + (i - 8) * 5 for i, r in enumerate(NZ_REGIONS)},
+            "by_region": {
+                r: tour_pressure + (i - 8) * 5 for i, r in enumerate(NZ_REGIONS)
+            },
         },
         "airbnb_share": {
             "value": airbnb_share,
             "trend": "up",
             "change": 2.1,
             "sparkline": None,
-            "by_region": {r: airbnb_share + (i - 8) * 2 for i, r in enumerate(NZ_REGIONS)},
+            "by_region": {
+                r: airbnb_share + (i - 8) * 2 for i, r in enumerate(NZ_REGIONS)
+            },
         },
         "rent_lag": {
             "value": rent_lag,
@@ -90,15 +127,21 @@ def load_tourism_data() -> Dict[str, Any]:
         "correlation": {
             "value": visitor_dom_corr,
             "trend": "negative",
-            "strength": "Strong" if abs(visitor_dom_corr) > 0.5 else ("Moderate" if abs(visitor_dom_corr) > 0.3 else "Weak"),
-            "by_region": {r: visitor_dom_corr + (i - 8) * 0.05 for i, r in enumerate(NZ_REGIONS)},
+            "strength": "Strong"
+            if abs(visitor_dom_corr) > 0.5
+            else ("Moderate" if abs(visitor_dom_corr) > 0.3 else "Weak"),
+            "by_region": {
+                r: visitor_dom_corr + (i - 8) * 0.05 for i, r in enumerate(NZ_REGIONS)
+            },
         },
     }
 
     chart_data = {
         "dual_axis": {
             "months": months,
-            "visitors": tourism_ts if tourism_ts else [30000 + i * 2000 for i in range(12)],
+            "visitors": tourism_ts
+            if tourism_ts
+            else [30000 + i * 2000 for i in range(12)],
             "rent": rent_ts if rent_ts else [500 + i * 15 for i in range(12)],
         },
         "seasonality_lines": {
@@ -107,9 +150,17 @@ def load_tourism_data() -> Dict[str, Any]:
             "China": [80, 70, 60, 55, 50, 60, 80, 100, 120, 130, 125, 110],
             "USA": [90, 85, 80, 75, 70, 75, 85, 95, 105, 110, 105, 95],
         },
-        "airbnb_bar": [{"region": r, "airbnb_pct": airbnb_share + (i - 8) * 2} for i, r in enumerate(NZ_REGIONS)],
+        "airbnb_bar": [
+            {"region": r, "airbnb_pct": airbnb_share + (i - 8) * 2}
+            for i, r in enumerate(NZ_REGIONS)
+        ],
         "scatter": [
-            {"region": r, "visitors": 30000 + i * 3000, "dom": 45 - i * 2, "pressure": tour_pressure + (i - 8) * 5}
+            {
+                "region": r,
+                "visitors": 30000 + i * 3000,
+                "dom": 45 - i * 2,
+                "pressure": tour_pressure + (i - 8) * 5,
+            }
             for i, r in enumerate(NZ_REGIONS)
         ],
         "lag": {
@@ -118,7 +169,10 @@ def load_tourism_data() -> Dict[str, Any]:
             "rent_increase_month": "May",
         },
         "heatmap": {
-            "z": [[(tour_pressure + i * 2 + j) % 100 for j in range(12)] for i in range(len(NZ_REGIONS))],
+            "z": [
+                [(tour_pressure + i * 2 + j) % 100 for j in range(12)]
+                for i in range(len(NZ_REGIONS))
+            ],
             "months": months,
         },
     }

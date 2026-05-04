@@ -1,4 +1,3 @@
-
 """Choropleth map component for NZ regions using Plotly."""
 
 import json
@@ -31,16 +30,15 @@ NAME_MAPPING = {
 
 def _load_nz_geojson() -> Dict[str, Any]:
     """Load and normalize NZ regions GeoJSON from app/assets/nz.json."""
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    base_dir = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
     geojson_path = os.path.join(base_dir, "app", "assets", "nz.json")
 
     with open(geojson_path, encoding="utf-8") as f:
         geojson = json.load(f)
 
-    normalized = {
-        "type": "FeatureCollection",
-        "features": []
-    }
+    normalized = {"type": "FeatureCollection", "features": []}
 
     for feat in geojson["features"]:
         original_name = feat["properties"]["name"]

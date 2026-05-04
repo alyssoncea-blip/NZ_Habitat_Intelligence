@@ -1,7 +1,7 @@
-﻿"""Unit tests for bronze layer ingestors."""
+"""Unit tests for bronze layer ingestors."""
+
 import tempfile
 from pathlib import Path
-
 
 
 class TestWorldBankIngestor:
@@ -10,6 +10,7 @@ class TestWorldBankIngestor:
     def test_ingestor_initialization(self):
         """Test that WorldBankIngestor can be initialized."""
         from data_pipeline.bronze.ingestors.world_bank_ingestor import WorldBankIngestor
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ingestor = WorldBankIngestor(tmpdir)
             assert ingestor is not None
@@ -18,6 +19,7 @@ class TestWorldBankIngestor:
     def test_ingestor_has_required_methods(self):
         """Test that ingestor has required methods."""
         from data_pipeline.bronze.ingestors.world_bank_ingestor import WorldBankIngestor
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ingestor = WorldBankIngestor(tmpdir)
             assert hasattr(ingestor, "run_ingestion")
@@ -30,6 +32,7 @@ class TestRBNZIngestor:
     def test_ingestor_initialization(self):
         """Test that RBNZIngestor can be initialized."""
         from data_pipeline.bronze.ingestors.rbnz_ingestor import RBNZIngestor
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ingestor = RBNZIngestor(tmpdir)
             assert ingestor is not None
@@ -37,6 +40,7 @@ class TestRBNZIngestor:
     def test_ingestor_has_required_methods(self):
         """Test that ingestor has required methods."""
         from data_pipeline.bronze.ingestors.rbnz_ingestor import RBNZIngestor
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ingestor = RBNZIngestor(tmpdir)
             assert hasattr(ingestor, "run_ingestion")
@@ -48,6 +52,7 @@ class TestStatsNZIngestor:
     def test_ingestor_initialization(self):
         """Test that StatsNZIngestor can be initialized."""
         from data_pipeline.bronze.ingestors.stats_nz_ingestor import StatsNZIngestor
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ingestor = StatsNZIngestor(tmpdir)
             assert ingestor is not None
@@ -59,6 +64,7 @@ class TestMBIEIngestor:
     def test_ingestor_initialization(self):
         """Test that MBIEIngestor can be initialized."""
         from data_pipeline.bronze.ingestors.mbie_tourism_ingestor import MBIEIngestor
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ingestor = MBIEIngestor(tmpdir)
             assert ingestor is not None
@@ -70,6 +76,7 @@ class TestLINZIngestor:
     def test_ingestor_initialization(self):
         """Test that LINZIngestor can be initialized."""
         from data_pipeline.bronze.ingestors.linz_ingestor import LINZIngestor
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ingestor = LINZIngestor(tmpdir)
             assert ingestor is not None
@@ -81,6 +88,7 @@ class TestREINZIngestor:
     def test_ingestor_initialization(self):
         """Test that REINZIngestor can be initialized."""
         from data_pipeline.bronze.ingestors.reinz_ingestor import REINZIngestor
+
         with tempfile.TemporaryDirectory() as tmpdir:
             ingestor = REINZIngestor(tmpdir)
             assert ingestor is not None
@@ -92,6 +100,7 @@ class TestBronzeOrchestrator:
     def test_orchestrator_initialization(self):
         """Test that BronzeOrchestrator can be initialized."""
         from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator
+
         with tempfile.TemporaryDirectory() as tmpdir:
             orchestrator = BronzeOrchestrator(data_dir=tmpdir)
             assert orchestrator is not None
@@ -100,6 +109,7 @@ class TestBronzeOrchestrator:
     def test_orchestrator_has_ingestors(self):
         """Test that orchestrator has ingestors dictionary."""
         from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator
+
         with tempfile.TemporaryDirectory() as tmpdir:
             orchestrator = BronzeOrchestrator(data_dir=tmpdir)
             assert hasattr(orchestrator, "ingestors")
@@ -108,6 +118,7 @@ class TestBronzeOrchestrator:
     def test_orchestrator_has_schedule(self):
         """Test that orchestrator has schedule configuration."""
         from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator
+
         with tempfile.TemporaryDirectory() as tmpdir:
             orchestrator = BronzeOrchestrator(data_dir=tmpdir)
             assert hasattr(orchestrator, "schedule")
@@ -118,6 +129,7 @@ class TestBronzeOrchestrator:
     def test_orchestrator_cache_operations(self):
         """Test cache load and save operations."""
         from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator
+
         with tempfile.TemporaryDirectory() as tmpdir:
             orchestrator = BronzeOrchestrator(data_dir=tmpdir)
             orchestrator._cache = {"test": {"cached_at": "2026-01-01", "data": {}}}
@@ -129,6 +141,7 @@ class TestBronzeOrchestrator:
     def test_orchestrator_check_data_freshness(self):
         """Test data freshness check."""
         from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator
+
         with tempfile.TemporaryDirectory() as tmpdir:
             orchestrator = BronzeOrchestrator(data_dir=tmpdir)
             freshness = orchestrator.check_data_freshness()

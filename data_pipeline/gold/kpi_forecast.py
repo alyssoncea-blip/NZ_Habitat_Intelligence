@@ -3,6 +3,7 @@
 Calculates 12-month price forecast, confidence intervals, OCR/tourism scenario
 impacts, trend decomposition, divergence alert, and model confidence.
 """
+
 import logging
 
 import numpy as np
@@ -24,7 +25,11 @@ class ForecastKPICalculator(KPIBaseCalculator):
         ocr = self._get_ocr_current()
         regional = self._get_regional_data()
 
-        prices = [self._estimate_median_price(r, regional) for r in NZ_REGIONS if r in regional]
+        prices = [
+            self._estimate_median_price(r, regional)
+            for r in NZ_REGIONS
+            if r in regional
+        ]
         median_price = float(np.median(prices)) if prices else 650000
 
         forecast_12m = round(median_price * (1 + gdp_yoy / 100), 0)
@@ -44,47 +49,114 @@ class ForecastKPICalculator(KPIBaseCalculator):
 
         divergence = round(abs(gdp_yoy - 2.0) * 3 + macro_vol * 0.1, 1)
 
-        confidence = round(max(40, min(90, 80 - macro_vol * 0.3 - abs(gdp_yoy - 2.0) * 5)), 0)
+        confidence = round(
+            max(40, min(90, 80 - macro_vol * 0.3 - abs(gdp_yoy - 2.0) * 5)), 0
+        )
 
         rows = [
-            {"name": "12-Month Price Forecast", "value": float(forecast_12m),
-             "unit": "NZD", "description": "Projected median price in 12 months (GDP-based)",
-             "category": "Forecast", "source": "GDP growth linear regression"},
-            {"name": "Current Median Price", "value": round(median_price, 0),
-             "unit": "NZD", "description": "Current national median house price",
-             "category": "Forecast", "source": "Stats NZ income x price-to-income ratio"},
-            {"name": "Forecast Growth", "value": round(gdp_yoy, 1),
-             "unit": "%", "description": "Expected annual price growth",
-             "category": "Forecast", "source": "World Bank GDP per capita YoY"},
-            {"name": "Confidence 80% Lower", "value": round(forecast_12m - ci_80_w, 0),
-             "unit": "NZD", "description": "80% confidence interval lower bound",
-             "category": "Forecast", "source": "Macroeconomic volatility"},
-            {"name": "Confidence 80% Upper", "value": round(forecast_12m + ci_80_w, 0),
-             "unit": "NZD", "description": "80% confidence interval upper bound",
-             "category": "Forecast", "source": "Macroeconomic volatility"},
-            {"name": "Confidence 95% Lower", "value": round(forecast_12m - ci_95_w, 0),
-             "unit": "NZD", "description": "95% confidence interval lower bound",
-             "category": "Forecast", "source": "Macroeconomic volatility"},
-            {"name": "Confidence 95% Upper", "value": round(forecast_12m + ci_95_w, 0),
-             "unit": "NZD", "description": "95% confidence interval upper bound",
-             "category": "Forecast", "source": "Macroeconomic volatility"},
-            {"name": "OCR +0.5% Price Impact", "value": ocr_impact,
-             "unit": "%", "description": "Estimated price impact of 50bps OCR increase",
-             "category": "Forecast", "source": "OCR elasticity model"},
-            {"name": "Tourism +20% DOM Impact", "value": float(tourism_dom_impact),
-             "unit": "days", "description": "Expected DOM after 20% tourism increase",
-             "category": "Forecast", "source": "Tourism-DOM elasticity model"},
-            {"name": "Trend Component", "value": trend_component,
-             "unit": "%", "description": "GDP-based trend component",
-             "category": "Forecast", "source": "GDP growth decomposition"},
-            {"name": "Seasonal Component", "value": seasonal_component,
-             "unit": "%", "description": "NZ housing seasonal adjustment",
-             "category": "Forecast", "source": "Historical seasonal pattern"},
-            {"name": "Divergence Alert Score", "value": divergence,
-             "unit": "pts", "description": "Model divergence alert (higher = more risk)",
-             "category": "Forecast", "source": "GDP + volatility divergence"},
-            {"name": "Model Confidence Score", "value": float(confidence),
-             "unit": "/100", "description": "Overall model confidence",
-             "category": "Forecast", "source": "Volatility + GDP stability"},
+            {
+                "name": "12-Month Price Forecast",
+                "value": float(forecast_12m),
+                "unit": "NZD",
+                "description": "Projected median price in 12 months (GDP-based)",
+                "category": "Forecast",
+                "source": "GDP growth linear regression",
+            },
+            {
+                "name": "Current Median Price",
+                "value": round(median_price, 0),
+                "unit": "NZD",
+                "description": "Current national median house price",
+                "category": "Forecast",
+                "source": "Stats NZ income x price-to-income ratio",
+            },
+            {
+                "name": "Forecast Growth",
+                "value": round(gdp_yoy, 1),
+                "unit": "%",
+                "description": "Expected annual price growth",
+                "category": "Forecast",
+                "source": "World Bank GDP per capita YoY",
+            },
+            {
+                "name": "Confidence 80% Lower",
+                "value": round(forecast_12m - ci_80_w, 0),
+                "unit": "NZD",
+                "description": "80% confidence interval lower bound",
+                "category": "Forecast",
+                "source": "Macroeconomic volatility",
+            },
+            {
+                "name": "Confidence 80% Upper",
+                "value": round(forecast_12m + ci_80_w, 0),
+                "unit": "NZD",
+                "description": "80% confidence interval upper bound",
+                "category": "Forecast",
+                "source": "Macroeconomic volatility",
+            },
+            {
+                "name": "Confidence 95% Lower",
+                "value": round(forecast_12m - ci_95_w, 0),
+                "unit": "NZD",
+                "description": "95% confidence interval lower bound",
+                "category": "Forecast",
+                "source": "Macroeconomic volatility",
+            },
+            {
+                "name": "Confidence 95% Upper",
+                "value": round(forecast_12m + ci_95_w, 0),
+                "unit": "NZD",
+                "description": "95% confidence interval upper bound",
+                "category": "Forecast",
+                "source": "Macroeconomic volatility",
+            },
+            {
+                "name": "OCR +0.5% Price Impact",
+                "value": ocr_impact,
+                "unit": "%",
+                "description": "Estimated price impact of 50bps OCR increase",
+                "category": "Forecast",
+                "source": "OCR elasticity model",
+            },
+            {
+                "name": "Tourism +20% DOM Impact",
+                "value": float(tourism_dom_impact),
+                "unit": "days",
+                "description": "Expected DOM after 20% tourism increase",
+                "category": "Forecast",
+                "source": "Tourism-DOM elasticity model",
+            },
+            {
+                "name": "Trend Component",
+                "value": trend_component,
+                "unit": "%",
+                "description": "GDP-based trend component",
+                "category": "Forecast",
+                "source": "GDP growth decomposition",
+            },
+            {
+                "name": "Seasonal Component",
+                "value": seasonal_component,
+                "unit": "%",
+                "description": "NZ housing seasonal adjustment",
+                "category": "Forecast",
+                "source": "Historical seasonal pattern",
+            },
+            {
+                "name": "Divergence Alert Score",
+                "value": divergence,
+                "unit": "pts",
+                "description": "Model divergence alert (higher = more risk)",
+                "category": "Forecast",
+                "source": "GDP + volatility divergence",
+            },
+            {
+                "name": "Model Confidence Score",
+                "value": float(confidence),
+                "unit": "/100",
+                "description": "Overall model confidence",
+                "category": "Forecast",
+                "source": "Volatility + GDP stability",
+            },
         ]
         return pd.DataFrame(rows)

@@ -3,6 +3,7 @@
 Uses the official Great Expectations library (v1.17+) for data validation
 with proper DataContext, ExpectationSuites, and Checkpoints.
 """
+
 import json
 import logging
 import sys
@@ -34,6 +35,7 @@ class NZHabitatValidator:
         self._context = None
         try:
             import great_expectations as gx
+
             try:
                 self._context = gx.get_context(
                     project_root_dir=str(self.project_root),
@@ -44,7 +46,9 @@ class NZHabitatValidator:
             self._use_real_ge = True
             logger.info("Great Expectations context initialized successfully")
         except Exception as e:
-            logger.warning("Could not initialize GE context, using custom validator: %s", e)
+            logger.warning(
+                "Could not initialize GE context, using custom validator: %s", e
+            )
 
     def _ensure_expectation_suite(self, suite_name: str) -> Optional[Any]:
         """Ensure an expectation suite exists in GE context."""
@@ -150,7 +154,9 @@ class NZHabitatValidator:
             return validation_result
 
         except Exception as e:
-            logger.warning("GE validation error for %s, falling back to custom: %s", file_path, e)
+            logger.warning(
+                "GE validation error for %s, falling back to custom: %s", file_path, e
+            )
             return self._validate_custom(file_path, suite_name, file_type)
 
     def _validate_custom(
@@ -247,11 +253,19 @@ class NZHabitatValidator:
                     return False
                 dtype = str(df[col].dtype)
                 type_mapping = {
-                    "int": "int", "int64": "int", "int32": "int",
-                    "float": "float", "float64": "float", "float32": "float",
-                    "str": "object", "string": "object", "object": "object",
-                    "bool": "bool", "boolean": "bool",
-                    "datetime": "datetime", "datetime64": "datetime",
+                    "int": "int",
+                    "int64": "int",
+                    "int32": "int",
+                    "float": "float",
+                    "float64": "float",
+                    "float32": "float",
+                    "str": "object",
+                    "string": "object",
+                    "object": "object",
+                    "bool": "bool",
+                    "boolean": "bool",
+                    "datetime": "datetime",
+                    "datetime64": "datetime",
                 }
                 actual_type = type_mapping.get(dtype.lower(), dtype.lower())
                 expected_type = type_mapping.get(type_str.lower(), type_str.lower())

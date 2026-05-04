@@ -2,6 +2,7 @@
 Data loader for dashboard KPI files.
 Interface with Gold parquet outputs.
 """
+
 import json
 import os
 from datetime import datetime
@@ -119,7 +120,9 @@ class DataLoader:
         normalized = df.copy()
 
         if "name" not in normalized.columns:
-            normalized["name"] = [f"{dashboard_name.title()} KPI {i + 1}" for i in range(len(normalized))]
+            normalized["name"] = [
+                f"{dashboard_name.title()} KPI {i + 1}" for i in range(len(normalized))
+            ]
         if "value" not in normalized.columns:
             normalized["value"] = None
         if "unit" not in normalized.columns:
@@ -247,9 +250,13 @@ class DataLoader:
 
             updated_at = None
             if loaded_file and os.path.exists(loaded_file):
-                updated_at = datetime.fromtimestamp(os.path.getmtime(loaded_file)).isoformat()
+                updated_at = datetime.fromtimestamp(
+                    os.path.getmtime(loaded_file)
+                ).isoformat()
 
-            contract = self._load_contract_for_file(loaded_file) if loaded_file else None
+            contract = (
+                self._load_contract_for_file(loaded_file) if loaded_file else None
+            )
 
             data_source = "unknown"
             confidence = 50
@@ -286,111 +293,117 @@ class DataLoader:
         """Load data contract JSON for a parquet file."""
         if not filepath or not os.path.exists(filepath):
             return None
-        
-        contract_path = str(Path(filepath).with_suffix('.contract.json'))
+
+        contract_path = str(Path(filepath).with_suffix(".contract.json"))
         if not os.path.exists(contract_path):
             return None
-        
+
         try:
-            with open(contract_path, 'r', encoding='utf-8') as f:
+            with open(contract_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
             logger.warning(f"Could not load contract {contract_path}: {e}")
             return None
 
-    def _is_trusted(self, contract: Dict[str, Any], min_confidence: float = 70.0) -> bool:
+    def _is_trusted(
+        self, contract: Dict[str, Any], min_confidence: float = 70.0
+    ) -> bool:
         """Check if data meets trust threshold based on contract."""
         if not contract:
             return False
-        
+
         confidence = contract.get("confidence_score", 0)
         source = contract.get("source", "")
-        
+
         # Trust only if confidence is high AND source is real
         if source in ["real", "REAL"]:
             return confidence >= min_confidence
-        
+
         return False
 
     def get_data_quality_warnings(self) -> List[Dict[str, Any]]:
         """Get warnings for all dashboards with untrusted data.
-        
+
         Returns:
             List of warning dicts with dashboard, reason, and confidence.
         """
         warnings = []
         summary = self.get_dashboard_summary()
-        
+
         for dashboard, info in summary.items():
             if not info.get("is_trusted", False) and info.get("status") == "loaded":
                 reason = "low_confidence"
                 if info.get("data_source") in ["FALLBACK", "SYNTHETIC"]:
                     reason = f"data_source_{info['data_source'].lower()}"
-                
-                warnings.append({
-                    "dashboard": dashboard,
-                    "reason": reason,
-                    "confidence": info.get("confidence", 0),
-                    "data_source": info.get("data_source", "unknown"),
-                    "message": (
-                        f"⚠️ {dashboard}: Data is from {info.get('data_source', 'unknown')} "
-                        f"(confidence: {info.get('confidence', 0):.0f}%)"
-                    )
-                })
-        
+
+                warnings.append(
+                    {
+                        "dashboard": dashboard,
+                        "reason": reason,
+                        "confidence": info.get("confidence", 0),
+                        "data_source": info.get("data_source", "unknown"),
+                        "message": (
+                            f"⚠️ {dashboard}: Data is from {info.get('data_source', 'unknown')} "
+                            f"(confidence: {info.get('confidence', 0):.0f}%)"
+                        ),
+                    }
+                )
+
         return warnings
 
-    def load_kpis_with_confidence(self, dashboard_name: str) -> Tuple[Optional[pd.DataFrame], Optional[Dict[str, Any]]]:
+    def load_kpis_with_confidence(
+        self, dashboard_name: str
+    ) -> Tuple[Optional[pd.DataFrame], Optional[Dict[str, Any]]]:
         """Load KPIs along with their data contract.
-        
+
         Args:
             dashboard_name: Dashboard key
-            
+
         Returns:
             Tuple of (DataFrame, contract dict or None)
         """
         df = self.load_kpis_for_dashboard(dashboard_name)
         if df is None:
             return None, None
-        
+
         loaded_file = self.last_loaded_file.get(dashboard_name)
         contract = self._load_contract_for_file(loaded_file) if loaded_file else None
-        
+
         return df, contract
 
     def filter_trusted_kpis(self, min_confidence: float = 70.0) -> pd.DataFrame:
         """Load all KPIs but only include rows from trusted sources.
-        
+
         Args:
             min_confidence: Minimum confidence score to be considered trusted
-            
+
         Returns:
             DataFrame with only trusted KPI data
         """
         all_kpis = self.load_all_kpis()
         if all_kpis.empty:
             return all_kpis
-        
+
         # If DataFrame has data_source column, use it
         if "data_source" in all_kpis.columns:
             trusted_sources = ["World Bank", "REAL"]
             return all_kpis[all_kpis["data_source"].isin(trusted_sources)].copy()
-        
+
         return all_kpis
 
     def get_data_source_summary(self) -> Dict[str, int]:
         """Get count of KPIs by data source across all dashboards.
-        
+
         Returns:
             Dict mapping source name to count
         """
         all_kpis = self.load_all_kpis()
         if all_kpis.empty:
             return {}
-        
+
         if "data_source" not in all_kpis.columns:
             return {"unknown": len(all_kpis)}
-        
+
         return all_kpis["data_source"].value_counts().to_dict()
 
 

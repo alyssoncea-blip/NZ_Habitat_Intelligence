@@ -9,6 +9,7 @@ Each dashboard has its own calculator class in a separate file:
 - kpi_affordability.py
 - kpi_forecast.py
 """
+
 import json
 import logging
 from datetime import datetime
@@ -17,7 +18,8 @@ from typing import Dict
 import pandas as pd
 
 from data_pipeline.utils.data_contract import (
-    DataSource, save_dataframe_with_contract,
+    DataSource,
+    save_dataframe_with_contract,
 )
 from .kpi_base import KPIBaseCalculator
 from .kpi_executive import ExecutiveKPICalculator
@@ -73,7 +75,10 @@ class KPICalculator(KPIBaseCalculator):
                 gold_dir=str(self.gold_dir),
                 bronze_dir=str(self.bronze_dir),
             ).calc()
-        if "dashboard_05_affordability" not in kpis or kpis["dashboard_05_affordability"].empty:
+        if (
+            "dashboard_05_affordability" not in kpis
+            or kpis["dashboard_05_affordability"].empty
+        ):
             kpis["dashboard_05_affordability"] = AffordabilityKPICalculator(
                 silver_dir=str(self.silver_dir),
                 gold_dir=str(self.gold_dir),
@@ -165,8 +170,11 @@ class KPICalculator(KPIBaseCalculator):
             out = str(self.gold_dir / f"kpis-{clean}_complete")
             try:
                 save_dataframe_with_contract(
-                    df=df, path=out, artifact_name=f"kpis-{clean}",
-                    layer="gold", source=DataSource.REAL,
+                    df=df,
+                    path=out,
+                    artifact_name=f"kpis-{clean}",
+                    layer="gold",
+                    source=DataSource.REAL,
                     source_name="silver_bronze_real_data",
                     notes="Calculated from real Silver/Bronze data (World Bank, Stats NZ, RBNZ, MBIE)",
                 )
@@ -185,12 +193,19 @@ class KPICalculator(KPIBaseCalculator):
         with open(self.gold_dir / "kpis_metadata_complete.json", "w") as f:
             json.dump(meta, f, indent=2, default=str)
 
-        logger.info("All KPIs calculated and saved. Total: %d KPI records", meta["total_kpis"])
+        logger.info(
+            "All KPIs calculated and saved. Total: %d KPI records", meta["total_kpis"]
+        )
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     calc = KPICalculator()
     kpis = calc.calculate_all()
-    print(f"\nGold layer complete: {len(kpis)} dashboards, "
-          f"{sum(len(df) for df in kpis.values())} total KPI records")
+    print(
+        f"\nGold layer complete: {len(kpis)} dashboards, "
+        f"{sum(len(df) for df in kpis.values())} total KPI records"
+    )

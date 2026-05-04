@@ -1,4 +1,5 @@
 """Main daily pipeline flow for NZ Habitat Intelligence."""
+
 import logging
 import sys
 from datetime import datetime
@@ -78,13 +79,17 @@ def run_daily_pipeline(force_refresh: bool = False) -> dict:
         ingest_reinz.submit(force_refresh=force_refresh),
     ]
     bronze_results = [f.result() for f in bronze_futures]
-    bronze_success = all(r.get("result", {}).get("success", False) for r in bronze_results)
+    bronze_success = all(
+        r.get("result", {}).get("success", False) for r in bronze_results
+    )
     results["stages"]["bronze"] = {
         "success": bronze_success,
         "sources": [r["source"] for r in bronze_results],
         "details": bronze_results,
     }
-    run_logger.info("Bronze stage: %s", "SUCCESS" if bronze_success else "PARTIAL/FAILED")
+    run_logger.info(
+        "Bronze stage: %s", "SUCCESS" if bronze_success else "PARTIAL/FAILED"
+    )
 
     if not bronze_success:
         run_logger.warning("Some bronze ingestors failed, continuing pipeline...")
@@ -119,11 +124,13 @@ def run_daily_pipeline(force_refresh: bool = False) -> dict:
     run_result = dbt_run_task.submit(wait_for=[seed_result]).result()
     test_result = dbt_test_task.submit(wait_for=[run_result]).result()
 
-    dbt_success = all([
-        seed_result.get("success", False),
-        run_result.get("success", False),
-        test_result.get("success", False),
-    ])
+    dbt_success = all(
+        [
+            seed_result.get("success", False),
+            run_result.get("success", False),
+            test_result.get("success", False),
+        ]
+    )
     results["stages"]["dbt"] = {
         "success": dbt_success,
         "seed": seed_result,
@@ -149,19 +156,23 @@ def run_daily_pipeline(force_refresh: bool = False) -> dict:
 
     # ── Overall result ────────────────────────────────────────────────
     results["end_time"] = datetime.now().isoformat()
-    results["overall_success"] = all([
-        bronze_success,
-        silver_success,
-        dbt_success,
-        ge_success,
-    ])
+    results["overall_success"] = all(
+        [
+            bronze_success,
+            silver_success,
+            dbt_success,
+            ge_success,
+        ]
+    )
 
     run_logger.info("=" * 60)
     run_logger.info("PIPELINE COMPLETE")
     for stage, result in results["stages"].items():
         status = "SUCCESS" if result.get("success") else "FAILED"
         run_logger.info("  %s: %s", stage, status)
-    run_logger.info("Overall: %s", "SUCCESS" if results["overall_success"] else "FAILED")
+    run_logger.info(
+        "Overall: %s", "SUCCESS" if results["overall_success"] else "FAILED"
+    )
     run_logger.info("=" * 60)
 
     return results
@@ -171,7 +182,9 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="NZ Habitat Daily Pipeline (Prefect)")
-    parser.add_argument("--force", action="store_true", help="Force refresh bronze data")
+    parser.add_argument(
+        "--force", action="store_true", help="Force refresh bronze data"
+    )
     args = parser.parse_args()
 
     result = run_daily_pipeline(force_refresh=args.force)

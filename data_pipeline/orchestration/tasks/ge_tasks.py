@@ -1,4 +1,5 @@
 """Great Expectations validation tasks for Prefect orchestration."""
+
 import logging
 import sys
 from datetime import datetime
@@ -31,7 +32,13 @@ def validate_bronze_layer() -> dict:
     passed = sum(1 for r in results if r.get("success"))
     total = len(results)
     print(f"Bronze validation: {passed}/{total} passed")
-    return {"layer": "bronze", "passed": passed, "total": total, "success": passed == total, "details": results}
+    return {
+        "layer": "bronze",
+        "passed": passed,
+        "total": total,
+        "success": passed == total,
+        "details": results,
+    }
 
 
 @task(
@@ -48,7 +55,13 @@ def validate_silver_layer() -> dict:
     passed = sum(1 for r in results if r.get("success"))
     total = len(results)
     print(f"Silver validation: {passed}/{total} passed")
-    return {"layer": "silver", "passed": passed, "total": total, "success": passed == total, "details": results}
+    return {
+        "layer": "silver",
+        "passed": passed,
+        "total": total,
+        "success": passed == total,
+        "details": results,
+    }
 
 
 @task(
@@ -65,4 +78,10 @@ def validate_gold_layer() -> dict:
     passed = sum(1 for r in results if r.get("success"))
     total = len(results)
     print(f"Gold validation: {passed}/{total} passed")
-    return {"layer": "gold", "passed": passed, "total": total, "success": passed == total, "details": results}
+    return {
+        "layer": "gold",
+        "passed": passed,
+        "total": total,
+        "success": passed == total,
+        "details": results,
+    }

@@ -3,6 +3,7 @@
 Generates an HTML report with charts showing validation status,
 expectation pass/fail rates, and data quality trends across pipeline layers.
 """
+
 import json
 import logging
 import os
@@ -13,7 +14,9 @@ from typing import Any, Dict, List
 logger = logging.getLogger(__name__)
 
 
-def load_validation_results(validations_dir: str = "great_expectations/validations") -> List[Dict[str, Any]]:
+def load_validation_results(
+    validations_dir: str = "great_expectations/validations",
+) -> List[Dict[str, Any]]:
     """Load all validation result JSON files.
 
     Args:
@@ -73,7 +76,9 @@ def summarize_validations(results: List[Dict[str, Any]]) -> Dict[str, Any]:
 
         # Extract layer from result meta
         meta = result.get("meta", {})
-        layer = meta.get("data_asset_name", meta.get("expectation_suite_name", "unknown"))
+        layer = meta.get(
+            "data_asset_name", meta.get("expectation_suite_name", "unknown")
+        )
         if "/" in layer:
             layer = layer.split("/")[0]
         if "." in layer:
@@ -81,7 +86,10 @@ def summarize_validations(results: List[Dict[str, Any]]) -> Dict[str, Any]:
 
         if layer not in summary["layers"]:
             summary["layers"][layer] = {
-                "total": 0, "passed": 0, "failed": 0, "success": True,
+                "total": 0,
+                "passed": 0,
+                "failed": 0,
+                "success": True,
                 "validations": [],
             }
 
@@ -90,16 +98,22 @@ def summarize_validations(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         summary["layers"][layer]["failed"] += n_failed
         if not success:
             summary["layers"][layer]["success"] = False
-        summary["layers"][layer]["validations"].append({
-            "timestamp": result.get("meta", {}).get("run_id", {}).get("run_time", ""),
-            "success": success,
-            "evaluated": n_evaluated,
-            "successful": n_successful,
-        })
+        summary["layers"][layer]["validations"].append(
+            {
+                "timestamp": result.get("meta", {})
+                .get("run_id", {})
+                .get("run_time", ""),
+                "success": success,
+                "evaluated": n_evaluated,
+                "successful": n_successful,
+            }
+        )
 
         # Track latest by layer
         ts = result.get("meta", {}).get("run_id", {}).get("run_time", "")
-        if layer not in summary["latest_by_layer"] or ts > summary["latest_by_layer"][layer].get("timestamp", ""):
+        if layer not in summary["latest_by_layer"] or ts > summary["latest_by_layer"][
+            layer
+        ].get("timestamp", ""):
             summary["latest_by_layer"][layer] = {
                 "timestamp": ts,
                 "success": success,
@@ -145,15 +159,17 @@ def generate_html_report(
 
     layer_rows = ""
     for layer, info in summary["layers"].items():
-        layer_rate = round(info["passed"] / info["total"] * 100, 1) if info["total"] > 0 else 0
+        layer_rate = (
+            round(info["passed"] / info["total"] * 100, 1) if info["total"] > 0 else 0
+        )
         status_icon = "PASS" if info["success"] else "FAIL"
         status_color = "#10b981" if info["success"] else "#ef4444"
         layer_rows += f"""
         <tr>
             <td class="layer-name">{layer}</td>
-            <td>{info['total']}</td>
-            <td style="color:#10b981">{info['passed']}</td>
-            <td style="color:{status_color}">{info['failed']}</td>
+            <td>{info["total"]}</td>
+            <td style="color:#10b981">{info["passed"]}</td>
+            <td style="color:{status_color}">{info["failed"]}</td>
             <td>
                 <div class="bar-bg">
                     <div class="bar-fill" style="width:{layer_rate}%;background:{status_color}"></div>
@@ -204,16 +220,16 @@ def generate_html_report(
             </div>
             <div class="card">
                 <div class="card-label">Total Expectations</div>
-                <div class="card-value">{summary['total_expectations']}</div>
-                <div class="card-sub">{summary['total_validations']} validations</div>
+                <div class="card-value">{summary["total_expectations"]}</div>
+                <div class="card-sub">{summary["total_validations"]} validations</div>
             </div>
             <div class="card">
                 <div class="card-label">Passed</div>
-                <div class="card-value" style="color:#10b981">{summary['passed_expectations']}</div>
+                <div class="card-value" style="color:#10b981">{summary["passed_expectations"]}</div>
             </div>
             <div class="card">
                 <div class="card-label">Failed</div>
-                <div class="card-value" style="color:#ef4444">{summary['failed_expectations']}</div>
+                <div class="card-value" style="color:#ef4444">{summary["failed_expectations"]}</div>
             </div>
         </div>
 
@@ -234,7 +250,7 @@ def generate_html_report(
         </table>
 
         <div class="footer">
-            Generated at {summary['generated_at']}
+            Generated at {summary["generated_at"]}
         </div>
     </div>
 </body>

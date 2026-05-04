@@ -2,6 +2,7 @@
 
 Shared data loading, helpers, and data accessors used by all dashboard KPI calculators.
 """
+
 import json
 import logging
 from datetime import datetime
@@ -14,19 +15,34 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 NZ_REGIONS = [
-    "Northland", "Auckland", "Waikato", "Bay of Plenty", "Gisborne",
-    "Hawke's Bay", "Taranaki", "Manawatu-Wanganui", "Wellington",
-    "Tasman", "Nelson", "Marlborough", "West Coast", "Canterbury",
-    "Otago", "Southland",
+    "Northland",
+    "Auckland",
+    "Waikato",
+    "Bay of Plenty",
+    "Gisborne",
+    "Hawke's Bay",
+    "Taranaki",
+    "Manawatu-Wanganui",
+    "Wellington",
+    "Tasman",
+    "Nelson",
+    "Marlborough",
+    "West Coast",
+    "Canterbury",
+    "Otago",
+    "Southland",
 ]
 
 
 class KPIBaseCalculator:
     """Base class providing shared data loading and helper methods."""
 
-    def __init__(self, silver_dir: str = "data_pipeline/silver",
-                 gold_dir: str = "data_pipeline/gold",
-                 bronze_dir: str = "data_pipeline/bronze"):
+    def __init__(
+        self,
+        silver_dir: str = "data_pipeline/silver",
+        gold_dir: str = "data_pipeline/gold",
+        bronze_dir: str = "data_pipeline/bronze",
+    ):
         self.silver_dir = Path(silver_dir)
         self.gold_dir = Path(gold_dir)
         self.bronze_dir = Path(bronze_dir)
@@ -83,7 +99,9 @@ class KPIBaseCalculator:
             return default
 
     @staticmethod
-    def _safe_latest(df: Optional[pd.DataFrame], col: str, default: float = 0.0) -> float:
+    def _safe_latest(
+        df: Optional[pd.DataFrame], col: str, default: float = 0.0
+    ) -> float:
         if df is None or df.empty or col not in df.columns:
             return default
         valid = df[col].dropna()
@@ -96,7 +114,12 @@ class KPIBaseCalculator:
         years = set()
         for df in features.values():
             if "year" in df.columns:
-                years.update(pd.to_numeric(df["year"], errors="coerce").dropna().astype(int).tolist())
+                years.update(
+                    pd.to_numeric(df["year"], errors="coerce")
+                    .dropna()
+                    .astype(int)
+                    .tolist()
+                )
         return max(years) if years else datetime.now().year
 
     def _get_ocr_current(self) -> float:
@@ -189,7 +212,11 @@ class KPIBaseCalculator:
 
         if "stats_nz_population" in self.bronze:
             pop = self.bronze["stats_nz_population"]
-            if "year" in pop.columns and "region" in pop.columns and "population" in pop.columns:
+            if (
+                "year" in pop.columns
+                and "region" in pop.columns
+                and "population" in pop.columns
+            ):
                 latest_year = pop["year"].max()
                 latest = pop[pop["year"] == latest_year]
                 for _, row in latest.iterrows():
@@ -200,7 +227,11 @@ class KPIBaseCalculator:
 
         if "stats_nz_income" in self.bronze:
             inc = self.bronze["stats_nz_income"]
-            if "year" in inc.columns and "region" in inc.columns and "median_income" in inc.columns:
+            if (
+                "year" in inc.columns
+                and "region" in inc.columns
+                and "median_income" in inc.columns
+            ):
                 latest_year = inc["year"].max()
                 latest = inc[inc["year"] == latest_year]
                 for _, row in latest.iterrows():
@@ -211,7 +242,11 @@ class KPIBaseCalculator:
 
         if "stats_nz_building_consents" in self.bronze:
             bc = self.bronze["stats_nz_building_consents"]
-            if "year" in bc.columns and "region" in bc.columns and "consents" in bc.columns:
+            if (
+                "year" in bc.columns
+                and "region" in bc.columns
+                and "consents" in bc.columns
+            ):
                 latest_year = bc["year"].max()
                 latest = bc[bc["year"] == latest_year]
                 for _, row in latest.iterrows():
@@ -222,7 +257,11 @@ class KPIBaseCalculator:
 
         if "mbie_rent_data" in self.bronze:
             rent = self.bronze["mbie_rent_data"]
-            if "year" in rent.columns and "region" in rent.columns and "median_weekly_rent_nzd" in rent.columns:
+            if (
+                "year" in rent.columns
+                and "region" in rent.columns
+                and "median_weekly_rent_nzd" in rent.columns
+            ):
                 latest_year = rent["year"].max()
                 latest = rent[rent["year"] == latest_year]
                 for _, row in latest.iterrows():
@@ -233,14 +272,20 @@ class KPIBaseCalculator:
 
         if "mbie_regional_tourism" in self.bronze:
             rt = self.bronze["mbie_regional_tourism"]
-            if "year" in rt.columns and "region" in rt.columns and "tourism_expenditure_nzd_millions" in rt.columns:
+            if (
+                "year" in rt.columns
+                and "region" in rt.columns
+                and "tourism_expenditure_nzd_millions" in rt.columns
+            ):
                 latest_year = rt["year"].max()
                 latest = rt[rt["year"] == latest_year]
                 for _, row in latest.iterrows():
                     r = row["region"]
                     if r not in regional:
                         regional[r] = {}
-                    regional[r]["tourism_expenditure_millions"] = float(row["tourism_expenditure_nzd_millions"])
+                    regional[r]["tourism_expenditure_millions"] = float(
+                        row["tourism_expenditure_nzd_millions"]
+                    )
 
         return regional
 

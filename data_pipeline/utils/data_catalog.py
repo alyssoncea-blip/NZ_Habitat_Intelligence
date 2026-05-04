@@ -11,6 +11,7 @@ single-team projects. It catalogs datasets with:
 - Freshness metrics
 - Quality scores
 """
+
 import json
 import logging
 import os
@@ -27,6 +28,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class DatasetEntry:
     """A single dataset entry in the catalog."""
+
     name: str
     layer: str  # bronze, silver, gold
     path: str
@@ -52,7 +54,9 @@ class DataCatalog:
         self.project_root = Path(project_root)
         self.entries: Dict[str, DatasetEntry] = {}
 
-    def scan_layer(self, layer: str, layer_dir: Optional[str] = None) -> List[DatasetEntry]:
+    def scan_layer(
+        self, layer: str, layer_dir: Optional[str] = None
+    ) -> List[DatasetEntry]:
         """Scan a pipeline layer and catalog all datasets.
 
         Args:
@@ -133,10 +137,14 @@ class DataCatalog:
             logger.warning("Failed to scan %s: %s", fp.name, e)
             return None
 
-    def _enrich_from_contract(self, entry: DatasetEntry, contract: Dict[str, Any]) -> None:
+    def _enrich_from_contract(
+        self, entry: DatasetEntry, contract: Dict[str, Any]
+    ) -> None:
         """Enrich a catalog entry with contract metadata."""
         entry.source = contract.get("source", entry.source)
-        entry.confidence_score = contract.get("confidence_score", entry.confidence_score)
+        entry.confidence_score = contract.get(
+            "confidence_score", entry.confidence_score
+        )
         entry.null_percentage = contract.get("null_percentage", entry.null_percentage)
         entry.description = contract.get("notes", entry.description)
 
@@ -166,9 +174,11 @@ class DataCatalog:
         for entry in self.entries.values():
             if layer and entry.layer != layer:
                 continue
-            if (query_lower in entry.name.lower() or
-                    query_lower in entry.description.lower() or
-                    any(query_lower in t.lower() for t in entry.tags)):
+            if (
+                query_lower in entry.name.lower()
+                or query_lower in entry.description.lower()
+                or any(query_lower in t.lower() for t in entry.tags)
+            ):
                 results.append(entry)
         return results
 
@@ -186,20 +196,24 @@ class DataCatalog:
         for parent_name in entry.parent_datasets:
             parent = self.entries.get(parent_name)
             if parent:
-                upstream.append({
-                    "name": parent.name,
-                    "layer": parent.layer,
-                    "confidence": parent.confidence_score,
-                })
+                upstream.append(
+                    {
+                        "name": parent.name,
+                        "layer": parent.layer,
+                        "confidence": parent.confidence_score,
+                    }
+                )
 
         downstream = []
         for name, other in self.entries.items():
             if dataset_name in other.parent_datasets:
-                downstream.append({
-                    "name": other.name,
-                    "layer": other.layer,
-                    "confidence": other.confidence_score,
-                })
+                downstream.append(
+                    {
+                        "name": other.name,
+                        "layer": other.layer,
+                        "confidence": other.confidence_score,
+                    }
+                )
 
         return {
             "dataset": dataset_name,
@@ -247,7 +261,9 @@ class DataCatalog:
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, default=str)
 
-        logger.info("Catalog exported to %s (%d datasets)", output_path, len(self.entries))
+        logger.info(
+            "Catalog exported to %s (%d datasets)", output_path, len(self.entries)
+        )
         return output_path
 
     def generate_report(self) -> str:
@@ -274,8 +290,12 @@ class DataCatalog:
                 status = "TRUSTED" if entry.confidence_score >= 70 else "UNTRUSTED"
                 lines.append(f"  [{status}] {entry.name}")
                 lines.append(f"    Path: {entry.path}")
-                lines.append(f"    Format: {entry.format} | Rows: {entry.row_count:,} | Columns: {entry.column_count}")
-                lines.append(f"    Source: {entry.source} | Confidence: {entry.confidence_score:.0f}%")
+                lines.append(
+                    f"    Format: {entry.format} | Rows: {entry.row_count:,} | Columns: {entry.column_count}"
+                )
+                lines.append(
+                    f"    Source: {entry.source} | Confidence: {entry.confidence_score:.0f}%"
+                )
                 lines.append(f"    Freshness: {entry.freshness_days:.1f} days ago")
                 if entry.parent_datasets:
                     lines.append(f"    Parents: {', '.join(entry.parent_datasets)}")

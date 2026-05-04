@@ -1,4 +1,5 @@
 """Forecast Dashboard data — loaded from Gold layer parquet with real time series."""
+
 from typing import Any, Dict, List
 import pandas as pd
 
@@ -8,17 +9,34 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 NZ_REGIONS = [
-    "Northland", "Auckland", "Waikato", "Bay of Plenty", "Gisborne",
-    "Hawke's Bay", "Taranaki", "Manawatu-Wanganui", "Wellington",
-    "Tasman", "Nelson", "Marlborough", "West Coast", "Canterbury",
-    "Otago", "Southland",
+    "Northland",
+    "Auckland",
+    "Waikato",
+    "Bay of Plenty",
+    "Gisborne",
+    "Hawke's Bay",
+    "Taranaki",
+    "Manawatu-Wanganui",
+    "Wellington",
+    "Tasman",
+    "Nelson",
+    "Marlborough",
+    "West Coast",
+    "Canterbury",
+    "Otago",
+    "Southland",
 ]
 
 
-def _get_silver_timeseries(feature_name: str, col: str, last_n: int = 12) -> List[float]:
+def _get_silver_timeseries(
+    feature_name: str, col: str, last_n: int = 12
+) -> List[float]:
     try:
         import os
-        silver_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data_pipeline", "silver")
+
+        silver_dir = os.path.join(
+            os.path.dirname(__file__), "..", "..", "data_pipeline", "silver"
+        )
         fp = os.path.join(silver_dir, f"{feature_name}_features.parquet")
         if os.path.exists(fp):
             df = pd.read_parquet(fp)
@@ -62,9 +80,24 @@ def load_forecast_data() -> Dict[str, Any]:
 
     # Real time series from Silver
     gdp_ts = _get_silver_timeseries("affordability", "gdp_per_capita", 12)
-    vol_ts = _get_silver_timeseries("tourism_lag_analysis", "macroeconomic_volatility_index", 12)
+    vol_ts = _get_silver_timeseries(
+        "tourism_lag_analysis", "macroeconomic_volatility_index", 12
+    )
 
-    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ]
     forecast_months = [f"{m} 2027" for m in months]
 
     hero_kpis = {
@@ -72,7 +105,10 @@ def load_forecast_data() -> Dict[str, Any]:
             "value": forecast_12m,
             "trend": "up" if forecast_growth > 0 else "down",
             "change_pct": forecast_growth,
-            "sparkline": [current_price + i * (forecast_12m - current_price) / 12 for i in range(12)],
+            "sparkline": [
+                current_price + i * (forecast_12m - current_price) / 12
+                for i in range(12)
+            ],
         },
         "confidence_range": {
             "range_80_low": ci_80_lower,
@@ -110,7 +146,10 @@ def load_forecast_data() -> Dict[str, Any]:
     chart_data = {
         "forecast_series": {
             "historical": [current_price + i * 2000 for i in range(12)],
-            "forecast": [current_price + i * (forecast_12m - current_price) / 12 for i in range(12)],
+            "forecast": [
+                current_price + i * (forecast_12m - current_price) / 12
+                for i in range(12)
+            ],
             "conf_80_high": [ci_80_upper + i * 1000 for i in range(12)],
             "conf_80_low": [ci_80_lower + i * 1000 for i in range(12)],
             "conf_95_high": [ci_95_upper + i * 1500 for i in range(12)],
@@ -130,10 +169,18 @@ def load_forecast_data() -> Dict[str, Any]:
         "dom_forecast": [45 - i * 0.5 for i in range(12)],
         "months": forecast_months,
         "regions": NZ_REGIONS,
-        "heatmap_z": [[(model_confidence + i * 2 + j) % 100 for j in range(12)] for i in range(len(NZ_REGIONS))],
+        "heatmap_z": [
+            [(model_confidence + i * 2 + j) % 100 for j in range(12)]
+            for i in range(len(NZ_REGIONS))
+        ],
         "heatmap_months": forecast_months,
         "risk_table": [
-            {"region": r, "risk": "high" if i < 4 else ("medium" if i < 10 else "low"), "score": 80 - i * 5, "confidence": 75 - i * 3}
+            {
+                "region": r,
+                "risk": "high" if i < 4 else ("medium" if i < 10 else "low"),
+                "score": 80 - i * 5,
+                "confidence": 75 - i * 3,
+            }
             for i, r in enumerate(NZ_REGIONS)
         ],
     }

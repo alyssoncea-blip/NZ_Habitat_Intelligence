@@ -2,6 +2,7 @@
 NZ Habitat Intelligence Dashboard - Main Application
 Modular entry point with premium structure
 """
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import html, dcc
@@ -12,7 +13,7 @@ from .pages import (
     create_tourism_dashboard,
     create_macro_dashboard,
     create_affordability_dashboard,
-    create_forecast_dashboard
+    create_forecast_dashboard,
 )
 from .utils.logger import get_logger
 
@@ -22,12 +23,10 @@ app = dash.Dash(
     __name__,
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
-        "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap",
     ],
     suppress_callback_exceptions=True,
-    meta_tags=[
-        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
-    ]
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
 
 app.title = "NZ Habitat Intelligence Dashboard - Premium Edition"
@@ -40,16 +39,34 @@ app.layout = create_layout()
 export_modal = dbc.Modal(
     [
         dbc.ModalHeader(dbc.ModalTitle("Export Dashboard")),
-        dbc.ModalBody([
-            html.P("Choose export format:"),
-            dbc.ButtonGroup([
-                dbc.Button("PNG Image", id="btn-export-png", color="primary", className="me-2"),
-                dbc.Button("SVG Vector", id="btn-export-svg", color="secondary", className="me-2"),
-                dbc.Button("HTML Report", id="btn-export-html", color="info"),
-            ], className="w-100"),
-            html.Hr(),
-            html.Small("Charts export via Plotly. Full page export uses browser print-to-PDF.", className="text-muted"),
-        ]),
+        dbc.ModalBody(
+            [
+                html.P("Choose export format:"),
+                dbc.ButtonGroup(
+                    [
+                        dbc.Button(
+                            "PNG Image",
+                            id="btn-export-png",
+                            color="primary",
+                            className="me-2",
+                        ),
+                        dbc.Button(
+                            "SVG Vector",
+                            id="btn-export-svg",
+                            color="secondary",
+                            className="me-2",
+                        ),
+                        dbc.Button("HTML Report", id="btn-export-html", color="info"),
+                    ],
+                    className="w-100",
+                ),
+                html.Hr(),
+                html.Small(
+                    "Charts export via Plotly. Full page export uses browser print-to-PDF.",
+                    className="text-muted",
+                ),
+            ]
+        ),
         dbc.ModalFooter(
             dbc.Button("Close", id="btn-close-export-modal", color="secondary")
         ),
@@ -59,21 +76,24 @@ export_modal = dbc.Modal(
     centered=True,
 )
 
-app.layout = html.Div([
-    create_layout(),
-    export_modal,
-    dcc.Download(id="download-export"),
-])
+app.layout = html.Div(
+    [
+        create_layout(),
+        export_modal,
+        dcc.Download(id="download-export"),
+    ]
+)
+
 
 # Navigation callbacks
 @app.callback(
     dash.dependencies.Output("page-content", "children"),
-    [dash.dependencies.Input("url", "pathname")]
+    [dash.dependencies.Input("url", "pathname")],
 )
 def display_page(pathname):
     """Route pages"""
     logger.info(f"Navigating to: {pathname}")
-    
+
     if pathname == "/" or pathname == "/executive":
         return create_executive_dashboard()
     elif pathname == "/housing":
@@ -87,29 +107,36 @@ def display_page(pathname):
     elif pathname == "/forecast":
         return create_forecast_dashboard()
     else:
-        return html.Div([
-            html.H1("404: Page not found", className="text-danger"),
-            html.P(f"The pathname {pathname} was not recognized."),
-            html.A("Go to Executive Dashboard", href="/", className="btn btn-primary")
-        ])
+        return html.Div(
+            [
+                html.H1("404: Page not found", className="text-danger"),
+                html.P(f"The pathname {pathname} was not recognized."),
+                html.A(
+                    "Go to Executive Dashboard", href="/", className="btn btn-primary"
+                ),
+            ]
+        )
+
 
 # Additional callbacks (examples)
 @app.callback(
     dash.dependencies.Output("data-quality-indicator", "children"),
-    [dash.dependencies.Input("interval-update", "n_intervals")]
+    [dash.dependencies.Input("interval-update", "n_intervals")],
 )
 def update_quality_indicator(n):
     """Update data quality indicator"""
     # Implementation will be added later
     return "Data Quality: Good"
 
+
 @app.callback(
     dash.dependencies.Output("last-update-time", "children"),
-    [dash.dependencies.Input("interval-update", "n_intervals")]
+    [dash.dependencies.Input("interval-update", "n_intervals")],
 )
 def update_last_update_time(n):
     """Update last update timestamp"""
     from datetime import datetime
+
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return f"Last updated: {now}"
 
@@ -210,20 +237,22 @@ def toggle_dark_mode(n_clicks, current_class):
 
 # Custom CSS is served automatically from app/assets/style.css by Dash
 
-def run_app(debug=True, host='0.0.0.0', port=8050):
+
+def run_app(debug=True, host="0.0.0.0", port=8050):
     """Run the application"""
     logger.info("=" * 60)
     logger.info("Starting NZ Habitat Intelligence Dashboard - Premium Edition")
     logger.info("=" * 60)
-    
+
     print("\n" + "=" * 60)
     print("NZ HABITAT INTELLIGENCE DASHBOARD")
     print("=" * 60)
     print("Dashboard Modular - Premium Executive Design")
     print(f"URL: http://{host}:{port}")
     print("=" * 60 + "\n")
-    
+
     app.run(debug=debug, host=host, port=port)
+
 
 if __name__ == "__main__":
     run_app()

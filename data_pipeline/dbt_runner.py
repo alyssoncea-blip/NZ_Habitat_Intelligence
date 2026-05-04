@@ -1,4 +1,5 @@
 """dbt runner for NZ Habitat Intelligence Silver→Gold transformations."""
+
 import logging
 import subprocess
 import sys
@@ -22,10 +23,14 @@ def run_dbt_command(
     profiles_dir = profiles_dir or (project_dir)
 
     cmd = [
-        "dbt", command,
-        "--project-dir", str(project_dir),
-        "--profiles-dir", str(profiles_dir),
-        "--target", target,
+        "dbt",
+        command,
+        "--project-dir",
+        str(project_dir),
+        "--profiles-dir",
+        str(profiles_dir),
+        "--target",
+        target,
     ]
     if extra_args:
         cmd.extend(extra_args)
@@ -51,12 +56,17 @@ def run_dbt_command(
     except subprocess.TimeoutExpired:
         return {"success": False, "error": "dbt command timed out after 300s"}
     except FileNotFoundError:
-        return {"success": False, "error": "dbt not found. Install with: pip install dbt-core dbt-duckdb"}
+        return {
+            "success": False,
+            "error": "dbt not found. Install with: pip install dbt-core dbt-duckdb",
+        }
     except Exception as e:
         return {"success": False, "error": str(e)}
 
 
-def run_dbt_run(models: Optional[str] = None, full_refresh: bool = False) -> Dict[str, Any]:
+def run_dbt_run(
+    models: Optional[str] = None, full_refresh: bool = False
+) -> Dict[str, Any]:
     """Run dbt models (Silver→Gold transformations)."""
     args = []
     if models:
@@ -69,7 +79,9 @@ def run_dbt_run(models: Optional[str] = None, full_refresh: bool = False) -> Dic
     if result["success"]:
         logger.info("dbt run completed successfully")
     else:
-        logger.error("dbt run failed: %s", result.get("stderr", result.get("error", "")))
+        logger.error(
+            "dbt run failed: %s", result.get("stderr", result.get("error", ""))
+        )
 
     return result
 
@@ -97,7 +109,9 @@ def run_dbt_seed() -> Dict[str, Any]:
     if result["success"]:
         logger.info("dbt seed loaded successfully")
     else:
-        logger.error("dbt seed failed: %s", result.get("stderr", result.get("error", "")))
+        logger.error(
+            "dbt seed failed: %s", result.get("stderr", result.get("error", ""))
+        )
 
     return result
 
@@ -135,14 +149,26 @@ def run_full_pipeline() -> Dict[str, Any]:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
 
     import argparse
 
-    parser = argparse.ArgumentParser(description="dbt runner for NZ Habitat Intelligence")
-    parser.add_argument("command", choices=["run", "test", "seed", "docs", "pipeline"], default="pipeline", nargs="?")
+    parser = argparse.ArgumentParser(
+        description="dbt runner for NZ Habitat Intelligence"
+    )
+    parser.add_argument(
+        "command",
+        choices=["run", "test", "seed", "docs", "pipeline"],
+        default="pipeline",
+        nargs="?",
+    )
     parser.add_argument("--models", help="Select specific models")
-    parser.add_argument("--full-refresh", action="store_true", help="Full refresh all models")
+    parser.add_argument(
+        "--full-refresh", action="store_true", help="Full refresh all models"
+    )
 
     args = parser.parse_args()
 
@@ -165,7 +191,9 @@ if __name__ == "__main__":
             print(result["stdout"])
         sys.exit(0)
     else:
-        print(f"dbt command failed: {result.get('error', result.get('stderr', 'Unknown error'))}")
+        print(
+            f"dbt command failed: {result.get('error', result.get('stderr', 'Unknown error'))}"
+        )
         if result.get("stderr"):
             print(result["stderr"])
         sys.exit(1)

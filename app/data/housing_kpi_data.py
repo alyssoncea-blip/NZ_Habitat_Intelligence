@@ -1,4 +1,5 @@
 """Housing Dashboard data — loaded from Gold layer parquet with real time series."""
+
 from typing import Any, Dict, List
 import pandas as pd
 
@@ -8,27 +9,63 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 NZ_REGIONS = [
-    "Northland", "Auckland", "Waikato", "Bay of Plenty", "Gisborne",
-    "Hawke's Bay", "Taranaki", "Manawatu-Wanganui", "Wellington",
-    "Tasman", "Nelson", "Marlborough", "West Coast", "Canterbury",
-    "Otago", "Southland",
+    "Northland",
+    "Auckland",
+    "Waikato",
+    "Bay of Plenty",
+    "Gisborne",
+    "Hawke's Bay",
+    "Taranaki",
+    "Manawatu-Wanganui",
+    "Wellington",
+    "Tasman",
+    "Nelson",
+    "Marlborough",
+    "West Coast",
+    "Canterbury",
+    "Otago",
+    "Southland",
 ]
 
 SUBURBS_LIST = [
-    "Ponsonby", "Mt Eden", "Newmarket", "Kelburn", "Miramar",
-    "Riccarton", "New Brighton", "Hillcrest", "North East Valley", "Mount Maunganui",
+    "Ponsonby",
+    "Mt Eden",
+    "Newmarket",
+    "Kelburn",
+    "Miramar",
+    "Riccarton",
+    "New Brighton",
+    "Hillcrest",
+    "North East Valley",
+    "Mount Maunganui",
 ]
 
 CITIES_LIST = [
-    "Auckland", "Wellington", "Christchurch", "Hamilton", "Dunedin", "Tauranga",
+    "Auckland",
+    "Wellington",
+    "Christchurch",
+    "Hamilton",
+    "Dunedin",
+    "Tauranga",
 ]
 
 _REGION_PRICE = {
-    "Auckland": 1050000, "Wellington": 780000, "Canterbury": 610000,
-    "Waikato": 720000, "Bay of Plenty": 710000, "Otago": 560000,
-    "Northland": 620000, "Taranaki": 490000, "Hawke's Bay": 560000,
-    "Manawatu-Wanganui": 440000, "Southland": 420000, "Nelson": 630000,
-    "Tasman": 640000, "Marlborough": 590000, "Gisborne": 480000, "West Coast": 380000,
+    "Auckland": 1050000,
+    "Wellington": 780000,
+    "Canterbury": 610000,
+    "Waikato": 720000,
+    "Bay of Plenty": 710000,
+    "Otago": 560000,
+    "Northland": 620000,
+    "Taranaki": 490000,
+    "Hawke's Bay": 560000,
+    "Manawatu-Wanganui": 440000,
+    "Southland": 420000,
+    "Nelson": 630000,
+    "Tasman": 640000,
+    "Marlborough": 590000,
+    "Gisborne": 480000,
+    "West Coast": 380000,
 }
 
 _SUBURBS = [
@@ -45,17 +82,28 @@ _SUBURBS = [
 ]
 
 _SUBURB_MULT = {
-    "Ponsonby": 1.45, "Mt Eden": 1.32, "Newmarket": 1.25,
-    "Kelburn": 1.15, "Miramar": 0.92,
-    "Riccarton": 0.88, "New Brighton": 0.78,
-    "Hillcrest": 0.95, "North East Valley": 0.72, "Mount Maunganui": 1.18,
+    "Ponsonby": 1.45,
+    "Mt Eden": 1.32,
+    "Newmarket": 1.25,
+    "Kelburn": 1.15,
+    "Miramar": 0.92,
+    "Riccarton": 0.88,
+    "New Brighton": 0.78,
+    "Hillcrest": 0.95,
+    "North East Valley": 0.72,
+    "Mount Maunganui": 1.18,
 }
 
 
-def _get_silver_timeseries(feature_name: str, col: str, last_n: int = 12) -> List[float]:
+def _get_silver_timeseries(
+    feature_name: str, col: str, last_n: int = 12
+) -> List[float]:
     try:
         import os
-        silver_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data_pipeline", "silver")
+
+        silver_dir = os.path.join(
+            os.path.dirname(__file__), "..", "..", "data_pipeline", "silver"
+        )
         fp = os.path.join(silver_dir, f"{feature_name}_features.parquet")
         if os.path.exists(fp):
             df = pd.read_parquet(fp)
@@ -99,7 +147,9 @@ def load_housing_data() -> Dict[str, Any]:
     for region in NZ_REGIONS:
         price_kpi = kpi_map.get(f"Median Price — {region}")
         if isinstance(price_kpi, dict):
-            regional_prices[region] = float(price_kpi.get("value", _REGION_PRICE.get(region, 600000)))
+            regional_prices[region] = float(
+                price_kpi.get("value", _REGION_PRICE.get(region, 600000))
+            )
         else:
             regional_prices[region] = _REGION_PRICE.get(region, 600000)
 
@@ -107,9 +157,14 @@ def load_housing_data() -> Dict[str, Any]:
     suburb_prices = {}
     for s in _SUBURBS:
         city = s["city"]
-        region = {"Auckland": "Auckland", "Wellington": "Wellington",
-                  "Christchurch": "Canterbury", "Hamilton": "Waikato",
-                  "Dunedin": "Otago", "Tauranga": "Bay of Plenty"}.get(city, city)
+        region = {
+            "Auckland": "Auckland",
+            "Wellington": "Wellington",
+            "Christchurch": "Canterbury",
+            "Hamilton": "Waikato",
+            "Dunedin": "Otago",
+            "Tauranga": "Bay of Plenty",
+        }.get(city, city)
         base = regional_prices.get(region, 600000)
         mult = _SUBURB_MULT.get(s["suburb"], 1.0)
         suburb_prices[s["suburb"]] = round(base * mult, 0)
@@ -123,8 +178,14 @@ def load_housing_data() -> Dict[str, Any]:
     hero_kpis = {
         "median_price": {
             "value": median_price,
-            "trend": "up" if (len(price_ts) >= 2 and price_ts[-1] > price_ts[0]) else "down",
-            "change": round(((price_ts[-1] - price_ts[0]) / max(1, price_ts[0])) * 100, 1) if len(price_ts) >= 2 else 0.0,
+            "trend": "up"
+            if (len(price_ts) >= 2 and price_ts[-1] > price_ts[0])
+            else "down",
+            "change": round(
+                ((price_ts[-1] - price_ts[0]) / max(1, price_ts[0])) * 100, 1
+            )
+            if len(price_ts) >= 2
+            else 0.0,
             "sparkline": price_ts if price_ts else [median_price] * 12,
             "subtitle": "National median asking price",
         },
@@ -132,14 +193,18 @@ def load_housing_data() -> Dict[str, Any]:
             "value": dom,
             "trend": "down" if dom < 50 else "up",
             "status": "fast" if dom < 40 else ("normal" if dom < 60 else "slow"),
-            "sparkline": [dom + i * (-0.5) for i in range(12)] if not supply_ts else supply_ts[:12],
+            "sparkline": [dom + i * (-0.5) for i in range(12)]
+            if not supply_ts
+            else supply_ts[:12],
             "subtitle": "Average days to sell",
         },
         "new_listings": {
             "value": listings,
             "trend": "up",
             "change": 5.0,
-            "weekly_data": [listings + i * 50 for i in range(-5, 7)] if not rent_ts else rent_ts[:12],
+            "weekly_data": [listings + i * 50 for i in range(-5, 7)]
+            if not rent_ts
+            else rent_ts[:12],
             "subtitle": "New listings per week",
         },
         "property_type": {
@@ -157,8 +222,12 @@ def load_housing_data() -> Dict[str, Any]:
         "supply_gap": {
             "value": supply_deficit,
             "trend": "up" if supply_deficit > 50 else "down",
-            "status": "critical" if supply_deficit > 70 else ("warning" if supply_deficit > 40 else "balanced"),
-            "severity": 0.85 if supply_deficit > 70 else (0.55 if supply_deficit > 40 else 0.25),
+            "status": "critical"
+            if supply_deficit > 70
+            else ("warning" if supply_deficit > 40 else "balanced"),
+            "severity": 0.85
+            if supply_deficit > 70
+            else (0.55 if supply_deficit > 40 else 0.25),
             "subtitle": "Housing supply deficit score",
         },
     }
@@ -171,7 +240,20 @@ def load_housing_data() -> Dict[str, Any]:
             "prices": [suburb_prices.get(s, 600000) for s in SUBURBS_LIST],
         },
         "line_chart": {
-            "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12"],
+            "weeks": [
+                "W1",
+                "W2",
+                "W3",
+                "W4",
+                "W5",
+                "W6",
+                "W7",
+                "W8",
+                "W9",
+                "W10",
+                "W11",
+                "W12",
+            ],
             "values": price_ts if price_ts else [median_price] * 12,
             "unit": "NZD",
         },
@@ -193,21 +275,88 @@ def load_housing_data() -> Dict[str, Any]:
             for i, r in enumerate(NZ_REGIONS[:10])
         ],
         "dom_histogram": [
-            {"bucket": f"{b}-{b+15}d", "count": c}
+            {"bucket": f"{b}-{b + 15}d", "count": c}
             for b, c in zip([0, 15, 30, 45, 60, 90], [120, 340, 580, 420, 210, 80])
         ],
         "heatmap": {
             f"{r}_{m}": {"value": (supply_deficit + i * 2 + j) % 100}
             for i, r in enumerate(NZ_REGIONS)
-            for j, m in enumerate(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
+            for j, m in enumerate(
+                [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                ]
+            )
         },
-        "heatmap_months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        "heatmap_months": [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ],
         "regions": NZ_REGIONS,
         "supply_demand": {
             "data": {
-                "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                "consents": [1200, 1350, 1400, 1280, 1150, 1050, 1100, 1250, 1380, 1420, 1300, 1180],
-                "listings": [2800, 3100, 3400, 3200, 2900, 2600, 2700, 3000, 3300, 3500, 3100, 2850],
+                "labels": [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                ],
+                "consents": [
+                    1200,
+                    1350,
+                    1400,
+                    1280,
+                    1150,
+                    1050,
+                    1100,
+                    1250,
+                    1380,
+                    1420,
+                    1300,
+                    1180,
+                ],
+                "listings": [
+                    2800,
+                    3100,
+                    3400,
+                    3200,
+                    2900,
+                    2600,
+                    2700,
+                    3000,
+                    3300,
+                    3500,
+                    3100,
+                    2850,
+                ],
             }
         },
     }

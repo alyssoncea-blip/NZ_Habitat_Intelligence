@@ -1,4 +1,5 @@
 """Bronze layer ingestion tasks for Prefect orchestration."""
+
 import logging
 import sys
 from datetime import datetime
@@ -124,7 +125,5 @@ def ingest_all_bronze(force_refresh: bool = False) -> dict:
         1 for r in result.get("results", {}).values() if r.get("success")
     )
     total_count = len(result.get("results", {}))
-    print(
-        f"All bronze ingestion: {success_count}/{total_count} successful"
-    )
+    print(f"All bronze ingestion: {success_count}/{total_count} successful")
     return {"source": "all_bronze", "result": result}

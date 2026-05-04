@@ -4,6 +4,7 @@ Dashboard filter utilities — centralized time and region filtering.
 All dashboards use these helpers to filter data by timeframe (3M, 6M, 12M, 1Y, 5Y)
 and region. Ensures consistent behavior across all 6 dashboard pages.
 """
+
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
@@ -108,7 +109,7 @@ def filter_sparkline(
     if not sparkline:
         return sparkline
     n = TIMEFRAME_MONTHS.get(timeframe, 12)
-    return sparkline[-min(n, len(sparkline)):]
+    return sparkline[-min(n, len(sparkline)) :]
 
 
 def apply_filters_to_executive_data(
@@ -169,11 +170,15 @@ def apply_filters_to_executive_data(
     hero = filtered["hero_kpis"]
     pressure_sparkline = hero.get("pressure_index", {}).get("sparkline")
     if pressure_sparkline:
-        hero["pressure_index"]["sparkline"] = filter_sparkline(pressure_sparkline, timeframe)
+        hero["pressure_index"]["sparkline"] = filter_sparkline(
+            pressure_sparkline, timeframe
+        )
 
     price_mom_sparkline = hero.get("price_mom", {}).get("sparkline")
     if price_mom_sparkline:
-        hero["price_mom"]["sparkline"] = filter_sparkline(price_mom_sparkline, timeframe)
+        hero["price_mom"]["sparkline"] = filter_sparkline(
+            price_mom_sparkline, timeframe
+        )
 
     if region != "All Regions":
         pressure_regions = hero.get("pressure_index", {}).get("regions", {})

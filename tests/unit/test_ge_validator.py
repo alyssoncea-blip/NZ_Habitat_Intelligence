@@ -1,4 +1,5 @@
-﻿"""Unit tests for Great Expectations validator."""
+"""Unit tests for Great Expectations validator."""
+
 import json
 import sys
 from pathlib import Path
@@ -12,6 +13,7 @@ sys.path.insert(0, str(project_root))
 
 # Import using importlib to avoid conflict with installed great_expectations package
 import importlib.util  # noqa: E402
+
 spec = importlib.util.spec_from_file_location(
     "nz_ge_validator",
     str(project_root / "great_expectations" / "validate.py"),
@@ -65,7 +67,9 @@ class TestNZHabitatValidator:
         assert validator.expectations_dir.exists()
         assert validator.results_dir.exists()
 
-    def test_validate_parquet_passing(self, validator, sample_expectation_suite, tmp_path):
+    def test_validate_parquet_passing(
+        self, validator, sample_expectation_suite, tmp_path
+    ):
         """Test validating a parquet file that passes expectations."""
         # Create expectation suite
         suite_path = validator.expectations_dir / "silver_features.json"
@@ -81,7 +85,9 @@ class TestNZHabitatValidator:
         assert result["success"] is True
         assert result["summary"]["passed"] >= 1
 
-    def test_validate_parquet_failing(self, validator, sample_expectation_suite, tmp_path):
+    def test_validate_parquet_failing(
+        self, validator, sample_expectation_suite, tmp_path
+    ):
         """Test validating a parquet file that fails expectations."""
         # Create expectation suite requiring specific columns
         suite = {

@@ -1,4 +1,5 @@
 """Scheduled ingestion flows for NZ Habitat Intelligence."""
+
 import sys
 from pathlib import Path
 
@@ -107,6 +108,7 @@ monthly_ingestion_schedule = CronSchedule(
 def run_full_pipeline(force_refresh: bool = False) -> dict:
     """Run the full pipeline (imports and delegates to daily_pipeline flow)."""
     from data_pipeline.orchestration.flows.daily_pipeline import run_daily_pipeline
+
     return run_daily_pipeline(force_refresh=force_refresh)
 
 

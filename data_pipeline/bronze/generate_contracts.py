@@ -3,13 +3,16 @@
 Scans the bronze directory for *_raw.json files, analyzes their content,
 and produces corresponding .contract.json files with provenance metadata.
 """
+
 import json
 import logging
 from pathlib import Path
 from typing import Dict, Any
 
 from data_pipeline.utils.data_contract import (
-    DataSource, DataContract, ColumnContract,
+    DataSource,
+    DataContract,
+    ColumnContract,
     get_data_quality,
 )
 
@@ -47,7 +50,7 @@ def _analyze_json_data(data: Dict[str, Any]) -> Dict[str, Any]:
     # Analyze fields from first few records
     fields = {}
     if records and isinstance(records[0], dict):
-        sample = records[:min(10, len(records))]
+        sample = records[: min(10, len(records))]
         all_keys = set()
         for r in sample:
             all_keys.update(r.keys())
@@ -57,7 +60,9 @@ def _analyze_json_data(data: Dict[str, Any]) -> Dict[str, Any]:
             non_null = [v for v in values if v is not None]
             fields[key] = {
                 "null_count": len(values) - len(non_null),
-                "null_pct": round((len(values) - len(non_null)) / max(1, len(values)) * 100, 1),
+                "null_pct": round(
+                    (len(values) - len(non_null)) / max(1, len(values)) * 100, 1
+                ),
                 "unique_count": len(set(str(v) for v in non_null)),
                 "sample": non_null[:3],
             }
@@ -86,18 +91,23 @@ def generate_contracts(bronze_dir: str = "data_pipeline/bronze") -> Dict[str, st
             # Build column contracts
             columns = []
             for field_name, field_info in analysis.get("fields", {}).items():
-                columns.append(ColumnContract(
-                    name=field_name,
-                    dtype="string",
-                    null_count=field_info["null_count"],
-                    null_percentage=field_info["null_pct"],
-                    unique_count=field_info["unique_count"],
-                    sample_values=field_info["sample"],
-                ))
+                columns.append(
+                    ColumnContract(
+                        name=field_name,
+                        dtype="string",
+                        null_count=field_info["null_count"],
+                        null_percentage=field_info["null_pct"],
+                        unique_count=field_info["unique_count"],
+                        sample_values=field_info["sample"],
+                    )
+                )
 
             # Calculate quality metrics
             total_fields = max(1, analysis["field_count"])
-            avg_null_pct = sum(f["null_pct"] for f in analysis.get("fields", {}).values()) / total_fields
+            avg_null_pct = (
+                sum(f["null_pct"] for f in analysis.get("fields", {}).values())
+                / total_fields
+            )
 
             # Manual confidence calculation for JSON (no DataFrame)
             confidence = 0.0
@@ -152,17 +162,27 @@ def generate_contracts(bronze_dir: str = "data_pipeline/bronze") -> Dict[str, st
             contract_path = str(json_file).replace(".json", ".contract.json")
             contract.save(Path(contract_path))
             contracts[str(json_file)] = contract_path
-            logger.info("  [%s] %s: %d records, confidence=%.0f",
-                        source.value, json_file.name, analysis["record_count"], confidence)
+            logger.info(
+                "  [%s] %s: %d records, confidence=%.0f",
+                source.value,
+                json_file.name,
+                analysis["record_count"],
+                confidence,
+            )
 
         except Exception as e:
-            logger.warning("  Failed to generate contract for %s: %s", json_file.name, e)
+            logger.warning(
+                "  Failed to generate contract for %s: %s", json_file.name, e
+            )
 
     return contracts
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     logger.info("Generating Bronze layer data contracts...")
     contracts = generate_contracts()
     print(f"\nGenerated {len(contracts)} contracts:")

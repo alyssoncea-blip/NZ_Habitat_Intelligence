@@ -4,6 +4,7 @@ Fetches building consents (by region), population estimates, and household incom
 Uses Stats NZ Infoshare API and CSV downloads with resilient multi-endpoint strategy
 and real historical fallbacks.
 """
+
 import json
 import logging
 import io
@@ -39,46 +40,146 @@ STATS_NZ_ENDPOINTS = {
 
 # Stats NZ Infoshare dataset codes
 STATS_NZ_DATASETS = {
-    "building_consents": "BCI",       # Building Consents Issued
-    "population": "SPE",              # Subnational Population Estimates
-    "income": "HIS",                  # Household Income Statistics
+    "building_consents": "BCI",  # Building Consents Issued
+    "population": "SPE",  # Subnational Population Estimates
+    "income": "HIS",  # Household Income Statistics
 }
 
 # Real Stats NZ building consents by region (annual, 2018-2024)
 _REAL_BUILDING_CONSENTS = []
 _CONSENTS_DATA = {
-    2018: {"Auckland": 10500, "Wellington": 3200, "Canterbury": 4200, "Waikato": 3100,
-           "Bay of Plenty": 2600, "Otago": 1800, "Northland": 950, "Taranaki": 900,
-           "Hawke's Bay": 1100, "Manawatu-Wanganui": 1400, "Southland": 700,
-           "Nelson": 450, "Tasman": 500, "Marlborough": 400, "Gisborne": 280, "West Coast": 200},
-    2019: {"Auckland": 11200, "Wellington": 3400, "Canterbury": 4400, "Waikato": 3300,
-           "Bay of Plenty": 2800, "Otago": 1900, "Northland": 1000, "Taranaki": 950,
-           "Hawke's Bay": 1200, "Manawatu-Wanganui": 1500, "Southland": 750,
-           "Nelson": 480, "Tasman": 520, "Marlborough": 420, "Gisborne": 300, "West Coast": 220},
-    2020: {"Auckland": 10800, "Wellington": 3100, "Canterbury": 4100, "Waikato": 3200,
-           "Bay of Plenty": 2900, "Otago": 2000, "Northland": 1050, "Taranaki": 980,
-           "Hawke's Bay": 1150, "Manawatu-Wanganui": 1450, "Southland": 780,
-           "Nelson": 500, "Tasman": 540, "Marlborough": 440, "Gisborne": 310, "West Coast": 230},
-    2021: {"Auckland": 12500, "Wellington": 3600, "Canterbury": 4800, "Waikato": 3800,
-           "Bay of Plenty": 3200, "Otago": 2200, "Northland": 1200, "Taranaki": 1100,
-           "Hawke's Bay": 1400, "Manawatu-Wanganui": 1800, "Southland": 900,
-           "Nelson": 550, "Tasman": 600, "Marlborough": 500, "Gisborne": 350, "West Coast": 250},
-    2022: {"Auckland": 11000, "Wellington": 3200, "Canterbury": 4500, "Waikato": 3500,
-           "Bay of Plenty": 3000, "Otago": 2100, "Northland": 1100, "Taranaki": 1000,
-           "Hawke's Bay": 1300, "Manawatu-Wanganui": 1600, "Southland": 850,
-           "Nelson": 520, "Tasman": 570, "Marlborough": 470, "Gisborne": 330, "West Coast": 240},
-    2023: {"Auckland": 9200, "Wellington": 2800, "Canterbury": 4000, "Waikato": 3000,
-           "Bay of Plenty": 2600, "Otago": 1800, "Northland": 950, "Taranaki": 850,
-           "Hawke's Bay": 1100, "Manawatu-Wanganui": 1400, "Southland": 720,
-           "Nelson": 460, "Tasman": 500, "Marlborough": 410, "Gisborne": 280, "West Coast": 200},
-    2024: {"Auckland": 8500, "Wellington": 2600, "Canterbury": 3800, "Waikato": 2800,
-           "Bay of Plenty": 2400, "Otago": 1700, "Northland": 880, "Taranaki": 800,
-           "Hawke's Bay": 1000, "Manawatu-Wanganui": 1300, "Southland": 680,
-           "Nelson": 430, "Tasman": 470, "Marlborough": 380, "Gisborne": 260, "West Coast": 180},
+    2018: {
+        "Auckland": 10500,
+        "Wellington": 3200,
+        "Canterbury": 4200,
+        "Waikato": 3100,
+        "Bay of Plenty": 2600,
+        "Otago": 1800,
+        "Northland": 950,
+        "Taranaki": 900,
+        "Hawke's Bay": 1100,
+        "Manawatu-Wanganui": 1400,
+        "Southland": 700,
+        "Nelson": 450,
+        "Tasman": 500,
+        "Marlborough": 400,
+        "Gisborne": 280,
+        "West Coast": 200,
+    },
+    2019: {
+        "Auckland": 11200,
+        "Wellington": 3400,
+        "Canterbury": 4400,
+        "Waikato": 3300,
+        "Bay of Plenty": 2800,
+        "Otago": 1900,
+        "Northland": 1000,
+        "Taranaki": 950,
+        "Hawke's Bay": 1200,
+        "Manawatu-Wanganui": 1500,
+        "Southland": 750,
+        "Nelson": 480,
+        "Tasman": 520,
+        "Marlborough": 420,
+        "Gisborne": 300,
+        "West Coast": 220,
+    },
+    2020: {
+        "Auckland": 10800,
+        "Wellington": 3100,
+        "Canterbury": 4100,
+        "Waikato": 3200,
+        "Bay of Plenty": 2900,
+        "Otago": 2000,
+        "Northland": 1050,
+        "Taranaki": 980,
+        "Hawke's Bay": 1150,
+        "Manawatu-Wanganui": 1450,
+        "Southland": 780,
+        "Nelson": 500,
+        "Tasman": 540,
+        "Marlborough": 440,
+        "Gisborne": 310,
+        "West Coast": 230,
+    },
+    2021: {
+        "Auckland": 12500,
+        "Wellington": 3600,
+        "Canterbury": 4800,
+        "Waikato": 3800,
+        "Bay of Plenty": 3200,
+        "Otago": 2200,
+        "Northland": 1200,
+        "Taranaki": 1100,
+        "Hawke's Bay": 1400,
+        "Manawatu-Wanganui": 1800,
+        "Southland": 900,
+        "Nelson": 550,
+        "Tasman": 600,
+        "Marlborough": 500,
+        "Gisborne": 350,
+        "West Coast": 250,
+    },
+    2022: {
+        "Auckland": 11000,
+        "Wellington": 3200,
+        "Canterbury": 4500,
+        "Waikato": 3500,
+        "Bay of Plenty": 3000,
+        "Otago": 2100,
+        "Northland": 1100,
+        "Taranaki": 1000,
+        "Hawke's Bay": 1300,
+        "Manawatu-Wanganui": 1600,
+        "Southland": 850,
+        "Nelson": 520,
+        "Tasman": 570,
+        "Marlborough": 470,
+        "Gisborne": 330,
+        "West Coast": 240,
+    },
+    2023: {
+        "Auckland": 9200,
+        "Wellington": 2800,
+        "Canterbury": 4000,
+        "Waikato": 3000,
+        "Bay of Plenty": 2600,
+        "Otago": 1800,
+        "Northland": 950,
+        "Taranaki": 850,
+        "Hawke's Bay": 1100,
+        "Manawatu-Wanganui": 1400,
+        "Southland": 720,
+        "Nelson": 460,
+        "Tasman": 500,
+        "Marlborough": 410,
+        "Gisborne": 280,
+        "West Coast": 200,
+    },
+    2024: {
+        "Auckland": 8500,
+        "Wellington": 2600,
+        "Canterbury": 3800,
+        "Waikato": 2800,
+        "Bay of Plenty": 2400,
+        "Otago": 1700,
+        "Northland": 880,
+        "Taranaki": 800,
+        "Hawke's Bay": 1000,
+        "Manawatu-Wanganui": 1300,
+        "Southland": 680,
+        "Nelson": 430,
+        "Tasman": 470,
+        "Marlborough": 380,
+        "Gisborne": 260,
+        "West Coast": 180,
+    },
 }
 for year, regions in _CONSENTS_DATA.items():
     for region, consents in regions.items():
-        _REAL_BUILDING_CONSENTS.append({"year": year, "region": region, "consents": consents})
+        _REAL_BUILDING_CONSENTS.append(
+            {"year": year, "region": region, "consents": consents}
+        )
 
 # Real Stats NZ subnational population estimates (2018-2024, June year)
 _REAL_POPULATION = []
@@ -103,7 +204,9 @@ _POP_DATA = {
 _YEARS = list(range(2018, 2025))
 for region, pops in _POP_DATA.items():
     for i, pop in enumerate(pops):
-        _REAL_POPULATION.append({"year": _YEARS[i], "region": region, "population": pop})
+        _REAL_POPULATION.append(
+            {"year": _YEARS[i], "region": region, "population": pop}
+        )
 
 # Real Stats NZ median household income by region (2018-2023, June year)
 _REAL_INCOME = []
@@ -128,7 +231,9 @@ _INCOME_DATA = {
 _INCOME_YEARS = list(range(2018, 2024))
 for region, incomes in _INCOME_DATA.items():
     for i, income in enumerate(incomes):
-        _REAL_INCOME.append({"year": _INCOME_YEARS[i], "region": region, "median_income": income})
+        _REAL_INCOME.append(
+            {"year": _INCOME_YEARS[i], "region": region, "median_income": income}
+        )
 
 
 class StatsNZIngestor:
@@ -142,12 +247,16 @@ class StatsNZIngestor:
     @staticmethod
     def _create_session() -> requests.Session:
         session = requests.Session()
-        retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+        retry = Retry(
+            total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504]
+        )
         session.mount("https://", HTTPAdapter(max_retries=retry))
-        session.headers.update({
-            "User-Agent": "NZHabitatIntelligence/2.0",
-            "Accept": "text/csv, application/json, */*",
-        })
+        session.headers.update(
+            {
+                "User-Agent": "NZHabitatIntelligence/2.0",
+                "Accept": "text/csv, application/json, */*",
+            }
+        )
         return session
 
     def _fetch_csv(self, url: str, description: str) -> Optional[pd.DataFrame]:
@@ -166,7 +275,9 @@ class StatsNZIngestor:
             logger.debug("  Failed %s: %s", description, e)
             return None
 
-    def _fetch_with_fallback(self, endpoints: List[str], description: str) -> Optional[pd.DataFrame]:
+    def _fetch_with_fallback(
+        self, endpoints: List[str], description: str
+    ) -> Optional[pd.DataFrame]:
         """Try multiple CSV URLs, return first success."""
         for url in endpoints:
             df = self._fetch_csv(url, description)
@@ -174,7 +285,9 @@ class StatsNZIngestor:
                 return df
         return None
 
-    def _fetch_infoshare(self, dataset_code: str, description: str) -> Optional[List[Dict]]:
+    def _fetch_infoshare(
+        self, dataset_code: str, description: str
+    ) -> Optional[List[Dict]]:
         """Fetch data from Stats NZ Infoshare SDMX-JSON API."""
         try:
             url = f"{STATS_NZ_INFOSHARE}/{dataset_code}"
@@ -188,13 +301,17 @@ class StatsNZIngestor:
                 for ds in data["data"]["dataSets"]:
                     if "observations" in ds:
                         for key, obs in ds["observations"].items():
-                            records.append({
-                                "series_key": key,
-                                "value": obs[0] if obs else None,
-                            })
+                            records.append(
+                                {
+                                    "series_key": key,
+                                    "value": obs[0] if obs else None,
+                                }
+                            )
 
             if records:
-                logger.info("  %s: %d records from Infoshare", description, len(records))
+                logger.info(
+                    "  %s: %d records from Infoshare", description, len(records)
+                )
                 return records
         except Exception as e:
             logger.debug("  Infoshare fetch failed for %s: %s", description, e)
@@ -203,29 +320,47 @@ class StatsNZIngestor:
     def fetch_building_consents(self) -> Dict[str, Any]:
         """Fetch building consents by region."""
         # Strategy 1: Infoshare API
-        data = self._fetch_infoshare(STATS_NZ_DATASETS["building_consents"], "building consents")
+        data = self._fetch_infoshare(
+            STATS_NZ_DATASETS["building_consents"], "building consents"
+        )
         if data and len(data) > 10:
             return {
-                "metadata": {"source": "Stats NZ Infoshare", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(data), "description": "Building consents issued"},
+                "metadata": {
+                    "source": "Stats NZ Infoshare",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(data),
+                    "description": "Building consents issued",
+                },
                 "data": data,
             }
 
         # Strategy 2: CSV downloads
-        df = self._fetch_with_fallback(STATS_NZ_ENDPOINTS["building_consents"], "building consents CSV")
+        df = self._fetch_with_fallback(
+            STATS_NZ_ENDPOINTS["building_consents"], "building consents CSV"
+        )
         if df is not None and not df.empty:
             return {
-                "metadata": {"source": "Stats NZ CSV", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(df), "columns": list(df.columns)},
+                "metadata": {
+                    "source": "Stats NZ CSV",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(df),
+                    "columns": list(df.columns),
+                },
                 "data": df.to_dict(orient="records"),
             }
 
         # Fallback: real historical data
-        logger.info("  Building consents: using real historical fallback (%d records)", len(_REAL_BUILDING_CONSENTS))
+        logger.info(
+            "  Building consents: using real historical fallback (%d records)",
+            len(_REAL_BUILDING_CONSENTS),
+        )
         return {
-            "metadata": {"source": "Stats NZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_BUILDING_CONSENTS),
-                         "description": "Building consents by region 2018-2024"},
+            "metadata": {
+                "source": "Stats NZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_BUILDING_CONSENTS),
+                "description": "Building consents by region 2018-2024",
+            },
             "data": _REAL_BUILDING_CONSENTS,
         }
 
@@ -234,24 +369,39 @@ class StatsNZIngestor:
         data = self._fetch_infoshare(STATS_NZ_DATASETS["population"], "population")
         if data and len(data) > 10:
             return {
-                "metadata": {"source": "Stats NZ Infoshare", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(data), "description": "Subnational population estimates"},
+                "metadata": {
+                    "source": "Stats NZ Infoshare",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(data),
+                    "description": "Subnational population estimates",
+                },
                 "data": data,
             }
 
-        df = self._fetch_with_fallback(STATS_NZ_ENDPOINTS["population"], "population CSV")
+        df = self._fetch_with_fallback(
+            STATS_NZ_ENDPOINTS["population"], "population CSV"
+        )
         if df is not None and not df.empty:
             return {
-                "metadata": {"source": "Stats NZ CSV", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(df)},
+                "metadata": {
+                    "source": "Stats NZ CSV",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(df),
+                },
                 "data": df.to_dict(orient="records"),
             }
 
-        logger.info("  Population: using real historical fallback (%d records)", len(_REAL_POPULATION))
+        logger.info(
+            "  Population: using real historical fallback (%d records)",
+            len(_REAL_POPULATION),
+        )
         return {
-            "metadata": {"source": "Stats NZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_POPULATION),
-                         "description": "Subnational population estimates 2018-2024"},
+            "metadata": {
+                "source": "Stats NZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_POPULATION),
+                "description": "Subnational population estimates 2018-2024",
+            },
             "data": _REAL_POPULATION,
         }
 
@@ -260,24 +410,38 @@ class StatsNZIngestor:
         data = self._fetch_infoshare(STATS_NZ_DATASETS["income"], "household income")
         if data and len(data) > 10:
             return {
-                "metadata": {"source": "Stats NZ Infoshare", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(data), "description": "Household income statistics"},
+                "metadata": {
+                    "source": "Stats NZ Infoshare",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(data),
+                    "description": "Household income statistics",
+                },
                 "data": data,
             }
 
-        df = self._fetch_with_fallback(STATS_NZ_ENDPOINTS["income"], "household income CSV")
+        df = self._fetch_with_fallback(
+            STATS_NZ_ENDPOINTS["income"], "household income CSV"
+        )
         if df is not None and not df.empty:
             return {
-                "metadata": {"source": "Stats NZ CSV", "date_fetched": datetime.now().isoformat(),
-                             "record_count": len(df)},
+                "metadata": {
+                    "source": "Stats NZ CSV",
+                    "date_fetched": datetime.now().isoformat(),
+                    "record_count": len(df),
+                },
                 "data": df.to_dict(orient="records"),
             }
 
-        logger.info("  Income: using real historical fallback (%d records)", len(_REAL_INCOME))
+        logger.info(
+            "  Income: using real historical fallback (%d records)", len(_REAL_INCOME)
+        )
         return {
-            "metadata": {"source": "Stats NZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_INCOME),
-                         "description": "Median household income by region 2018-2023"},
+            "metadata": {
+                "source": "Stats NZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_INCOME),
+                "description": "Median household income by region 2018-2023",
+            },
             "data": _REAL_INCOME,
         }
 
@@ -311,7 +475,10 @@ class StatsNZIngestor:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     ingestor = StatsNZIngestor()
     results = ingestor.run_ingestion()
     for name, path in results.items():

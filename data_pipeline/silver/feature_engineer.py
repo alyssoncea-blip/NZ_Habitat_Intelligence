@@ -8,6 +8,7 @@ Calculates 6 core feature sets from REAL Bronze data:
 
 All features are data-driven — no hardcoded or synthetic values.
 """
+
 import json
 import logging
 from datetime import datetime
@@ -17,15 +18,29 @@ from pathlib import Path
 import pandas as pd
 
 from data_pipeline.utils.data_contract import (
-    DataSource, save_dataframe_with_contract,
+    DataSource,
+    save_dataframe_with_contract,
 )
 
 logger = logging.getLogger(__name__)
 
 NZ_REGIONS = [
-    "Auckland", "Wellington", "Canterbury", "Waikato", "Bay of Plenty",
-    "Otago", "Northland", "Taranaki", "Hawke's Bay", "Manawatu-Wanganui",
-    "Southland", "Nelson", "Tasman", "Marlborough", "Gisborne", "West Coast",
+    "Auckland",
+    "Wellington",
+    "Canterbury",
+    "Waikato",
+    "Bay of Plenty",
+    "Otago",
+    "Northland",
+    "Taranaki",
+    "Hawke's Bay",
+    "Manawatu-Wanganui",
+    "Southland",
+    "Nelson",
+    "Tasman",
+    "Marlborough",
+    "Gisborne",
+    "West Coast",
 ]
 
 # Load reference data from config
@@ -37,14 +52,19 @@ try:
 except Exception:
     pass
 
-_REGIONAL_POP_SHARES: Dict[str, float] = _REFERENCE_DATA.get("regional_population_shares", {})
+_REGIONAL_POP_SHARES: Dict[str, float] = _REFERENCE_DATA.get(
+    "regional_population_shares", {}
+)
 
 
 class FeatureEngineer:
     """Feature engineering from real Bronze data."""
 
-    def __init__(self, bronze_dir: str = "data_pipeline/bronze",
-                 silver_dir: str = "data_pipeline/silver"):
+    def __init__(
+        self,
+        bronze_dir: str = "data_pipeline/bronze",
+        silver_dir: str = "data_pipeline/silver",
+    ):
         self.bronze_dir = Path(bronze_dir)
         self.silver_dir = Path(silver_dir)
         self.silver_dir.mkdir(parents=True, exist_ok=True)
@@ -79,14 +99,27 @@ class FeatureEngineer:
                         df = pd.DataFrame(records)
                         # Normalize numeric columns
                         for col in df.columns:
-                            if col not in ("region", "month_name", "quarter", "date", "indicator", "country"):
+                            if col not in (
+                                "region",
+                                "month_name",
+                                "quarter",
+                                "date",
+                                "indicator",
+                                "country",
+                            ):
                                 df[col] = pd.to_numeric(df[col], errors="coerce")
                         name = fp.stem.replace("_raw", "").replace(f"{key}_", "")
                         # Handle duplicate keys (e.g., interest_rate vs interest_rates)
                         if name in data[key]:
                             name = name + "_alt"
                         data[key][name] = df
-                        logger.info("  Loaded %s/%s: %d rows, cols=%s", key, name, len(df), list(df.columns))
+                        logger.info(
+                            "  Loaded %s/%s: %d rows, cols=%s",
+                            key,
+                            name,
+                            len(df),
+                            list(df.columns),
+                        )
                 except Exception as e:
                     logger.warning("  Skip %s: %s", fp.name, e)
 
@@ -109,7 +142,9 @@ class FeatureEngineer:
 
         for key in ["population"]:
             if key in wb and "value" in wb[key].columns:
-                pop_df = wb[key][["year", "value"]].rename(columns={"value": "population"})
+                pop_df = wb[key][["year", "value"]].rename(
+                    columns={"value": "population"}
+                )
                 break
 
         if gdp_df is None or pop_df is None:
@@ -132,13 +167,23 @@ class FeatureEngineer:
                     gdp_pc = row.get("gdp_per_capita", None)
                     if gdp_pc is None or gdp_pc <= 0:
                         continue
-                    year_inc = inc[inc["year"] == year] if "year" in inc.columns else pd.DataFrame()
+                    year_inc = (
+                        inc[inc["year"] == year]
+                        if "year" in inc.columns
+                        else pd.DataFrame()
+                    )
                     for region in NZ_REGIONS:
-                        region_inc = year_inc[year_inc["region"] == region] if not year_inc.empty else pd.DataFrame()
+                        region_inc = (
+                            year_inc[year_inc["region"] == region]
+                            if not year_inc.empty
+                            else pd.DataFrame()
+                        )
                         median_income = None
                         if not region_inc.empty:
                             if "median_household_income" in region_inc.columns:
-                                median_income = region_inc["median_household_income"].iloc[0]
+                                median_income = region_inc[
+                                    "median_household_income"
+                                ].iloc[0]
                             elif "median_income" in region_inc.columns:
                                 median_income = region_inc["median_income"].iloc[0]
                         if median_income and median_income > 0:
@@ -148,14 +193,16 @@ class FeatureEngineer:
                         price_to_income_ratio = None
                         if median_income and median_income > 0:
                             price_to_income_ratio = round(gdp_pc / median_income, 4)
-                        rows.append({
-                            "year": year,
-                            "region": region,
-                            "gdp_per_capita": round(gdp_pc, 0),
-                            "median_income": median_income,
-                            "affordability_index": aff_idx,
-                            "price_to_income_ratio": price_to_income_ratio,
-                        })
+                        rows.append(
+                            {
+                                "year": year,
+                                "region": region,
+                                "gdp_per_capita": round(gdp_pc, 0),
+                                "median_income": median_income,
+                                "affordability_index": aff_idx,
+                                "price_to_income_ratio": price_to_income_ratio,
+                            }
+                        )
                 if rows:
                     return pd.DataFrame(rows)
 
@@ -163,8 +210,9 @@ class FeatureEngineer:
         macro["region"] = "New Zealand"
         macro["year"] = macro["year"].astype(int)
         macro["affordability_index"] = (
-            (macro["gdp_per_capita"] - macro["gdp_per_capita"].min()) /
-            (macro["gdp_per_capita"].max() - macro["gdp_per_capita"].min() + 1) * 100
+            (macro["gdp_per_capita"] - macro["gdp_per_capita"].min())
+            / (macro["gdp_per_capita"].max() - macro["gdp_per_capita"].min() + 1)
+            * 100
         ).round(1)
         return macro[["region", "year", "affordability_index", "gdp_per_capita"]]
 
@@ -193,8 +241,14 @@ class FeatureEngineer:
         # Fallback to World Bank interest rate
         if annual is None or annual.empty:
             for key in ["interest_rate", "interest_rates"]:
-                if key in wb and "value" in wb[key].columns and "year" in wb[key].columns:
-                    annual = wb[key][["year", "value"]].rename(columns={"value": "ocr_value"})
+                if (
+                    key in wb
+                    and "value" in wb[key].columns
+                    and "year" in wb[key].columns
+                ):
+                    annual = wb[key][["year", "value"]].rename(
+                        columns={"value": "ocr_value"}
+                    )
                     break
 
         if annual is None or annual.empty:
@@ -203,12 +257,26 @@ class FeatureEngineer:
         annual = annual.sort_values("year").reset_index(drop=True)
         annual["mortgage_rate_2yr"] = annual["ocr_value"]
         annual["rate_volatility"] = annual["ocr_value"].rolling(3, min_periods=1).std()
-        annual["ocr_change_bps"] = annual["ocr_value"].pct_change(fill_method=None) * 100
+        annual["ocr_change_bps"] = (
+            annual["ocr_value"].pct_change(fill_method=None) * 100
+        )
         max_vol = annual["rate_volatility"].max() + 0.01
-        annual["interest_rate_impact_score"] = (annual["rate_volatility"] / max_vol * 100).round(1)
+        annual["interest_rate_impact_score"] = (
+            annual["rate_volatility"] / max_vol * 100
+        ).round(1)
         annual["region"] = "New Zealand"
         annual["year"] = annual["year"].astype(int)
-        return annual[["year", "region", "ocr_value", "mortgage_rate_2yr", "ocr_change_bps", "rate_volatility", "interest_rate_impact_score"]]
+        return annual[
+            [
+                "year",
+                "region",
+                "ocr_value",
+                "mortgage_rate_2yr",
+                "ocr_change_bps",
+                "rate_volatility",
+                "interest_rate_impact_score",
+            ]
+        ]
 
     # ── Feature 3: Tourism Pressure ───────────────────────────────────
     def _calc_tourism_pressure(self, bronze: Dict) -> Optional[pd.DataFrame]:
@@ -226,8 +294,10 @@ class FeatureEngineer:
                     year = int(row["year"])
                     region = row["region"]
                     # Handle different column names
-                    expenditure = row.get("tourism_expenditure_nzd_millions",
-                                 row.get("tourism_spending_usd", 0))
+                    expenditure = row.get(
+                        "tourism_expenditure_nzd_millions",
+                        row.get("tourism_spending_usd", 0),
+                    )
 
                     pop_share = self._get_region_population_share(region)
                     # Use config for NZ population estimate, fallback to 5.2M
@@ -235,28 +305,43 @@ class FeatureEngineer:
                         str(year), 5200000
                     )
                     pop_estimate = pop_share * nz_pop
-                    pressure = round((expenditure * 1000000 / max(1, pop_estimate)) * 10, 1) if pop_estimate > 0 else 0
+                    pressure = (
+                        round((expenditure * 1000000 / max(1, pop_estimate)) * 10, 1)
+                        if pop_estimate > 0
+                        else 0
+                    )
 
-                    rows.append({
-                        "year": year,
-                        "region": region,
-                        "tourism_expenditure": expenditure,
-                        "visitor_arrivals": expenditure,
-                        "tourism_pressure_index": pressure,
-                    })
+                    rows.append(
+                        {
+                            "year": year,
+                            "region": region,
+                            "tourism_expenditure": expenditure,
+                            "visitor_arrivals": expenditure,
+                            "tourism_pressure_index": pressure,
+                        }
+                    )
 
         if rows:
             df = pd.DataFrame(rows)
             # Add unemployment from World Bank
             for key in ["unemployment"]:
-                if key in wb and "value" in wb[key].columns and "year" in wb[key].columns:
-                    unemp = wb[key][["year", "value"]].rename(columns={"value": "unemployment_rate"})
+                if (
+                    key in wb
+                    and "value" in wb[key].columns
+                    and "year" in wb[key].columns
+                ):
+                    unemp = wb[key][["year", "value"]].rename(
+                        columns={"value": "unemployment_rate"}
+                    )
                     df = pd.merge(df, unemp, on="year", how="left")
                     break
 
             # Add tourism growth YoY
             df = df.sort_values(["region", "year"])
-            df["tourism_growth_yoy"] = df.groupby("region")["tourism_expenditure"].pct_change(fill_method=None) * 100
+            df["tourism_growth_yoy"] = (
+                df.groupby("region")["tourism_expenditure"].pct_change(fill_method=None)
+                * 100
+            )
             return df
 
         return None
@@ -292,9 +377,12 @@ class FeatureEngineer:
             for _, bc_row in region_bc.iterrows():
                 year = int(bc_row["year"])
                 # Handle different column names for consents
-                consents = bc_row.get("consents",
-                            bc_row.get("new_residential_consents",
-                            bc_row.get("total_consents", 0)))
+                consents = bc_row.get(
+                    "consents",
+                    bc_row.get(
+                        "new_residential_consents", bc_row.get("total_consents", 0)
+                    ),
+                )
 
                 # Population for this region/year
                 population = None
@@ -306,22 +394,31 @@ class FeatureEngineer:
                 # Population growth
                 pop_growth = None
                 if not region_pop.empty and len(region_pop) > 1:
-                    pop_vals = region_pop[region_pop["year"] <= year].sort_values("year")
+                    pop_vals = region_pop[region_pop["year"] <= year].sort_values(
+                        "year"
+                    )
                     if len(pop_vals) >= 2 and "population" in pop_vals.columns:
                         prev = pop_vals.iloc[-2]["population"]
                         curr = pop_vals.iloc[-1]["population"]
                         if prev > 0:
                             pop_growth = round((curr - prev) / prev * 100, 2)
 
-                consents_per_1k = round(consents / max(1, population) * 1000, 2) if population else None
+                consents_per_1k = (
+                    round(consents / max(1, population) * 1000, 2)
+                    if population
+                    else None
+                )
 
-                rows.append({
-                    "year": year, "region": region,
-                    "building_consents": consents,
-                    "population": population,
-                    "population_growth": pop_growth,
-                    "consents_per_1000_people": consents_per_1k,
-                })
+                rows.append(
+                    {
+                        "year": year,
+                        "region": region,
+                        "building_consents": consents,
+                        "population": population,
+                        "population_growth": pop_growth,
+                        "consents_per_1000_people": consents_per_1k,
+                    }
+                )
 
         if not rows:
             return None
@@ -335,9 +432,14 @@ class FeatureEngineer:
                 min_c = valid.min()
                 max_c = valid.max()
                 df["supply_deficit_score"] = (
-                    (df["consents_per_1000_people"] - min_c) / (max_c - min_c + 0.01) * 100
+                    (df["consents_per_1000_people"] - min_c)
+                    / (max_c - min_c + 0.01)
+                    * 100
                 ).round(1)
-                df["housing_supply_gap"] = (df["population_growth"].fillna(0) - df["consents_per_1000_people"].fillna(0)).round(2)
+                df["housing_supply_gap"] = (
+                    df["population_growth"].fillna(0)
+                    - df["consents_per_1000_people"].fillna(0)
+                ).round(2)
 
         return df
 
@@ -356,7 +458,12 @@ class FeatureEngineer:
             # No rent data available, use income + inflation as proxy
             pass
 
-        if rent is None or rent.empty or "year" not in rent.columns or "region" not in rent.columns:
+        if (
+            rent is None
+            or rent.empty
+            or "year" not in rent.columns
+            or "region" not in rent.columns
+        ):
             # Fallback: use Stats NZ income + World Bank inflation
             if "income" not in sn or sn["income"].empty:
                 return None
@@ -365,11 +472,19 @@ class FeatureEngineer:
             for _, row in inc.iterrows():
                 year = int(row["year"])
                 region = row["region"]
-                median_income = row.get("median_household_income", row.get("median_income", 0))
+                median_income = row.get(
+                    "median_household_income", row.get("median_income", 0)
+                )
                 # Estimate rent as ~30% of income
-                weekly_rent = round(median_income * 0.30 / 52, 0) if median_income > 0 else 0
+                weekly_rent = (
+                    round(median_income * 0.30 / 52, 0) if median_income > 0 else 0
+                )
                 annual_rent = weekly_rent * 52
-                rent_ratio = round(annual_rent / median_income * 100, 1) if median_income > 0 else None
+                rent_ratio = (
+                    round(annual_rent / median_income * 100, 1)
+                    if median_income > 0
+                    else None
+                )
 
                 # Get inflation
                 inflation = None
@@ -380,23 +495,38 @@ class FeatureEngineer:
                             inflation = inf_row["value"].iloc[0]
                         break
 
-                rows.append({
-                    "year": year, "region": region,
-                    "median_weekly_rent": weekly_rent,
-                    "annual_rent": annual_rent,
-                    "median_income": median_income,
-                    "rent_to_income_ratio": rent_ratio,
-                    "general_inflation": inflation,
-                })
+                rows.append(
+                    {
+                        "year": year,
+                        "region": region,
+                        "median_weekly_rent": weekly_rent,
+                        "annual_rent": annual_rent,
+                        "median_income": median_income,
+                        "rent_to_income_ratio": rent_ratio,
+                        "general_inflation": inflation,
+                    }
+                )
             if rows:
                 df = pd.DataFrame(rows)
                 df = df.sort_values(["region", "year"])
-                df["rent_inflation_rate"] = df.groupby("region")["median_weekly_rent"].pct_change(fill_method=None) * 100
+                df["rent_inflation_rate"] = (
+                    df.groupby("region")["median_weekly_rent"].pct_change(
+                        fill_method=None
+                    )
+                    * 100
+                )
                 if "general_inflation" in df.columns:
-                    df["affordability_erosion"] = (df["rent_inflation_rate"].fillna(0) - df["general_inflation"].fillna(0)).round(1)
+                    df["affordability_erosion"] = (
+                        df["rent_inflation_rate"].fillna(0)
+                        - df["general_inflation"].fillna(0)
+                    ).round(1)
                 df["cumulative_rent_pressure"] = (
                     df.groupby("region")["median_weekly_rent"].transform(
-                        lambda x: ((x / x.iloc[0]) - 1) * 100 if len(x) > 0 and x.iloc[0] > 0 else 0
+                        lambda x: (
+                            ((x / x.iloc[0]) - 1) * 100
+                            if len(x) > 0 and x.iloc[0] > 0
+                            else 0
+                        )
                     )
                 ).round(1)
                 return df
@@ -411,14 +541,20 @@ class FeatureEngineer:
 
             region_income = pd.DataFrame()
             if "income" in sn and not sn["income"].empty:
-                region_income = sn["income"][sn["income"]["region"] == region].sort_values("year")
+                region_income = sn["income"][
+                    sn["income"]["region"] == region
+                ].sort_values("year")
 
             for _, rent_row in region_rent.iterrows():
                 year = int(rent_row["year"])
                 weekly_rent = rent_row.get("median_weekly_rent_nzd", 0)
                 annual_rent = weekly_rent * 52
 
-                inc_row = region_income[region_income["year"] == year] if not region_income.empty else pd.DataFrame()
+                inc_row = (
+                    region_income[region_income["year"] == year]
+                    if not region_income.empty
+                    else pd.DataFrame()
+                )
                 median_income = None
                 if not inc_row.empty:
                     if "median_household_income" in inc_row.columns:
@@ -426,7 +562,11 @@ class FeatureEngineer:
                     elif "median_income" in inc_row.columns:
                         median_income = inc_row["median_income"].iloc[0]
 
-                rent_ratio = round(annual_rent / median_income * 100, 1) if median_income and median_income > 0 else None
+                rent_ratio = (
+                    round(annual_rent / median_income * 100, 1)
+                    if median_income and median_income > 0
+                    else None
+                )
 
                 inflation = None
                 for key in ["inflation"]:
@@ -436,26 +576,36 @@ class FeatureEngineer:
                             inflation = inf_row["value"].iloc[0]
                         break
 
-                rows.append({
-                    "year": year, "region": region,
-                    "median_weekly_rent": weekly_rent,
-                    "annual_rent": annual_rent,
-                    "median_income": median_income,
-                    "rent_to_income_ratio": rent_ratio,
-                    "general_inflation": inflation,
-                })
+                rows.append(
+                    {
+                        "year": year,
+                        "region": region,
+                        "median_weekly_rent": weekly_rent,
+                        "annual_rent": annual_rent,
+                        "median_income": median_income,
+                        "rent_to_income_ratio": rent_ratio,
+                        "general_inflation": inflation,
+                    }
+                )
 
         if not rows:
             return None
 
         df = pd.DataFrame(rows)
         df = df.sort_values(["region", "year"])
-        df["rent_inflation_rate"] = df.groupby("region")["median_weekly_rent"].pct_change(fill_method=None) * 100
+        df["rent_inflation_rate"] = (
+            df.groupby("region")["median_weekly_rent"].pct_change(fill_method=None)
+            * 100
+        )
         if "general_inflation" in df.columns:
-            df["affordability_erosion"] = (df["rent_inflation_rate"].fillna(0) - df["general_inflation"].fillna(0)).round(1)
+            df["affordability_erosion"] = (
+                df["rent_inflation_rate"].fillna(0) - df["general_inflation"].fillna(0)
+            ).round(1)
         df["cumulative_rent_pressure"] = (
             df.groupby("region")["median_weekly_rent"].transform(
-                lambda x: ((x / x.iloc[0]) - 1) * 100 if len(x) > 0 and x.iloc[0] > 0 else 0
+                lambda x: (
+                    ((x / x.iloc[0]) - 1) * 100 if len(x) > 0 and x.iloc[0] > 0 else 0
+                )
             )
         ).round(1)
         return df
@@ -474,8 +624,14 @@ class FeatureEngineer:
             ("interest_rate", ["interest_rate", "interest_rates"]),
         ]:
             for alias in aliases:
-                if alias in wb and "value" in wb[alias].columns and "year" in wb[alias].columns:
-                    indicators[target] = wb[alias][["year", "value"]].rename(columns={"value": target})
+                if (
+                    alias in wb
+                    and "value" in wb[alias].columns
+                    and "year" in wb[alias].columns
+                ):
+                    indicators[target] = wb[alias][["year", "value"]].rename(
+                        columns={"value": target}
+                    )
                     break
 
         if len(indicators) < 3:
@@ -501,23 +657,41 @@ class FeatureEngineer:
                 macro[f"{col}_volatility"] = macro[col].rolling(3, min_periods=1).std()
 
         # Composite volatility index (weighted)
-        weights = {"gdp": 0.4, "inflation": 0.3, "unemployment": 0.2, "interest_rate": 0.1}
+        weights = {
+            "gdp": 0.4,
+            "inflation": 0.3,
+            "unemployment": 0.2,
+            "interest_rate": 0.1,
+        }
         macro["macroeconomic_volatility_index"] = 0
         for col, w in weights.items():
             if f"{col}_volatility" in macro.columns:
-                macro["macroeconomic_volatility_index"] += macro[f"{col}_volatility"] * w
+                macro["macroeconomic_volatility_index"] += (
+                    macro[f"{col}_volatility"] * w
+                )
 
         # Normalize to 0-100
         max_v = macro["macroeconomic_volatility_index"].max()
         min_v = macro["macroeconomic_volatility_index"].min()
         macro["macroeconomic_volatility_index"] = (
-            (macro["macroeconomic_volatility_index"] - min_v) / (max_v - min_v + 0.01) * 100
+            (macro["macroeconomic_volatility_index"] - min_v)
+            / (max_v - min_v + 0.01)
+            * 100
         ).round(1)
 
         macro["region"] = "New Zealand"
         macro["year"] = macro["year"].astype(int)
 
-        vol_cols = [c for c in ["gdp_volatility", "inflation_volatility", "unemployment_volatility", "interest_rate_volatility"] if c in macro.columns]
+        vol_cols = [
+            c
+            for c in [
+                "gdp_volatility",
+                "inflation_volatility",
+                "unemployment_volatility",
+                "interest_rate_volatility",
+            ]
+            if c in macro.columns
+        ]
         return macro[["region", "year", "macroeconomic_volatility_index"] + vol_cols]
 
     # ── Helpers ───────────────────────────────────────────────────────
@@ -536,7 +710,10 @@ class FeatureEngineer:
             if "population" in latest.columns:
                 total = latest["population"].sum()
                 if total > 0:
-                    return {row["region"]: row["population"] / total for _, row in latest.iterrows()}
+                    return {
+                        row["region"]: row["population"] / total
+                        for _, row in latest.iterrows()
+                    }
 
         # Fallback to config
         return _REGIONAL_POP_SHARES or {}
@@ -605,24 +782,41 @@ class FeatureEngineer:
 
         return features
 
-    def save_features(self, features: Dict[str, pd.DataFrame],
-                      source_tracking: Optional[Dict[str, DataSource]] = None) -> Dict[str, str]:
+    def save_features(
+        self,
+        features: Dict[str, pd.DataFrame],
+        source_tracking: Optional[Dict[str, DataSource]] = None,
+    ) -> Dict[str, str]:
         """Save features to parquet with data contracts and lineage tracking."""
         file_paths = {}
         for name, df in features.items():
             if df.empty:
                 continue
-            source = source_tracking.get(name, DataSource.REAL) if source_tracking else DataSource.REAL
+            source = (
+                source_tracking.get(name, DataSource.REAL)
+                if source_tracking
+                else DataSource.REAL
+            )
             output = str(self.silver_dir / f"{name}_features")
             try:
                 parquet_path, contract_path = save_dataframe_with_contract(
-                    df=df, path=output, artifact_name=f"{name}_features",
-                    layer="silver", source=source, source_name="bronze_real_data",
+                    df=df,
+                    path=output,
+                    artifact_name=f"{name}_features",
+                    layer="silver",
+                    source=source,
+                    source_name="bronze_real_data",
                     parent_contracts=self._get_bronze_contracts(),
                     notes=f"Calculated from real Bronze data ({len(df)} records)",
                 )
                 file_paths[name] = parquet_path
-                logger.info("  [%s] Saved %s: %d rows → %s", source.value, name, len(df), parquet_path)
+                logger.info(
+                    "  [%s] Saved %s: %d rows → %s",
+                    source.value,
+                    name,
+                    len(df),
+                    parquet_path,
+                )
             except Exception as e:
                 logger.error("  Error saving %s: %s", name, e)
                 fallback = self.silver_dir / f"{name}_features.parquet"
@@ -643,7 +837,10 @@ class FeatureEngineer:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     fe = FeatureEngineer()
     features = fe.run_all_feature_engineering()
     print(f"\nSilver layer complete: {len(features)} feature sets")

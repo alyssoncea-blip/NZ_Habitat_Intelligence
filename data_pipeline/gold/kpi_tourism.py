@@ -3,6 +3,7 @@
 Calculates tourism pressure, Airbnb share, rent lag, seasonality,
 and visitor-DOM correlation.
 """
+
 import logging
 
 import pandas as pd
@@ -32,7 +33,9 @@ class TourismKPICalculator(KPIBaseCalculator):
 
         rent_lag = 4
         if df is not None and not df.empty and "tourism_growth_yoy" in df.columns:
-            rent_lag = round(max(1, min(8, 4 + df["tourism_growth_yoy"].mean() * 0.5)), 0)
+            rent_lag = round(
+                max(1, min(8, 4 + df["tourism_growth_yoy"].mean() * 0.5)), 0
+            )
 
         seasonality = 1.5
         if "mbie_visitor_arrivals" in self.bronze:
@@ -48,20 +51,45 @@ class TourismKPICalculator(KPIBaseCalculator):
         visitor_dom_corr = round(-0.3 - abs(tour_pressure / 100) * 0.3, 2)
 
         rows = [
-            {"name": "Tourism Pressure Index", "value": round(tour_pressure, 1),
-             "unit": "pts", "description": "Tourism impact on housing (0-100)",
-             "category": "Tourism", "source": "MBIE regional tourism expenditure"},
-            {"name": "Airbnb Share of Rentals", "value": airbnb_share,
-             "unit": "%", "description": "Estimated Airbnb % of total rental stock",
-             "category": "Tourism", "source": "Tourism pressure model"},
-            {"name": "Tourism to Rent Lag", "value": int(rent_lag),
-             "unit": "months", "description": "Optimal lag tourism peak to rent increase",
-             "category": "Tourism", "source": "MBIE visitor arrivals + rent data"},
-            {"name": "Visitor Seasonality Strength", "value": seasonality,
-             "unit": "x", "description": "Peak-to-low season visitor ratio",
-             "category": "Tourism", "source": "MBIE monthly visitor arrivals"},
-            {"name": "Visitors x DOM Correlation", "value": visitor_dom_corr,
-             "unit": "r", "description": "Pearson correlation visitor volume vs DOM",
-             "category": "Tourism", "source": "MBIE visitor data + supply pressure"},
+            {
+                "name": "Tourism Pressure Index",
+                "value": round(tour_pressure, 1),
+                "unit": "pts",
+                "description": "Tourism impact on housing (0-100)",
+                "category": "Tourism",
+                "source": "MBIE regional tourism expenditure",
+            },
+            {
+                "name": "Airbnb Share of Rentals",
+                "value": airbnb_share,
+                "unit": "%",
+                "description": "Estimated Airbnb % of total rental stock",
+                "category": "Tourism",
+                "source": "Tourism pressure model",
+            },
+            {
+                "name": "Tourism to Rent Lag",
+                "value": int(rent_lag),
+                "unit": "months",
+                "description": "Optimal lag tourism peak to rent increase",
+                "category": "Tourism",
+                "source": "MBIE visitor arrivals + rent data",
+            },
+            {
+                "name": "Visitor Seasonality Strength",
+                "value": seasonality,
+                "unit": "x",
+                "description": "Peak-to-low season visitor ratio",
+                "category": "Tourism",
+                "source": "MBIE monthly visitor arrivals",
+            },
+            {
+                "name": "Visitors x DOM Correlation",
+                "value": visitor_dom_corr,
+                "unit": "r",
+                "description": "Pearson correlation visitor volume vs DOM",
+                "category": "Tourism",
+                "source": "MBIE visitor data + supply pressure",
+            },
         ]
         return pd.DataFrame(rows)

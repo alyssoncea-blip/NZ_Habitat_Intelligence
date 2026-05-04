@@ -1,4 +1,5 @@
 """Notification blocks for Prefect flow alerts."""
+
 import os
 import logging
 
@@ -25,6 +26,7 @@ def setup_notification_blocks():
     if email_recipients:
         try:
             from prefect.blocks.notifications import EmailSenderBlock
+
             email_block = EmailSenderBlock(
                 smtp_type="smtp",
                 smtp_host=os.getenv("SMTP_HOST", "smtp.gmail.com"),
@@ -45,4 +47,6 @@ if __name__ == "__main__":
     if blocks:
         print(f"Created notification blocks: {', '.join(blocks)}")
     else:
-        print("No notification blocks created (set ALERT_WEBHOOK_URL or ALERT_EMAIL_RECIPIENTS)")
+        print(
+            "No notification blocks created (set ALERT_WEBHOOK_URL or ALERT_EMAIL_RECIPIENTS)"
+        )

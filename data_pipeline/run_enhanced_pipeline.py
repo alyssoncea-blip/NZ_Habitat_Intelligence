@@ -1,4 +1,4 @@
-﻿"""Run pipeline with dbt + Great Expectations integration.
+"""Run pipeline with dbt + Great Expectations integration.
 
 Canonical entry point for the NZ Habitat Intelligence data pipeline.
 Runs: Bronze -> Silver -> dbt Gold -> GE validation -> Backtesting -> Catalog.

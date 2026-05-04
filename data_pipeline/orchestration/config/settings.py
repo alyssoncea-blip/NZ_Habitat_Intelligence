@@ -1,4 +1,5 @@
 """Configuration for Prefect orchestration."""
+
 import os
 from pathlib import Path
 

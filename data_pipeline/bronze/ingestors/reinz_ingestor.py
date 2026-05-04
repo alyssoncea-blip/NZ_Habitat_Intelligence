@@ -3,6 +3,7 @@
 Fetches house price index, median sale prices, sales volumes,
 and days on market from REINZ public data and reports.
 """
+
 import json
 import logging
 import io
@@ -27,22 +28,116 @@ REINZ_ENDPOINTS = {
 # Source: REINZ Property Report historical data
 _REAL_MEDIAN_PRICES = []
 _MEDIAN_BY_MONTH = {
-    2019: [565000, 570000, 575000, 580000, 590000, 600000, 610000, 620000, 630000, 640000, 650000, 660000],
-    2020: [665000, 670000, 680000, 690000, 700000, 720000, 740000, 760000, 780000, 800000, 820000, 840000],
-    2021: [850000, 870000, 900000, 930000, 960000, 980000, 1000000, 1020000, 1040000, 1050000, 1060000, 1070000],
-    2022: [1075000, 1080000, 1070000, 1050000, 1030000, 1000000, 980000, 960000, 940000, 920000, 900000, 880000],
-    2023: [870000, 860000, 850000, 840000, 830000, 820000, 810000, 800000, 790000, 780000, 770000, 760000],
-    2024: [755000, 750000, 745000, 740000, 735000, 730000, 725000, 720000, 715000, 710000, 705000, 700000],
+    2019: [
+        565000,
+        570000,
+        575000,
+        580000,
+        590000,
+        600000,
+        610000,
+        620000,
+        630000,
+        640000,
+        650000,
+        660000,
+    ],
+    2020: [
+        665000,
+        670000,
+        680000,
+        690000,
+        700000,
+        720000,
+        740000,
+        760000,
+        780000,
+        800000,
+        820000,
+        840000,
+    ],
+    2021: [
+        850000,
+        870000,
+        900000,
+        930000,
+        960000,
+        980000,
+        1000000,
+        1020000,
+        1040000,
+        1050000,
+        1060000,
+        1070000,
+    ],
+    2022: [
+        1075000,
+        1080000,
+        1070000,
+        1050000,
+        1030000,
+        1000000,
+        980000,
+        960000,
+        940000,
+        920000,
+        900000,
+        880000,
+    ],
+    2023: [
+        870000,
+        860000,
+        850000,
+        840000,
+        830000,
+        820000,
+        810000,
+        800000,
+        790000,
+        780000,
+        770000,
+        760000,
+    ],
+    2024: [
+        755000,
+        750000,
+        745000,
+        740000,
+        735000,
+        730000,
+        725000,
+        720000,
+        715000,
+        710000,
+        705000,
+        700000,
+    ],
     2025: [695000, 690000, 685000, 680000],
 }
-_MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+_MONTH_NAMES = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+]
 for year, months in _MEDIAN_BY_MONTH.items():
     for i, price in enumerate(months):
-        _REAL_MEDIAN_PRICES.append({
-            "year": year, "month": i + 1, "month_name": _MONTH_NAMES[i],
-            "median_sale_price_nzd": price,
-        })
+        _REAL_MEDIAN_PRICES.append(
+            {
+                "year": year,
+                "month": i + 1,
+                "month_name": _MONTH_NAMES[i],
+                "median_sale_price_nzd": price,
+            }
+        )
 
 # Real historical sales volumes (monthly, count)
 _REAL_SALES_VOLUMES = []
@@ -57,10 +152,14 @@ _VOLUMES_BY_MONTH = {
 }
 for year, months in _VOLUMES_BY_MONTH.items():
     for i, volume in enumerate(months):
-        _REAL_SALES_VOLUMES.append({
-            "year": year, "month": i + 1, "month_name": _MONTH_NAMES[i],
-            "sales_volume": volume,
-        })
+        _REAL_SALES_VOLUMES.append(
+            {
+                "year": year,
+                "month": i + 1,
+                "month_name": _MONTH_NAMES[i],
+                "sales_volume": volume,
+            }
+        )
 
 # Real historical days on market (monthly)
 _REAL_DOM = []
@@ -75,10 +174,14 @@ _DOM_BY_MONTH = {
 }
 for year, months in _DOM_BY_MONTH.items():
     for i, dom in enumerate(months):
-        _REAL_DOM.append({
-            "year": year, "month": i + 1, "month_name": _MONTH_NAMES[i],
-            "days_on_market": dom,
-        })
+        _REAL_DOM.append(
+            {
+                "year": year,
+                "month": i + 1,
+                "month_name": _MONTH_NAMES[i],
+                "days_on_market": dom,
+            }
+        )
 
 # Real housing price index (quarterly, base=2019-Q1=1000)
 _REAL_HPI = []
@@ -93,18 +196,31 @@ _HPI_BY_QUARTER = {
 }
 for year, quarters in _HPI_BY_QUARTER.items():
     for i, hpi in enumerate(quarters):
-        _REAL_HPI.append({
-            "year": year, "quarter": f"Q{i+1}",
-            "housing_price_index": hpi,
-        })
+        _REAL_HPI.append(
+            {
+                "year": year,
+                "quarter": f"Q{i + 1}",
+                "housing_price_index": hpi,
+            }
+        )
 
 # Regional median prices (latest available, 2024-Q4)
 _REAL_REGIONAL_PRICES = {
-    "Auckland": 1050000, "Wellington": 720000, "Canterbury": 580000,
-    "Waikato": 620000, "Bay of Plenty": 680000, "Otago": 560000,
-    "Northland": 520000, "Taranaki": 450000, "Hawke's Bay": 500000,
-    "Manawatu-Wanganui": 420000, "Southland": 380000, "Nelson": 580000,
-    "Tasman": 620000, "Marlborough": 520000, "Gisborne": 400000,
+    "Auckland": 1050000,
+    "Wellington": 720000,
+    "Canterbury": 580000,
+    "Waikato": 620000,
+    "Bay of Plenty": 680000,
+    "Otago": 560000,
+    "Northland": 520000,
+    "Taranaki": 450000,
+    "Hawke's Bay": 500000,
+    "Manawatu-Wanganui": 420000,
+    "Southland": 380000,
+    "Nelson": 580000,
+    "Tasman": 620000,
+    "Marlborough": 520000,
+    "Gisborne": 400000,
     "West Coast": 350000,
 }
 
@@ -120,12 +236,16 @@ class REINZIngestor:
     @staticmethod
     def _create_session() -> requests.Session:
         session = requests.Session()
-        retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+        retry = Retry(
+            total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504]
+        )
         session.mount("https://", HTTPAdapter(max_retries=retry))
-        session.headers.update({
-            "User-Agent": "NZHabitatIntelligence/2.0",
-            "Accept": "text/csv, application/json, */*",
-        })
+        session.headers.update(
+            {
+                "User-Agent": "NZHabitatIntelligence/2.0",
+                "Accept": "text/csv, application/json, */*",
+            }
+        )
         return session
 
     def _fetch_reinz_report(self, url: str, description: str) -> Optional[pd.DataFrame]:
@@ -146,31 +266,48 @@ class REINZIngestor:
 
     def fetch_median_prices(self) -> Dict[str, Any]:
         """Fetch national median sale prices."""
-        logger.info("  Median prices: using real historical data (%d records)", len(_REAL_MEDIAN_PRICES))
+        logger.info(
+            "  Median prices: using real historical data (%d records)",
+            len(_REAL_MEDIAN_PRICES),
+        )
         return {
-            "metadata": {"source": "REINZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_MEDIAN_PRICES),
-                         "description": "National median sale prices monthly 2019-2025"},
+            "metadata": {
+                "source": "REINZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_MEDIAN_PRICES),
+                "description": "National median sale prices monthly 2019-2025",
+            },
             "data": _REAL_MEDIAN_PRICES,
         }
 
     def fetch_sales_volumes(self) -> Dict[str, Any]:
         """Fetch national sales volumes."""
-        logger.info("  Sales volumes: using real historical data (%d records)", len(_REAL_SALES_VOLUMES))
+        logger.info(
+            "  Sales volumes: using real historical data (%d records)",
+            len(_REAL_SALES_VOLUMES),
+        )
         return {
-            "metadata": {"source": "REINZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_SALES_VOLUMES),
-                         "description": "National sales volumes monthly 2019-2025"},
+            "metadata": {
+                "source": "REINZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_SALES_VOLUMES),
+                "description": "National sales volumes monthly 2019-2025",
+            },
             "data": _REAL_SALES_VOLUMES,
         }
 
     def fetch_days_on_market(self) -> Dict[str, Any]:
         """Fetch national days on market."""
-        logger.info("  Days on market: using real historical data (%d records)", len(_REAL_DOM))
+        logger.info(
+            "  Days on market: using real historical data (%d records)", len(_REAL_DOM)
+        )
         return {
-            "metadata": {"source": "REINZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_DOM),
-                         "description": "National median days on market 2019-2025"},
+            "metadata": {
+                "source": "REINZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_DOM),
+                "description": "National median days on market 2019-2025",
+            },
             "data": _REAL_DOM,
         }
 
@@ -178,9 +315,12 @@ class REINZIngestor:
         """Fetch housing price index."""
         logger.info("  HPI: using real historical data (%d records)", len(_REAL_HPI))
         return {
-            "metadata": {"source": "REINZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(_REAL_HPI),
-                         "description": "Housing Price Index (base 2019-Q1=1000) 2019-2025"},
+            "metadata": {
+                "source": "REINZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(_REAL_HPI),
+                "description": "Housing Price Index (base 2019-Q1=1000) 2019-2025",
+            },
             "data": _REAL_HPI,
         }
 
@@ -190,11 +330,17 @@ class REINZIngestor:
             {"region": region, "median_price_nzd": price, "period": "2024-Q4"}
             for region, price in _REAL_REGIONAL_PRICES.items()
         ]
-        logger.info("  Regional prices: using real historical data (%d regions)", len(regional_data))
+        logger.info(
+            "  Regional prices: using real historical data (%d regions)",
+            len(regional_data),
+        )
         return {
-            "metadata": {"source": "REINZ (Historical)", "date_fetched": datetime.now().isoformat(),
-                         "record_count": len(regional_data),
-                         "description": "Regional median sale prices 2024-Q4"},
+            "metadata": {
+                "source": "REINZ (Historical)",
+                "date_fetched": datetime.now().isoformat(),
+                "record_count": len(regional_data),
+                "description": "Regional median sale prices 2024-Q4",
+            },
             "data": regional_data,
         }
 
@@ -229,7 +375,10 @@ class REINZIngestor:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     ingestor = REINZIngestor()
     results = ingestor.run_ingestion()
     for name, path in results.items():

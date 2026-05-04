@@ -1,4 +1,5 @@
 """Bronze Layer Orchestrator - Coordinates all data ingestion."""
+
 import hashlib
 import json
 import logging
@@ -14,16 +15,21 @@ try:
     from data_pipeline.bronze.ingestors.mbie_tourism_ingestor import MBIEIngestor
     from data_pipeline.bronze.ingestors.world_bank_ingestor import WorldBankIngestor
     from data_pipeline.bronze.ingestors.reinz_ingestor import REINZIngestor
+
     HAS_INGESTORS = True
 except ImportError as e:
     HAS_INGESTORS = False
-    print(f"Warning: Some ingestors not available. Running in simulation mode. Error: {e}")
+    print(
+        f"Warning: Some ingestors not available. Running in simulation mode. Error: {e}"
+    )
 
 
 class BronzeOrchestrator:
     """Orchestrates all bronze layer data ingestion."""
 
-    def __init__(self, data_dir: str = "data_pipeline/bronze", cache_ttl_seconds: int = 86400):
+    def __init__(
+        self, data_dir: str = "data_pipeline/bronze", cache_ttl_seconds: int = 86400
+    ):
         """Initialize orchestrator.
 
         Args:
@@ -50,7 +56,9 @@ class BronzeOrchestrator:
                 # "trade_me": TradeMeScraper(data_dir),
             }
         else:
-            self.logger.warning("Running in simulation mode - no real ingestors available")
+            self.logger.warning(
+                "Running in simulation mode - no real ingestors available"
+            )
 
         # Ingestion schedule
         self.schedule = {
@@ -86,7 +94,9 @@ class BronzeOrchestrator:
         serialized = json.dumps(record, sort_keys=True, default=str)
         return hashlib.sha256(serialized.encode()).hexdigest()[:16]
 
-    def deduplicate_records(self, records: List[Dict[str, Any]], source: str) -> List[Dict[str, Any]]:
+    def deduplicate_records(
+        self, records: List[Dict[str, Any]], source: str
+    ) -> List[Dict[str, Any]]:
         """Remove duplicate records based on content hash.
 
         Args:
@@ -114,7 +124,10 @@ class BronzeOrchestrator:
         if duplicates > 0:
             self.logger.info(
                 "  %s: removed %d duplicate records (%d → %d)",
-                source, duplicates, len(records), len(unique_records),
+                source,
+                duplicates,
+                len(records),
+                len(unique_records),
             )
 
         return unique_records
@@ -130,8 +143,15 @@ class BronzeOrchestrator:
     def _get_cached_data(self, source: str) -> Optional[Dict]:
         """Get cached data if valid."""
         if self._is_cache_valid(source):
-            self.logger.info("  %s: using cached data (age: %dh)", source,
-                           (datetime.now() - datetime.fromisoformat(self._cache[source]["cached_at"])).total_seconds() / 3600)
+            self.logger.info(
+                "  %s: using cached data (age: %dh)",
+                source,
+                (
+                    datetime.now()
+                    - datetime.fromisoformat(self._cache[source]["cached_at"])
+                ).total_seconds()
+                / 3600,
+            )
             return self._cache[source].get("data")
         return None
 
@@ -145,7 +165,9 @@ class BronzeOrchestrator:
         }
         self._save_cache()
 
-    def run_ingestor(self, ingestor_name: str, force_refresh: bool = False) -> Dict[str, Any]:
+    def run_ingestor(
+        self, ingestor_name: str, force_refresh: bool = False
+    ) -> Dict[str, Any]:
         """Run a specific ingestor.
 
         Args:
@@ -174,7 +196,9 @@ class BronzeOrchestrator:
                     results[name] = result
 
                 run_time = (datetime.now() - start_time).total_seconds()
-                total_success = sum(1 for r in results.values() if r.get("success", False))
+                total_success = sum(
+                    1 for r in results.values() if r.get("success", False)
+                )
 
                 result = {
                     "success": total_success == len(self.ingestors),
@@ -232,7 +256,11 @@ class BronzeOrchestrator:
                     data = json.load(f)
 
                 # Deduplicate records if data has a 'data' key with a list
-                if isinstance(data, dict) and "data" in data and isinstance(data["data"], list):
+                if (
+                    isinstance(data, dict)
+                    and "data" in data
+                    and isinstance(data["data"], list)
+                ):
                     original_count = len(data["data"])
                     data["data"] = self.deduplicate_records(data["data"], ingestor_name)
                     if len(data["data"]) < original_count:
@@ -257,7 +285,9 @@ class BronzeOrchestrator:
                         "success": result.get("success", False),
                         "listings_count": result.get("listings_count", 0),
                         "file_path": result.get("file_path"),
-                        "run_time_seconds": (datetime.now() - start_time).total_seconds(),
+                        "run_time_seconds": (
+                            datetime.now() - start_time
+                        ).total_seconds(),
                         "timestamp": datetime.now().isoformat(),
                     }
                 return {"success": False, "error": "Unexpected result format"}
@@ -273,7 +303,11 @@ class BronzeOrchestrator:
                 }
 
             elif ingestor_name in ["stats_nz", "linz", "mbie_tourism"]:
-                results = ingestor.run_all_ingestions() if hasattr(ingestor, "run_all_ingestions") else ingestor.run_ingestion()
+                results = (
+                    ingestor.run_all_ingestions()
+                    if hasattr(ingestor, "run_all_ingestions")
+                    else ingestor.run_ingestion()
+                )
                 return {
                     "success": bool(results),
                     "files_created": len(results),
@@ -283,7 +317,10 @@ class BronzeOrchestrator:
                 }
 
             else:
-                return {"success": False, "error": f"Unknown ingestor type: {ingestor_name}"}
+                return {
+                    "success": False,
+                    "error": f"Unknown ingestor type: {ingestor_name}",
+                }
 
         except Exception as e:
             return {
@@ -293,7 +330,9 @@ class BronzeOrchestrator:
                 "timestamp": datetime.now().isoformat(),
             }
 
-    def run_scheduled_ingestion(self, schedule_type: str = "daily", force_refresh: bool = False) -> Dict[str, Any]:
+    def run_scheduled_ingestion(
+        self, schedule_type: str = "daily", force_refresh: bool = False
+    ) -> Dict[str, Any]:
         """Run ingestion based on schedule."""
         if schedule_type not in self.schedule:
             return {
@@ -303,7 +342,9 @@ class BronzeOrchestrator:
             }
 
         ingestor_names = self.schedule[schedule_type]
-        self.logger.info("Running %s scheduled ingestion for: %s", schedule_type, ingestor_names)
+        self.logger.info(
+            "Running %s scheduled ingestion for: %s", schedule_type, ingestor_names
+        )
 
         results = {}
         for ingestor_name in ingestor_names:
@@ -333,7 +374,9 @@ class BronzeOrchestrator:
         source_count = 0
 
         for source_name in self.ingestors:
-            source_files = list(self.data_dir.glob(f"{source_name.replace('_tourism', '')}_*.json"))
+            source_files = list(
+                self.data_dir.glob(f"{source_name.replace('_tourism', '')}_*.json")
+            )
             # Also check mbie_ files for mbie_tourism
             if source_name == "mbie_tourism":
                 source_files = list(self.data_dir.glob("mbie_*.json"))
@@ -351,17 +394,19 @@ class BronzeOrchestrator:
 
             # Find most recent file
             latest_file = max(source_files, key=lambda f: f.stat().st_mtime)
-            file_age_seconds = (datetime.now() - datetime.fromtimestamp(latest_file.stat().st_mtime)).total_seconds()
+            file_age_seconds = (
+                datetime.now() - datetime.fromtimestamp(latest_file.stat().st_mtime)
+            ).total_seconds()
             file_age_days = file_age_seconds / 86400
 
             # Determine expected freshness by source
             expected_freshness = {
-                "world_bank": 7,     # Weekly updates
-                "rbnz": 7,           # Weekly updates
-                "stats_nz": 14,      # Bi-weekly updates
+                "world_bank": 7,  # Weekly updates
+                "rbnz": 7,  # Weekly updates
+                "stats_nz": 14,  # Bi-weekly updates
                 "mbie_tourism": 30,  # Monthly updates
-                "linz": 90,          # Quarterly updates
-                "reinz": 7,          # Weekly updates
+                "linz": 90,  # Quarterly updates
+                "reinz": 7,  # Weekly updates
             }
             max_age_days = expected_freshness.get(source_name, 14)
 
@@ -372,12 +417,16 @@ class BronzeOrchestrator:
             elif file_age_days <= max_age_days * 2:
                 score = max(0, 70 - (file_age_days / max_age_days) * 30)
                 status = "aging"
-                freshness_report["warnings"].append(f"{source_name}: data is {file_age_days:.0f} days old")
+                freshness_report["warnings"].append(
+                    f"{source_name}: data is {file_age_days:.0f} days old"
+                )
             else:
                 score = max(0, 40 - (file_age_days / max_age_days) * 20)
                 status = "stale"
                 freshness_report["stale_sources"].append(source_name)
-                freshness_report["warnings"].append(f"{source_name}: data is STALE ({file_age_days:.0f} days)")
+                freshness_report["warnings"].append(
+                    f"{source_name}: data is STALE ({file_age_days:.0f} days)"
+                )
 
             freshness_report["sources"][source_name] = {
                 "status": status,
@@ -386,14 +435,18 @@ class BronzeOrchestrator:
                 "age_days": round(file_age_days, 1),
                 "max_age_days": max_age_days,
                 "latest_file": latest_file.name,
-                "issues": [] if status == "fresh" else [f"Data is {file_age_days:.0f} days old (max: {max_age_days})"],
+                "issues": []
+                if status == "fresh"
+                else [f"Data is {file_age_days:.0f} days old (max: {max_age_days})"],
             }
 
             total_score += score
             source_count += 1
 
         if source_count > 0:
-            freshness_report["overall_freshness_score"] = round(total_score / source_count, 1)
+            freshness_report["overall_freshness_score"] = round(
+                total_score / source_count, 1
+            )
 
         return freshness_report
 
@@ -414,14 +467,25 @@ class BronzeOrchestrator:
             file_info = []
             for file_path in files:
                 stat = file_path.stat()
-                file_info.append({
-                    "filename": file_path.name,
-                    "size_bytes": stat.st_size,
-                    "last_modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
-                    "age_days": round((datetime.now() - datetime.fromtimestamp(stat.st_mtime)).days, 1),
-                })
+                file_info.append(
+                    {
+                        "filename": file_path.name,
+                        "size_bytes": stat.st_size,
+                        "last_modified": datetime.fromtimestamp(
+                            stat.st_mtime
+                        ).isoformat(),
+                        "age_days": round(
+                            (
+                                datetime.now() - datetime.fromtimestamp(stat.st_mtime)
+                            ).days,
+                            1,
+                        ),
+                    }
+                )
 
-            report["file_details"] = sorted(file_info, key=lambda x: x["last_modified"], reverse=True)
+            report["file_details"] = sorted(
+                file_info, key=lambda x: x["last_modified"], reverse=True
+            )
 
             # Group by source
             sources = {}
@@ -491,23 +555,34 @@ class BronzeOrchestrator:
 
                         if isinstance(data, dict):
                             if "metadata" not in data:
-                                source_issues.append(f"{file_path.name}: Missing metadata")
+                                source_issues.append(
+                                    f"{file_path.name}: Missing metadata"
+                                )
                                 source_score -= 5
 
                             if "data" not in data and "features" not in data:
-                                source_issues.append(f"{file_path.name}: No data/features key")
+                                source_issues.append(
+                                    f"{file_path.name}: No data/features key"
+                                )
                                 source_score -= 10
 
-                        file_age = (datetime.now() - datetime.fromtimestamp(file_path.stat().st_mtime)).days
+                        file_age = (
+                            datetime.now()
+                            - datetime.fromtimestamp(file_path.stat().st_mtime)
+                        ).days
                         if file_age > 30:
-                            source_issues.append(f"{file_path.name}: Data is {file_age} days old")
+                            source_issues.append(
+                                f"{file_path.name}: Data is {file_age} days old"
+                            )
                             source_score -= min(20, file_age - 30)
 
                     except json.JSONDecodeError:
                         source_issues.append(f"{file_path.name}: Invalid JSON")
                         source_score -= 15
                     except Exception as e:
-                        source_issues.append(f"{file_path.name}: Error reading - {str(e)[:50]}")
+                        source_issues.append(
+                            f"{file_path.name}: Error reading - {str(e)[:50]}"
+                        )
                         source_score -= 10
 
                 source_score = max(0, min(100, source_score))
@@ -523,14 +598,18 @@ class BronzeOrchestrator:
                 source_count += 1
 
             if source_count > 0:
-                quality_report["overall_quality_score"] = round(total_score / source_count, 1)
+                quality_report["overall_quality_score"] = round(
+                    total_score / source_count, 1
+                )
 
         except Exception as e:
             quality_report["validation_error"] = str(e)
 
         return quality_report
 
-    def save_report(self, report: Dict[str, Any], report_name: str = "ingestion_report.json") -> str:
+    def save_report(
+        self, report: Dict[str, Any], report_name: str = "ingestion_report.json"
+    ) -> str:
         """Save report to JSON file."""
         report_file = self.data_dir / report_name
         with open(report_file, "w") as f:
@@ -549,11 +628,29 @@ if __name__ == "__main__":
     )
 
     parser = argparse.ArgumentParser(description="Bronze Layer Orchestrator")
-    parser.add_argument("--run", choices=["all", "world_bank", "rbnz", "stats_nz", "linz", "mbie_tourism", "reinz", "trade_me"],
-                       default="all", help="Ingestor(s) to run")
-    parser.add_argument("--schedule", choices=["daily", "weekly", "monthly"],
-                       help="Run scheduled ingestion")
-    parser.add_argument("--force", action="store_true", help="Force refresh (skip cache)")
+    parser.add_argument(
+        "--run",
+        choices=[
+            "all",
+            "world_bank",
+            "rbnz",
+            "stats_nz",
+            "linz",
+            "mbie_tourism",
+            "reinz",
+            "trade_me",
+        ],
+        default="all",
+        help="Ingestor(s) to run",
+    )
+    parser.add_argument(
+        "--schedule",
+        choices=["daily", "weekly", "monthly"],
+        help="Run scheduled ingestion",
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Force refresh (skip cache)"
+    )
     parser.add_argument("--report", action="store_true", help="Generate report")
     parser.add_argument("--validate", action="store_true", help="Validate data quality")
     parser.add_argument("--freshness", action="store_true", help="Check data freshness")
@@ -564,8 +661,12 @@ if __name__ == "__main__":
 
     try:
         if args.schedule:
-            result = orchestrator.run_scheduled_ingestion(args.schedule, force_refresh=args.force)
-            print(f"Scheduled ingestion ({args.schedule}): {'SUCCESS' if result['success'] else 'FAILED'}")
+            result = orchestrator.run_scheduled_ingestion(
+                args.schedule, force_refresh=args.force
+            )
+            print(
+                f"Scheduled ingestion ({args.schedule}): {'SUCCESS' if result['success'] else 'FAILED'}"
+            )
             if not result["success"]:
                 for ingestor, res in result["results"].items():
                     if not res.get("success", False):
@@ -576,8 +677,15 @@ if __name__ == "__main__":
             print("Data Freshness Report:")
             print(f"Overall score: {freshness['overall_freshness_score']}/100")
             for source, info in freshness.get("sources", {}).items():
-                status_icon = {"fresh": "✓", "aging": "~", "stale": "✗", "missing": "?"}.get(info.get("status"), "?")
-                print(f"  {status_icon} {source}: {info.get('freshness_score')}/100 (age: {info.get('age_days', 'N/A')} days)")
+                status_icon = {
+                    "fresh": "✓",
+                    "aging": "~",
+                    "stale": "✗",
+                    "missing": "?",
+                }.get(info.get("status"), "?")
+                print(
+                    f"  {status_icon} {source}: {info.get('freshness_score')}/100 (age: {info.get('age_days', 'N/A')} days)"
+                )
             if freshness.get("warnings"):
                 print("\nWarnings:")
                 for w in freshness["warnings"]:
@@ -596,7 +704,9 @@ if __name__ == "__main__":
             print(f"Overall score: {quality_report['overall_quality_score']}/100")
             for source, info in quality_report.get("sources", {}).items():
                 status = "✓" if info.get("status") == "present" else "✗"
-                print(f"  {status} {source}: {info.get('quality_score')}/100 ({info.get('file_count')} files)")
+                print(
+                    f"  {status} {source}: {info.get('quality_score')}/100 ({info.get('file_count')} files)"
+                )
                 if info.get("issues"):
                     for issue in info["issues"][:2]:
                         print(f"    - {issue}")
@@ -605,9 +715,13 @@ if __name__ == "__main__":
             result = orchestrator.run_ingestor(args.run, force_refresh=args.force)
 
             if args.run == "all":
-                print(f"Complete ingestion run: {'SUCCESS' if result['success'] else 'FAILED'}")
+                print(
+                    f"Complete ingestion run: {'SUCCESS' if result['success'] else 'FAILED'}"
+                )
                 print(f"Time: {result.get('run_time_seconds', 0):.1f}s")
-                print(f"Ingestors: {result.get('ingestors_successful', 0)}/{result.get('ingestors_run', 0)} successful")
+                print(
+                    f"Ingestors: {result.get('ingestors_successful', 0)}/{result.get('ingestors_run', 0)} successful"
+                )
             else:
                 if result.get("success", False):
                     print(f"Ingestion {args.run}: SUCCESS")

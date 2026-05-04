@@ -3,6 +3,7 @@
 Supports log file, console, email, and webhook notification channels.
 Alerts are deduplicated within a cooldown window to prevent spam.
 """
+
 import json
 import logging
 import os
@@ -175,7 +176,9 @@ class AlertManager:
         }
         reset = "\033[0m"
         color = severity_colors.get(alert.severity, "")
-        print(f"{color}[{alert.severity.value.upper()}] {alert.title}: {alert.message}{reset}")
+        print(
+            f"{color}[{alert.severity.value.upper()}] {alert.title}: {alert.message}{reset}"
+        )
 
     def _dispatch_file(self, alert: Alert):
         alert_log = self.log_dir / "pipeline_alerts.jsonl"
@@ -186,18 +189,39 @@ class AlertManager:
         """Send alert to webhook URL (Slack, Discord, Teams, etc.)."""
         try:
             import urllib.request
-            payload = json.dumps({
-                "text": f"[{alert.severity.value.upper()}] {alert.title}",
-                "attachments": [{
-                    "color": self._severity_color(alert.severity),
-                    "fields": [
-                        {"title": "Message", "value": alert.message, "short": False},
-                        {"title": "Stage", "value": alert.pipeline_stage, "short": True},
-                        {"title": "Source", "value": alert.source, "short": True},
-                        {"title": "Time", "value": alert.timestamp.isoformat(), "short": True},
+
+            payload = json.dumps(
+                {
+                    "text": f"[{alert.severity.value.upper()}] {alert.title}",
+                    "attachments": [
+                        {
+                            "color": self._severity_color(alert.severity),
+                            "fields": [
+                                {
+                                    "title": "Message",
+                                    "value": alert.message,
+                                    "short": False,
+                                },
+                                {
+                                    "title": "Stage",
+                                    "value": alert.pipeline_stage,
+                                    "short": True,
+                                },
+                                {
+                                    "title": "Source",
+                                    "value": alert.source,
+                                    "short": True,
+                                },
+                                {
+                                    "title": "Time",
+                                    "value": alert.timestamp.isoformat(),
+                                    "short": True,
+                                },
+                            ],
+                        }
                     ],
-                }],
-            }).encode("utf-8")
+                }
+            ).encode("utf-8")
 
             req = urllib.request.Request(
                 self.webhook_url,
@@ -264,7 +288,8 @@ def create_alert_manager_from_env() -> AlertManager:
             r.strip()
             for r in os.getenv("ALERT_EMAIL_RECIPIENTS", "").split(",")
             if r.strip()
-        ] or None,
+        ]
+        or None,
         cooldown_seconds=int(os.getenv("ALERT_COOLDOWN_SECONDS", "300")),
         max_alerts_per_run=int(os.getenv("ALERT_MAX_PER_RUN", "50")),
     )
@@ -319,13 +344,19 @@ class SLATracker:
         deadline_minutes = self.stage_deadlines.get(stage_name, 15)
 
         if self.start_time:
-            elapsed = (self.stage_end_times[stage_name] - self.start_time).total_seconds() / 60
+            elapsed = (
+                self.stage_end_times[stage_name] - self.start_time
+            ).total_seconds() / 60
             if elapsed > deadline_minutes:
                 self.alert_manager.warning(
                     "Stage SLA Exceeded",
                     f"Stage '{stage_name}' took {elapsed:.1f}min (SLA: {deadline_minutes}min)",
                     pipeline_stage="sla",
-                    metadata={"stage": stage_name, "elapsed_min": round(elapsed, 1), "sla_min": deadline_minutes},
+                    metadata={
+                        "stage": stage_name,
+                        "elapsed_min": round(elapsed, 1),
+                        "sla_min": deadline_minutes,
+                    },
                 )
             else:
                 self.alert_manager.info(
@@ -349,7 +380,10 @@ class SLATracker:
                 "Pipeline SLA Violated",
                 f"Pipeline running for {elapsed:.1f}min (SLA: {self.max_duration_minutes}min)",
                 pipeline_stage="sla",
-                metadata={"elapsed_min": round(elapsed, 1), "sla_min": self.max_duration_minutes},
+                metadata={
+                    "elapsed_min": round(elapsed, 1),
+                    "sla_min": self.max_duration_minutes,
+                },
             )
             return False
         return True
@@ -376,7 +410,9 @@ class SLATracker:
             if stage in self.stage_end_times:
                 stage_info["ended_at"] = self.stage_end_times[stage].isoformat()
                 if stage in self.stage_start_times:
-                    elapsed = (self.stage_end_times[stage] - self.stage_start_times[stage]).total_seconds() / 60
+                    elapsed = (
+                        self.stage_end_times[stage] - self.stage_start_times[stage]
+                    ).total_seconds() / 60
                     stage_info["elapsed_minutes"] = round(elapsed, 1)
                     stage_info["sla_met"] = elapsed <= self.stage_deadlines[stage]
                     if not stage_info["sla_met"]:

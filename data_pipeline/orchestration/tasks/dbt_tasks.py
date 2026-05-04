@@ -1,4 +1,5 @@
 """dbt transformation tasks for Prefect orchestration."""
+
 import logging
 import sys
 from datetime import datetime

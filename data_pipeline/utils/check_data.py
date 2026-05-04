@@ -44,10 +44,14 @@ def validate_gold_data(base_dir, max_age_days=45):
 
         missing_columns = [col for col in REQUIRED_COLUMNS if col not in df.columns]
         if missing_columns:
-            issues.append(f"schema_error:{filename}:missing={','.join(missing_columns)}")
+            issues.append(
+                f"schema_error:{filename}:missing={','.join(missing_columns)}"
+            )
 
         row_count = len(df)
-        null_value_count = int(df["value"].isna().sum()) if "value" in df.columns else row_count
+        null_value_count = (
+            int(df["value"].isna().sum()) if "value" in df.columns else row_count
+        )
 
         if row_count == 0:
             issues.append(f"empty_file:{filename}")
@@ -81,7 +85,9 @@ def main():
         default=45,
         help="Maximum allowed age (days) for latest Gold file",
     )
-    parser.add_argument("--quiet", action="store_true", help="Only print one-line result")
+    parser.add_argument(
+        "--quiet", action="store_true", help="Only print one-line result"
+    )
     args = parser.parse_args()
 
     ok, issues, stats = validate_gold_data(args.gold_dir, args.max_age_days)

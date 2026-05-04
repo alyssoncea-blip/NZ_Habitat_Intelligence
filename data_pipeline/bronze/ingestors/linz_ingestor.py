@@ -3,6 +3,7 @@
 Fetches real geographic boundaries from LINZ Data Service WFS endpoints.
 Falls back to curated regional centroid data if WFS is unavailable.
 """
+
 import json
 import logging
 from datetime import datetime
@@ -76,12 +77,16 @@ class LINZIngestor:
     @staticmethod
     def _create_session() -> requests.Session:
         session = requests.Session()
-        retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+        retry = Retry(
+            total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504]
+        )
         session.mount("https://", HTTPAdapter(max_retries=retry))
-        session.headers.update({
-            "User-Agent": "NZHabitatIntelligence/2.0",
-            "Accept": "application/json, */*",
-        })
+        session.headers.update(
+            {
+                "User-Agent": "NZHabitatIntelligence/2.0",
+                "Accept": "application/json, */*",
+            }
+        )
         return session
 
     def _fetch_wfs(self, endpoint_config: Dict, description: str) -> Optional[Dict]:
@@ -95,7 +100,11 @@ class LINZIngestor:
             data = resp.json()
 
             if "features" in data and len(data["features"]) > 0:
-                logger.info("  %s: %d features from LINZ WFS", description, len(data["features"]))
+                logger.info(
+                    "  %s: %d features from LINZ WFS",
+                    description,
+                    len(data["features"]),
+                )
                 return data
         except Exception as e:
             logger.debug("  WFS fetch failed for %s: %s", description, e)
@@ -104,7 +113,9 @@ class LINZIngestor:
     def fetch_regional_boundaries(self) -> Dict[str, Any]:
         """Fetch regional council boundaries from LINZ WFS."""
         # Strategy 1: Real WFS GeoJSON
-        wfs_data = self._fetch_wfs(LINZ_WFS_ENDPOINTS["regional_boundaries"], "regional boundaries")
+        wfs_data = self._fetch_wfs(
+            LINZ_WFS_ENDPOINTS["regional_boundaries"], "regional boundaries"
+        )
         if wfs_data:
             return {
                 "metadata": {
@@ -121,7 +132,10 @@ class LINZIngestor:
             }
 
         # Fallback: curated regional data with simplified polygons
-        logger.info("  Regional boundaries: using fallback centroid data (%d regions)", len(_NZ_REGIONS))
+        logger.info(
+            "  Regional boundaries: using fallback centroid data (%d regions)",
+            len(_NZ_REGIONS),
+        )
         boundaries_data = []
         for region, info in _NZ_REGIONS.items():
             lat, lon = info["center"]
@@ -132,18 +146,22 @@ class LINZIngestor:
                 [lon - 0.5, lat + 0.3],
                 [lon - 0.5, lat - 0.3],
             ]
-            boundaries_data.append({
-                "type": "Feature",
-                "properties": {
-                    "region_name": region,
-                    "region_code": region.upper().replace("'", "").replace("-", "_")[:10],
-                    "area_sq_km": info["area_km2"],
-                },
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [bbox],
-                },
-            })
+            boundaries_data.append(
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "region_name": region,
+                        "region_code": region.upper()
+                        .replace("'", "")
+                        .replace("-", "_")[:10],
+                        "area_sq_km": info["area_km2"],
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [bbox],
+                    },
+                }
+            )
 
         return {
             "metadata": {
@@ -160,7 +178,9 @@ class LINZIngestor:
 
     def fetch_territorial_authorities(self) -> Dict[str, Any]:
         """Fetch territorial authority boundaries from LINZ WFS."""
-        wfs_data = self._fetch_wfs(LINZ_WFS_ENDPOINTS["territorial_boundaries"], "territorial authorities")
+        wfs_data = self._fetch_wfs(
+            LINZ_WFS_ENDPOINTS["territorial_boundaries"], "territorial authorities"
+        )
         if wfs_data:
             return {
                 "metadata": {
@@ -184,7 +204,11 @@ class LINZIngestor:
             {"name": "Hamilton", "region": "Waikato", "population": 180000},
             {"name": "Tauranga", "region": "Bay of Plenty", "population": 160000},
             {"name": "Dunedin", "region": "Otago", "population": 120000},
-            {"name": "Palmerston North", "region": "Manawatu-Wanganui", "population": 90000},
+            {
+                "name": "Palmerston North",
+                "region": "Manawatu-Wanganui",
+                "population": 90000,
+            },
             {"name": "Napier", "region": "Hawke's Bay", "population": 66000},
             {"name": "Hastings", "region": "Hawke's Bay", "population": 82000},
             {"name": "Nelson", "region": "Nelson", "population": 54000},
@@ -198,18 +222,22 @@ class LINZIngestor:
 
         ta_data = []
         for ta in territorial_authorities:
-            region_info = _NZ_REGIONS.get(ta["region"], {"center": (-41.2865, 174.7762)})
+            region_info = _NZ_REGIONS.get(
+                ta["region"], {"center": (-41.2865, 174.7762)}
+            )
             lat, lon = region_info["center"]
             lat += (hash(ta["name"]) % 100) / 1000 - 0.05
             lon += (hash(ta["name"] + "2") % 100) / 1000 - 0.05
 
-            ta_data.append({
-                "territorial_authority": ta["name"],
-                "region": ta["region"],
-                "population": ta["population"],
-                "center_latitude": round(lat, 6),
-                "center_longitude": round(lon, 6),
-            })
+            ta_data.append(
+                {
+                    "territorial_authority": ta["name"],
+                    "region": ta["region"],
+                    "population": ta["population"],
+                    "center_latitude": round(lat, 6),
+                    "center_longitude": round(lon, 6),
+                }
+            )
 
         return {
             "metadata": {
@@ -237,13 +265,17 @@ class LINZIngestor:
 
         try:
             boundaries_data = self.fetch_regional_boundaries()
-            results["regional_boundaries"] = self.save_data("regional_boundaries", boundaries_data)
+            results["regional_boundaries"] = self.save_data(
+                "regional_boundaries", boundaries_data
+            )
         except Exception as e:
             logger.error("Regional boundaries ingestion failed: %s", e)
 
         try:
             ta_data = self.fetch_territorial_authorities()
-            results["territorial_authorities"] = self.save_data("territorial_authorities", ta_data)
+            results["territorial_authorities"] = self.save_data(
+                "territorial_authorities", ta_data
+            )
         except Exception as e:
             logger.error("Territorial authorities ingestion failed: %s", e)
 
@@ -252,7 +284,10 @@ class LINZIngestor:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     ingestor = LINZIngestor()
     results = ingestor.run_all_ingestions()
     for data_type, file_path in results.items():

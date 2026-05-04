@@ -2,6 +2,7 @@
 Monitoring and Alerting for NZ Habitat Intelligence Pipeline.
 Provides metrics collection, health checks, and alerting capabilities for production.
 """
+
 import json
 import logging
 from datetime import datetime
@@ -18,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class AlertLevel(Enum):
     """Alert severity levels."""
+
     INFO = "info"
     WARNING = "warning"
     ERROR = "error"
@@ -26,6 +28,7 @@ class AlertLevel(Enum):
 
 class MetricType(Enum):
     """Types of metrics to track."""
+
     GAUGE = "gauge"  # Single value
     COUNTER = "counter"  # Incremental count
     HISTOGRAM = "histogram"  # Distribution
@@ -35,6 +38,7 @@ class MetricType(Enum):
 @dataclass
 class Alert:
     """Represents a monitoring alert."""
+
     level: AlertLevel
     title: str
     message: str
@@ -56,6 +60,7 @@ class Alert:
 @dataclass
 class Metric:
     """Represents a metric data point."""
+
     name: str
     value: float
     metric_type: MetricType
@@ -112,7 +117,7 @@ class MonitoringClient:
         value: float,
         metric_type: MetricType = MetricType.GAUGE,
         tags: Optional[Dict[str, str]] = None,
-        unit: str = ""
+        unit: str = "",
     ):
         """
         Record a metric value.
@@ -125,11 +130,7 @@ class MonitoringClient:
             unit: Unit of measurement
         """
         metric = Metric(
-            name=name,
-            value=value,
-            metric_type=metric_type,
-            tags=tags or {},
-            unit=unit
+            name=name, value=value, metric_type=metric_type, tags=tags or {}, unit=unit
         )
         self._metrics.append(metric)
         self.logger.debug(f"Recorded metric: {name}={value} {unit}")
@@ -141,7 +142,7 @@ class MonitoringClient:
         duration_seconds: float,
         success: bool,
         records_processed: int = 0,
-        error_message: Optional[str] = None
+        error_message: Optional[str] = None,
     ):
         """
         Record a pipeline execution metric.
@@ -157,7 +158,7 @@ class MonitoringClient:
         tags = {
             "pipeline": pipeline,
             "stage": stage,
-            "status": "success" if success else "failure"
+            "status": "success" if success else "failure",
         }
 
         self.record_metric(
@@ -165,7 +166,7 @@ class MonitoringClient:
             duration_seconds,
             MetricType.TIMER,
             tags=tags,
-            unit="seconds"
+            unit="seconds",
         )
 
         self.record_metric(
@@ -173,7 +174,7 @@ class MonitoringClient:
             records_processed,
             MetricType.GAUGE,
             tags=tags,
-            unit="records"
+            unit="records",
         )
 
         if not success:
@@ -181,7 +182,7 @@ class MonitoringClient:
                 AlertLevel.ERROR,
                 f"Pipeline {pipeline}/{stage} failed",
                 error_message or "Unknown error",
-                source=f"{pipeline}.{stage}"
+                source=f"{pipeline}.{stage}",
             )
 
     def record_kpi_metrics(self, kpis_df: pd.DataFrame):
@@ -206,7 +207,7 @@ class MonitoringClient:
                     float(row["value"]) if pd.notna(row["value"]) else 0,
                     MetricType.GAUGE,
                     tags=tags,
-                    unit=str(row.get("unit", ""))
+                    unit=str(row.get("unit", "")),
                 )
 
             if "confidence" in row:
@@ -215,7 +216,7 @@ class MonitoringClient:
                     float(row["confidence"]) if pd.notna(row["confidence"]) else 0,
                     MetricType.GAUGE,
                     tags=tags,
-                    unit="score"
+                    unit="score",
                 )
 
     def record_data_quality_metrics(self, quality_report: Dict[str, Any]):
@@ -230,7 +231,7 @@ class MonitoringClient:
                 "data_quality.overall_score",
                 quality_report["overall_quality_score"],
                 MetricType.GAUGE,
-                unit="score"
+                unit="score",
             )
 
         if "artifacts_total" in quality_report:
@@ -238,7 +239,7 @@ class MonitoringClient:
                 "data_quality.artifact_count",
                 quality_report["artifacts_total"],
                 MetricType.GAUGE,
-                unit="artifacts"
+                unit="artifacts",
             )
 
     def record_alert(
@@ -247,7 +248,7 @@ class MonitoringClient:
         title: str,
         message: str,
         source: str,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         """
         Record an alert.
@@ -264,7 +265,7 @@ class MonitoringClient:
             title=title,
             message=message,
             source=source,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
         self._alerts.append(alert)
 
@@ -301,17 +302,20 @@ class MonitoringClient:
                     title=f"Low confidence KPI: {row.get('name', 'Unknown')}",
                     message=f"Confidence score {row.get('confidence', 0):.1f} is below threshold {threshold}",
                     source="kpi_monitor",
-                    metadata={"kpi_name": row.get("name"), "confidence": row.get("confidence")}
+                    metadata={
+                        "kpi_name": row.get("name"),
+                        "confidence": row.get("confidence"),
+                    },
                 )
                 alerts.append(alert)
-                self.logger.warning(f"Low confidence KPI: {row.get('name')} = {row.get('confidence')}")
+                self.logger.warning(
+                    f"Low confidence KPI: {row.get('name')} = {row.get('confidence')}"
+                )
 
         return alerts
 
     def check_data_freshness(
-        self,
-        contract_path: str,
-        max_age_hours: Optional[int] = None
+        self, contract_path: str, max_age_hours: Optional[int] = None
     ) -> Optional[Alert]:
         """
         Check if data is fresh enough.
@@ -323,7 +327,9 @@ class MonitoringClient:
         Returns:
             Alert if data is stale, None otherwise
         """
-        max_age = max_age_hours or self.config["alert_thresholds"]["data_freshness_max_hours"]
+        max_age = (
+            max_age_hours or self.config["alert_thresholds"]["data_freshness_max_hours"]
+        )
 
         try:
             contract_file = Path(contract_path)
@@ -340,9 +346,11 @@ class MonitoringClient:
                     title=f"Stale data detected: {contract_file.name}",
                     message=f"Data is {age_hours:.1f} hours old (max: {max_age})",
                     source="freshness_check",
-                    metadata={"age_hours": age_hours, "max_age_hours": max_age}
+                    metadata={"age_hours": age_hours, "max_age_hours": max_age},
                 )
-                self.logger.warning(f"Stale data: {contract_file.name} is {age_hours:.1f}h old")
+                self.logger.warning(
+                    f"Stale data: {contract_file.name} is {age_hours:.1f}h old"
+                )
                 return alert
 
         except Exception as e:
@@ -350,7 +358,9 @@ class MonitoringClient:
 
         return None
 
-    def check_pipeline_health(self, bronze_dir: str, silver_dir: str, gold_dir: str) -> Dict[str, Any]:
+    def check_pipeline_health(
+        self, bronze_dir: str, silver_dir: str, gold_dir: str
+    ) -> Dict[str, Any]:
         """
         Perform comprehensive pipeline health check.
 
@@ -366,7 +376,7 @@ class MonitoringClient:
             "timestamp": datetime.now().isoformat(),
             "status": "healthy",
             "checks": {},
-            "alerts": []
+            "alerts": [],
         }
 
         # Check bronze layer
@@ -389,16 +399,15 @@ class MonitoringClient:
 
         # Overall data count check
         total_files = (
-            bronze_status["file_count"] +
-            silver_status["file_count"] +
-            gold_status["file_count"]
+            bronze_status["file_count"]
+            + silver_status["file_count"]
+            + gold_status["file_count"]
         )
         if total_files == 0:
             results["status"] = "critical"
-            results["alerts"].append({
-                "level": "critical",
-                "message": "No data files found in pipeline"
-            })
+            results["alerts"].append(
+                {"level": "critical", "message": "No data files found in pipeline"}
+            )
 
         return results
 
@@ -409,7 +418,7 @@ class MonitoringClient:
             "status": "healthy",
             "file_count": 0,
             "contract_count": 0,
-            "latest_file": None
+            "latest_file": None,
         }
 
         if not layer_path.exists():
@@ -456,19 +465,18 @@ class MonitoringClient:
 
         summaries = []
         for name, values in by_name.items():
-            summaries.append({
-                "name": name,
-                "count": len(values),
-                "min": min(values),
-                "max": max(values),
-                "mean": np.mean(values),
-                "latest": values[-1]
-            })
+            summaries.append(
+                {
+                    "name": name,
+                    "count": len(values),
+                    "min": min(values),
+                    "max": max(values),
+                    "mean": np.mean(values),
+                    "latest": values[-1],
+                }
+            )
 
-        return {
-            "count": len(self._metrics),
-            "metrics": summaries
-        }
+        return {"count": len(self._metrics), "metrics": summaries}
 
     def get_alerts_summary(self) -> Dict[str, Any]:
         """Get summary of recorded alerts."""
@@ -483,7 +491,7 @@ class MonitoringClient:
         return {
             "count": len(self._alerts),
             "alerts": [a.to_dict() for a in self._alerts[-10:]],  # Last 10
-            "by_level": by_level
+            "by_level": by_level,
         }
 
     def export_metrics(self, output_path: str):
@@ -499,8 +507,8 @@ class MonitoringClient:
             "alerts": [a.to_dict() for a in self._alerts],
             "summary": {
                 "metrics": self.get_metrics_summary(),
-                "alerts": self.get_alerts_summary()
-            }
+                "alerts": self.get_alerts_summary(),
+            },
         }
 
         with open(output_path, "w") as f:
@@ -519,10 +527,11 @@ def create_health_check_handler(monitoring_client: MonitoringClient) -> Callable
     Returns:
         Handler function that can be called periodically
     """
+
     def health_check(
         bronze_dir: str = "data_pipeline/bronze",
         silver_dir: str = "data_pipeline/silver",
-        gold_dir: str = "data_pipeline/gold"
+        gold_dir: str = "data_pipeline/gold",
     ) -> Dict[str, Any]:
         """Run health check and return results."""
         results = monitoring_client.check_pipeline_health(
@@ -534,7 +543,7 @@ def create_health_check_handler(monitoring_client: MonitoringClient) -> Callable
             "health.check.status",
             1 if results["status"] == "healthy" else 0,
             MetricType.GAUGE,
-            tags={"status": results["status"]}
+            tags={"status": results["status"]},
         )
 
         return results

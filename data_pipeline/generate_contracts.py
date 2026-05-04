@@ -1,4 +1,5 @@
 """Generate data contracts for Silver and Gold layer artifacts."""
+
 import json
 import logging
 import os
@@ -11,29 +12,92 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data_pipeline.utils.data_contract import (
-    DataContract, DataQuality, DataSource, ColumnContract,
+    DataContract,
+    DataQuality,
+    DataSource,
+    ColumnContract,
 )
 
 logger = logging.getLogger(__name__)
 
 # Silver layer: feature sets produced by feature_engineer.py
 SILVER_FEATURES = [
-    ("affordability", "affordability_features.parquet", DataSource.PROXY, "World Bank + Stats NZ proxy"),
-    ("interest_rate_lag", "interest_rate_lag_features.parquet", DataSource.PROXY, "World Bank interest rate lag features"),
-    ("tourism_pressure", "tourism_pressure_features.parquet", DataSource.PROXY, "World Bank + MBIE tourism proxy"),
-    ("supply_deficit", "supply_deficit_features.parquet", DataSource.PROXY, "World Bank + Stats NZ building consents proxy"),
-    ("rent_income_ratio", "rent_income_ratio_features.parquet", DataSource.PROXY, "World Bank GDP/income proxy"),
-    ("tourism_lag_analysis", "tourism_lag_analysis_features.parquet", DataSource.PROXY, "Tourism lag correlation features"),
+    (
+        "affordability",
+        "affordability_features.parquet",
+        DataSource.PROXY,
+        "World Bank + Stats NZ proxy",
+    ),
+    (
+        "interest_rate_lag",
+        "interest_rate_lag_features.parquet",
+        DataSource.PROXY,
+        "World Bank interest rate lag features",
+    ),
+    (
+        "tourism_pressure",
+        "tourism_pressure_features.parquet",
+        DataSource.PROXY,
+        "World Bank + MBIE tourism proxy",
+    ),
+    (
+        "supply_deficit",
+        "supply_deficit_features.parquet",
+        DataSource.PROXY,
+        "World Bank + Stats NZ building consents proxy",
+    ),
+    (
+        "rent_income_ratio",
+        "rent_income_ratio_features.parquet",
+        DataSource.PROXY,
+        "World Bank GDP/income proxy",
+    ),
+    (
+        "tourism_lag_analysis",
+        "tourism_lag_analysis_features.parquet",
+        DataSource.PROXY,
+        "Tourism lag correlation features",
+    ),
 ]
 
 # Gold layer: KPI parquet files
 GOLD_KPIS = [
-    ("01-executive_complete", "kpis-01-executive_complete.parquet", DataSource.PROXY, "Executive dashboard KPIs"),
-    ("02-housing_complete", "kpis-02-housing_complete.parquet", DataSource.PROXY, "Housing dashboard KPIs"),
-    ("03-tourism_complete", "kpis-03-tourism_complete.parquet", DataSource.PROXY, "Tourism dashboard KPIs"),
-    ("04-macro_complete", "kpis-04-macro_complete.parquet", DataSource.PROXY, "Macro dashboard KPIs"),
-    ("05-affordability_complete", "kpis-05-affordability_complete.parquet", DataSource.PROXY, "Affordability dashboard KPIs"),
-    ("06-forecast_complete", "kpis-06-forecast_complete.parquet", DataSource.PROXY, "Forecast dashboard KPIs"),
+    (
+        "01-executive_complete",
+        "kpis-01-executive_complete.parquet",
+        DataSource.PROXY,
+        "Executive dashboard KPIs",
+    ),
+    (
+        "02-housing_complete",
+        "kpis-02-housing_complete.parquet",
+        DataSource.PROXY,
+        "Housing dashboard KPIs",
+    ),
+    (
+        "03-tourism_complete",
+        "kpis-03-tourism_complete.parquet",
+        DataSource.PROXY,
+        "Tourism dashboard KPIs",
+    ),
+    (
+        "04-macro_complete",
+        "kpis-04-macro_complete.parquet",
+        DataSource.PROXY,
+        "Macro dashboard KPIs",
+    ),
+    (
+        "05-affordability_complete",
+        "kpis-05-affordability_complete.parquet",
+        DataSource.PROXY,
+        "Affordability dashboard KPIs",
+    ),
+    (
+        "06-forecast_complete",
+        "kpis-06-forecast_complete.parquet",
+        DataSource.PROXY,
+        "Forecast dashboard KPIs",
+    ),
 ]
 
 
@@ -59,8 +123,12 @@ def _analyze_dataframe(df: pd.DataFrame) -> dict:
 
         # Add min/max for numeric columns
         if pd.api.types.is_numeric_dtype(df[col]):
-            col_contract.min_value = float(df[col].min()) if not df[col].isnull().all() else None
-            col_contract.max_value = float(df[col].max()) if not df[col].isnull().all() else None
+            col_contract.min_value = (
+                float(df[col].min()) if not df[col].isnull().all() else None
+            )
+            col_contract.max_value = (
+                float(df[col].max()) if not df[col].isnull().all() else None
+            )
 
         # Add sample values
         non_null = df[col].dropna()
@@ -113,7 +181,9 @@ def generate_silver_contracts(silver_dir: str = "data_pipeline/silver") -> dict:
                 column_count=analysis["column_count"],
                 null_percentage=null_pct,
                 columns=analysis["columns"],
-                parent_contracts=[str(p) for p in Path("data_pipeline/bronze").glob("*.contract.json")],
+                parent_contracts=[
+                    str(p) for p in Path("data_pipeline/bronze").glob("*.contract.json")
+                ],
                 notes=f"Silver feature set: {name}. Derived from Bronze layer World Bank/Stats NZ proxy data.",
             )
 
@@ -122,7 +192,11 @@ def generate_silver_contracts(silver_dir: str = "data_pipeline/silver") -> dict:
                 json.dump(contract.to_dict(), f, indent=2, default=str)
 
             contracts[filename] = contract_path
-            logger.info("Generated contract for %s (%d records)", filename, analysis["record_count"])
+            logger.info(
+                "Generated contract for %s (%d records)",
+                filename,
+                analysis["record_count"],
+            )
 
         except Exception as e:
             logger.error("Failed to generate contract for %s: %s", filename, e)
@@ -157,7 +231,9 @@ def generate_gold_contracts(gold_dir: str = "data_pipeline/gold") -> dict:
                 column_count=analysis["column_count"],
                 null_percentage=analysis["null_pct"],
                 columns=analysis["columns"],
-                parent_contracts=[str(p) for p in Path("data_pipeline/silver").glob("*.contract.json")],
+                parent_contracts=[
+                    str(p) for p in Path("data_pipeline/silver").glob("*.contract.json")
+                ],
                 notes=f"Gold KPI set: {name}. Computed from Silver layer features.",
             )
 
@@ -166,7 +242,11 @@ def generate_gold_contracts(gold_dir: str = "data_pipeline/gold") -> dict:
                 json.dump(contract.to_dict(), f, indent=2, default=str)
 
             contracts[filename] = contract_path
-            logger.info("Generated contract for %s (%d records)", filename, analysis["record_count"])
+            logger.info(
+                "Generated contract for %s (%d records)",
+                filename,
+                analysis["record_count"],
+            )
 
         except Exception as e:
             logger.error("Failed to generate contract for %s: %s", filename, e)
@@ -175,7 +255,10 @@ def generate_gold_contracts(gold_dir: str = "data_pipeline/gold") -> dict:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
 
     print("Generating Silver layer contracts...")
     silver_contracts = generate_silver_contracts()

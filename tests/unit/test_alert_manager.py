@@ -1,8 +1,12 @@
-﻿"""Unit tests for AlertManager and pipeline monitoring."""
+"""Unit tests for AlertManager and pipeline monitoring."""
 
 import pytest
 
-from data_pipeline.utils.alert_manager import AlertManager, AlertSeverity, create_alert_manager_from_env
+from data_pipeline.utils.alert_manager import (
+    AlertManager,
+    AlertSeverity,
+    create_alert_manager_from_env,
+)
 
 
 class TestAlertSeverity:
@@ -123,12 +127,14 @@ class TestPipelineMonitor:
     def test_monitor_initialization(self):
         """Test MonitoringClient initializes correctly."""
         from data_pipeline.utils.pipeline_monitor import MonitoringClient
+
         monitor = MonitoringClient()
         assert monitor is not None
 
     def test_metric_type_enum(self):
         """Test MetricType enum values."""
         from data_pipeline.utils.pipeline_monitor import MetricType
+
         assert MetricType.COUNTER.value == "counter"
         assert MetricType.TIMER.value == "timer"
         assert MetricType.GAUGE.value == "gauge"
@@ -136,6 +142,7 @@ class TestPipelineMonitor:
     def test_record_metric(self):
         """Test recording a metric."""
         from data_pipeline.utils.pipeline_monitor import MonitoringClient, MetricType
+
         monitor = MonitoringClient()
         monitor.record_metric("test.metric", 42.0, MetricType.COUNTER, unit="count")
         summary = monitor.get_metrics_summary()
@@ -144,6 +151,7 @@ class TestPipelineMonitor:
     def test_record_pipeline_metric(self):
         """Test recording a pipeline metric."""
         from data_pipeline.utils.pipeline_monitor import MonitoringClient
+
         monitor = MonitoringClient()
         monitor.record_pipeline_metric("pipeline", "bronze", 5.2, success=True)
         summary = monitor.get_metrics_summary()
@@ -152,6 +160,7 @@ class TestPipelineMonitor:
     def test_get_metrics(self):
         """Test retrieving metrics."""
         from data_pipeline.utils.pipeline_monitor import MonitoringClient, MetricType
+
         monitor = MonitoringClient()
         monitor.record_metric("test.a", 1.0, MetricType.COUNTER)
         monitor.record_metric("test.b", 2.0, MetricType.GAUGE)

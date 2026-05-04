@@ -13,6 +13,7 @@ Usage:
     api_key = secrets.get("API_KEY")
     db_password = secrets.get("DB_PASSWORD", required=True)
 """
+
 import os
 import json
 import logging

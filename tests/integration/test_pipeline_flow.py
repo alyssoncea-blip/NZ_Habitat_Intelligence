@@ -2,6 +2,7 @@
 Integration tests for NZ Habitat Intelligence pipeline.
 Tests the complete flow from Bronze -> Silver -> Gold.
 """
+
 import os
 from pathlib import Path
 
@@ -10,12 +11,16 @@ import pandas as pd
 import pytest
 
 import sys
+
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from data_pipeline.utils.data_contract import (  # noqa: E402
-    DataSource, DataQuality, create_contract, save_dataframe_with_contract,
-    load_with_contract
+    DataSource,
+    DataQuality,
+    create_contract,
+    save_dataframe_with_contract,
+    load_with_contract,
 )
 
 
@@ -28,7 +33,9 @@ class TestBronzeToSilverFlow:
         for col in required_columns:
             assert col in sample_bronze_world_bank.columns, f"Missing column: {col}"
 
-    def test_bronze_world_bank_contract_creation(self, temp_dir, sample_bronze_world_bank):
+    def test_bronze_world_bank_contract_creation(
+        self, temp_dir, sample_bronze_world_bank
+    ):
         """Test that bronze data can be saved with a contract."""
         output_path = temp_dir / "bronze" / "gdp.parquet"
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -40,11 +47,7 @@ class TestBronzeToSilverFlow:
             source_name="world_bank_api",
         )
 
-        save_dataframe_with_contract(
-            sample_bronze_world_bank,
-            output_path,
-            contract
-        )
+        save_dataframe_with_contract(sample_bronze_world_bank, output_path, contract)
 
         assert output_path.exists(), "Parquet file should exist"
 
@@ -63,11 +66,7 @@ class TestBronzeToSilverFlow:
             source_name="world_bank_api",
         )
 
-        save_dataframe_with_contract(
-            sample_bronze_world_bank,
-            output_path,
-            contract
-        )
+        save_dataframe_with_contract(sample_bronze_world_bank, output_path, contract)
 
         loaded_df, loaded_contract = load_with_contract(output_path)
 
@@ -82,11 +81,18 @@ class TestSilverToGoldFlow:
 
     def test_silver_features_have_quality_tracking(self, sample_silver_affordability):
         """Test that silver features have quality tracking metadata."""
-        assert "region" in sample_silver_affordability.columns or "year" in sample_silver_affordability.columns
-        numeric_cols = sample_silver_affordability.select_dtypes(include=[np.number]).columns
+        assert (
+            "region" in sample_silver_affordability.columns
+            or "year" in sample_silver_affordability.columns
+        )
+        numeric_cols = sample_silver_affordability.select_dtypes(
+            include=[np.number]
+        ).columns
         assert len(numeric_cols) > 0, "Should have numeric columns for KPIs"
 
-    def test_silver_to_gold_data_contract_preserved(self, temp_dir, sample_silver_affordability):
+    def test_silver_to_gold_data_contract_preserved(
+        self, temp_dir, sample_silver_affordability
+    ):
         """Test that contract metadata is preserved through silver processing."""
         output_path = temp_dir / "silver" / "affordability.parquet"
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -98,11 +104,7 @@ class TestSilverToGoldFlow:
             source_name="stats_nz",
         )
 
-        save_dataframe_with_contract(
-            sample_silver_affordability,
-            output_path,
-            contract
-        )
+        save_dataframe_with_contract(sample_silver_affordability, output_path, contract)
 
         loaded_df, loaded_contract = load_with_contract(output_path)
 
@@ -179,8 +181,13 @@ class TestPipelineIntegration:
 
         quality = contract.get("quality", DataQuality.UNKNOWN)
 
-        assert quality in [DataQuality.EXCELLENT, DataQuality.GOOD, DataQuality.FAIR,
-                          DataQuality.POOR, DataQuality.UNKNOWN]
+        assert quality in [
+            DataQuality.EXCELLENT,
+            DataQuality.GOOD,
+            DataQuality.FAIR,
+            DataQuality.POOR,
+            DataQuality.UNKNOWN,
+        ]
 
     def test_data_source_provenance(self, temp_dir, sample_bronze_world_bank):
         """Test that data source provenance is tracked through pipeline."""
@@ -206,19 +213,33 @@ class TestDataQualityValidation:
 
     def test_world_bank_data_validity(self, sample_bronze_world_bank):
         """Test World Bank data meets validity requirements."""
-        assert sample_bronze_world_bank["value"].notna().sum() > 0, "Should have non-null values"
-        assert sample_bronze_world_bank["year"].min() >= 1960, "Year should be reasonable"
-        assert sample_bronze_world_bank["country"].nunique() > 0, "Should have countries"
+        assert sample_bronze_world_bank["value"].notna().sum() > 0, (
+            "Should have non-null values"
+        )
+        assert sample_bronze_world_bank["year"].min() >= 1960, (
+            "Year should be reasonable"
+        )
+        assert sample_bronze_world_bank["country"].nunique() > 0, (
+            "Should have countries"
+        )
 
     def test_population_data_validity(self, sample_bronze_population):
         """Test population data meets validity requirements."""
-        assert (sample_bronze_population["population"] > 0).all(), "Population should be positive"
-        assert (sample_bronze_population["growth_rate"] >= -10).all(), "Growth rate should be reasonable"
-        assert (sample_bronze_population["growth_rate"] <= 20).all(), "Growth rate should be reasonable"
+        assert (sample_bronze_population["population"] > 0).all(), (
+            "Population should be positive"
+        )
+        assert (sample_bronze_population["growth_rate"] >= -10).all(), (
+            "Growth rate should be reasonable"
+        )
+        assert (sample_bronze_population["growth_rate"] <= 20).all(), (
+            "Growth rate should be reasonable"
+        )
 
     def test_tourism_data_validity(self, sample_bronze_mbie_tourism):
         """Test tourism data meets validity requirements."""
-        assert (sample_bronze_mbie_tourism["visitors"] >= 0).all(), "Visitors should be non-negative"
+        assert (sample_bronze_mbie_tourism["visitors"] >= 0).all(), (
+            "Visitors should be non-negative"
+        )
         assert sample_bronze_mbie_tourism["region"].nunique() > 0, "Should have regions"
 
 
@@ -258,15 +279,18 @@ class TestKPICalculation:
 
         for value, unit, expected in test_values:
             if "M" in expected:
-                formatted = f"${value/1000000:.1f}M"
+                formatted = f"${value / 1000000:.1f}M"
             elif "K" in expected:
-                formatted = f"${value/1000:.1f}K"
+                formatted = f"${value / 1000:.1f}K"
             elif "%" in expected:
                 formatted = f"{value:.1f}%"
             else:
                 formatted = f"{value:.1f}"
 
-            assert expected.replace("$", "") in formatted.replace("$", "") or formatted == expected
+            assert (
+                expected.replace("$", "") in formatted.replace("$", "")
+                or formatted == expected
+            )
 
 
 class TestDashboardIntegration:
@@ -307,6 +331,7 @@ class TestSecretsManager:
     def test_secrets_manager_env_backend(self):
         """Test secrets manager with environment variable backend."""
         import sys
+
         project_root = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(project_root))
 
@@ -324,6 +349,7 @@ class TestSecretsManager:
     def test_secrets_manager_missing_key_returns_none(self):
         """Test that missing key returns None when not required."""
         import sys
+
         project_root = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(project_root))
 
@@ -337,6 +363,7 @@ class TestSecretsManager:
     def test_secrets_manager_required_key_raises_error(self):
         """Test that required missing key raises ValueError."""
         import sys
+
         project_root = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(project_root))
 
@@ -350,6 +377,7 @@ class TestSecretsManager:
     def test_secrets_manager_default_value(self):
         """Test that default value is returned for missing key."""
         import sys
+
         project_root = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(project_root))
 
@@ -363,6 +391,7 @@ class TestSecretsManager:
     def test_secrets_manager_caching(self):
         """Test that secrets are cached after first retrieval."""
         import sys
+
         project_root = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(project_root))
 
@@ -382,6 +411,7 @@ class TestSecretsManager:
     def test_secrets_manager_refresh_clears_cache(self):
         """Test that refresh clears the cache."""
         import sys
+
         project_root = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(project_root))
 
@@ -400,12 +430,15 @@ class TestSecretsManager:
     def test_secrets_manager_get_dict(self):
         """Test retrieving JSON secrets as dictionary."""
         import sys
+
         project_root = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(project_root))
 
         from data_pipeline.utils.secrets import SecretsManager
 
-        os.environ["JSON_SECRET"] = '{"api_key": "abc123", "endpoint": "https://api.example.com"}'
+        os.environ["JSON_SECRET"] = (
+            '{"api_key": "abc123", "endpoint": "https://api.example.com"}'
+        )
 
         secrets = SecretsManager(backend="env")
         secret_dict = secrets.get_dict("JSON_SECRET")
@@ -418,6 +451,7 @@ class TestSecretsManager:
     def test_secrets_manager_singleton(self):
         """Test that get_secrets returns singleton."""
         import sys
+
         project_root = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(project_root))
 

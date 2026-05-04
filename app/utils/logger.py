@@ -1,12 +1,14 @@
 """Logging system for the dashboard."""
+
 import logging
 import sys
 from datetime import datetime
 import os
 
 # Create logs directory if it doesn't exist
-log_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'logs')
+log_dir = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
 os.makedirs(log_dir, exist_ok=True)
+
 
 def setup_logger(name, level=logging.INFO):
     """
@@ -28,8 +30,8 @@ def setup_logger(name, level=logging.INFO):
 
     # Log format
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
 
     # Console handler (always shows)
@@ -39,7 +41,9 @@ def setup_logger(name, level=logging.INFO):
     logger.addHandler(console_handler)
 
     # File handler (warnings and errors only)
-    log_file = os.path.join(log_dir, f'dashboard_{datetime.now().strftime("%Y%m%d")}.log')
+    log_file = os.path.join(
+        log_dir, f"dashboard_{datetime.now().strftime('%Y%m%d')}.log"
+    )
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(logging.WARNING)
     file_handler.setFormatter(formatter)
@@ -47,15 +51,18 @@ def setup_logger(name, level=logging.INFO):
 
     return logger
 
+
 # Main loggers
-dashboard_logger = setup_logger('dashboard', logging.INFO)
-data_logger = setup_logger('dashboard.data', logging.INFO)
-ui_logger = setup_logger('dashboard.ui', logging.INFO)
+dashboard_logger = setup_logger("dashboard", logging.INFO)
+data_logger = setup_logger("dashboard.data", logging.INFO)
+ui_logger = setup_logger("dashboard.ui", logging.INFO)
+
 
 # Convenience function for general use
 def get_logger(name):
     """Return a configured logger."""
     return setup_logger(name, logging.INFO)
+
 
 class DashboardLogManager:
     """Dashboard log manager with extra functionality."""
@@ -73,15 +80,21 @@ class DashboardLogManager:
         """Log component completion."""
         duration = (datetime.now() - self.start_time).total_seconds()
         status = "SUCCESS" if success else "FAILED"
-        self.logger.info(f"[{self.component}] Completed [{status}] ({duration:.2f}s) {message}")
+        self.logger.info(
+            f"[{self.component}] Completed [{status}] ({duration:.2f}s) {message}"
+        )
 
     def log_data_load(self, data_source, record_count):
         """Log data loading."""
-        self.logger.info(f"[{self.component}] Data loaded: {data_source} ({record_count} records)")
+        self.logger.info(
+            f"[{self.component}] Data loaded: {data_source} ({record_count} records)"
+        )
 
     def log_kpi_processed(self, kpi_count, dashboard_name):
         """Log KPI processing."""
-        self.logger.info(f"[{self.component}] KPIs processed: {kpi_count} for {dashboard_name}")
+        self.logger.info(
+            f"[{self.component}] KPIs processed: {kpi_count} for {dashboard_name}"
+        )
 
     def log_error(self, error_type, details):
         """Log structured error."""
@@ -94,14 +107,20 @@ class DashboardLogManager:
     def log_performance(self, operation, duration_ms):
         """Log performance metrics."""
         if duration_ms > 1000:
-            self.logger.warning(f"[{self.component}] PERFORMANCE: {operation} took {duration_ms:.0f}ms (slow)")
+            self.logger.warning(
+                f"[{self.component}] PERFORMANCE: {operation} took {duration_ms:.0f}ms (slow)"
+            )
         else:
-            self.logger.debug(f"[{self.component}] PERFORMANCE: {operation} took {duration_ms:.0f}ms")
+            self.logger.debug(
+                f"[{self.component}] PERFORMANCE: {operation} took {duration_ms:.0f}ms"
+            )
+
 
 # Utility for user interaction logging
 def log_user_interaction(component, action, details=None):
     """Log user interactions."""
     ui_logger.info(f"USER_INTERACTION: {component} - {action} - {details or ''}")
+
 
 # Utility for logging data operations
 def log_data_operation(operation, data_source, result=None, error=None):

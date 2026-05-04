@@ -1,4 +1,5 @@
 """Macro Dashboard data — loaded from Gold layer parquet with real time series."""
+
 from typing import Any, Dict, List
 import pandas as pd
 
@@ -8,17 +9,34 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 NZ_REGIONS = [
-    "Northland", "Auckland", "Waikato", "Bay of Plenty", "Gisborne",
-    "Hawke's Bay", "Taranaki", "Manawatu-Wanganui", "Wellington",
-    "Tasman", "Nelson", "Marlborough", "West Coast", "Canterbury",
-    "Otago", "Southland",
+    "Northland",
+    "Auckland",
+    "Waikato",
+    "Bay of Plenty",
+    "Gisborne",
+    "Hawke's Bay",
+    "Taranaki",
+    "Manawatu-Wanganui",
+    "Wellington",
+    "Tasman",
+    "Nelson",
+    "Marlborough",
+    "West Coast",
+    "Canterbury",
+    "Otago",
+    "Southland",
 ]
 
 
-def _get_silver_timeseries(feature_name: str, col: str, last_n: int = 12) -> List[float]:
+def _get_silver_timeseries(
+    feature_name: str, col: str, last_n: int = 12
+) -> List[float]:
     try:
         import os
-        silver_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data_pipeline", "silver")
+
+        silver_dir = os.path.join(
+            os.path.dirname(__file__), "..", "..", "data_pipeline", "silver"
+        )
         fp = os.path.join(silver_dir, f"{feature_name}_features.parquet")
         if os.path.exists(fp):
             df = pd.read_parquet(fp)
@@ -57,22 +75,49 @@ def load_macro_data() -> Dict[str, Any]:
 
     # Real time series from Silver
     ir_ts = _get_silver_timeseries("interest_rate_lag", "interest_rate", 12)
-    macro_ts = _get_silver_timeseries("tourism_lag_analysis", "macroeconomic_volatility_index", 12)
+    macro_ts = _get_silver_timeseries(
+        "tourism_lag_analysis", "macroeconomic_volatility_index", 12
+    )
 
-    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ]
     ocr_history = ir_ts if ir_ts else [ocr] * 12
 
     hero_kpis = {
         "ocr": {
             "value": ocr,
-            "trend": "up" if (len(ocr_history) >= 2 and ocr_history[-1] > ocr_history[0]) else "down",
-            "change": round(ocr_history[-1] - ocr_history[0], 2) if len(ocr_history) >= 2 else 0.0,
+            "trend": "up"
+            if (len(ocr_history) >= 2 and ocr_history[-1] > ocr_history[0])
+            else "down",
+            "change": round(ocr_history[-1] - ocr_history[0], 2)
+            if len(ocr_history) >= 2
+            else 0.0,
             "next_decision": "2026-05-28",
             "sparkline": ocr_history,
         },
         "mortgage_rates": {
-            "rates": {"1Y": mortgage_2y - 0.3, "2Y": mortgage_2y, "5Y": mortgage_2y + 0.5},
-            "rates_prev": {"1Y": mortgage_2y - 0.5, "2Y": mortgage_2y - 0.2, "5Y": mortgage_2y + 0.3},
+            "rates": {
+                "1Y": mortgage_2y - 0.3,
+                "2Y": mortgage_2y,
+                "5Y": mortgage_2y + 0.5,
+            },
+            "rates_prev": {
+                "1Y": mortgage_2y - 0.5,
+                "2Y": mortgage_2y - 0.2,
+                "5Y": mortgage_2y + 0.3,
+            },
         },
         "mortgage_cost": {
             "value": monthly_cost,
@@ -113,7 +158,12 @@ def load_macro_data() -> Dict[str, Any]:
             "unit": "%",
         },
         "ocr_listings_scatter": [
-            {"ocr": ocr_history[i], "listings": 2800 - i * 100, "month": months[i], "label": months[i]}
+            {
+                "ocr": ocr_history[i],
+                "listings": 2800 - i * 100,
+                "month": months[i],
+                "label": months[i],
+            }
             for i in range(12)
         ],
         "mortgage_ts": {
@@ -127,11 +177,41 @@ def load_macro_data() -> Dict[str, Any]:
             "costs": [5200, 4800, 4500, 4100, 4600],
         },
         "correlation_matrix": {
-            "OCR": {"OCR": 1.0, "Listings": -0.72, "GDP": 0.45, "Inflation": -0.30, "Construction": 0.60},
-            "Listings": {"OCR": -0.72, "Listings": 1.0, "GDP": -0.55, "Inflation": 0.40, "Construction": -0.65},
-            "GDP": {"OCR": 0.45, "Listings": -0.55, "GDP": 1.0, "Inflation": -0.20, "Construction": 0.35},
-            "Inflation": {"OCR": -0.30, "Listings": 0.40, "GDP": -0.20, "Inflation": 1.0, "Construction": -0.45},
-            "Construction": {"OCR": 0.60, "Listings": -0.65, "GDP": 0.35, "Inflation": -0.45, "Construction": 1.0},
+            "OCR": {
+                "OCR": 1.0,
+                "Listings": -0.72,
+                "GDP": 0.45,
+                "Inflation": -0.30,
+                "Construction": 0.60,
+            },
+            "Listings": {
+                "OCR": -0.72,
+                "Listings": 1.0,
+                "GDP": -0.55,
+                "Inflation": 0.40,
+                "Construction": -0.65,
+            },
+            "GDP": {
+                "OCR": 0.45,
+                "Listings": -0.55,
+                "GDP": 1.0,
+                "Inflation": -0.20,
+                "Construction": 0.35,
+            },
+            "Inflation": {
+                "OCR": -0.30,
+                "Listings": 0.40,
+                "GDP": -0.20,
+                "Inflation": 1.0,
+                "Construction": -0.45,
+            },
+            "Construction": {
+                "OCR": 0.60,
+                "Listings": -0.65,
+                "GDP": 0.35,
+                "Inflation": -0.45,
+                "Construction": 1.0,
+            },
         },
         "matrix_variables": ["OCR", "Listings", "GDP", "Inflation", "Construction"],
         "lag_indicator": {

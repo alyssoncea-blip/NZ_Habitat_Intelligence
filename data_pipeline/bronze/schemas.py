@@ -1,8 +1,9 @@
-﻿"""Pydantic schemas for bronze layer data validation.
+"""Pydantic schemas for bronze layer data validation.
 
 Provides schema enforcement for all incoming data sources.
 Each schema validates structure, types, and constraints.
 """
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -11,6 +12,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class WorldBankRecord(BaseModel):
     """Schema for World Bank API records."""
+
     year: int = Field(..., ge=1960, le=2030)
     value: float = Field(...)
     country: Optional[str] = "NZL"
@@ -26,6 +28,7 @@ class WorldBankRecord(BaseModel):
 
 class RBNZRecord(BaseModel):
     """Schema for RBNZ API records."""
+
     date: str = Field(...)
     value: float = Field(...)
     indicator: Optional[str] = None
@@ -43,6 +46,7 @@ class RBNZRecord(BaseModel):
 
 class StatsNZRecord(BaseModel):
     """Schema for Stats NZ records."""
+
     region: str = Field(..., min_length=1)
     year: int = Field(..., ge=1990, le=2030)
     value: Optional[float] = None
@@ -53,6 +57,7 @@ class StatsNZRecord(BaseModel):
 
 class MBIERecord(BaseModel):
     """Schema for MBIE tourism records."""
+
     region: str = Field(..., min_length=1)
     year: int = Field(..., ge=1990, le=2030)
     visitors: Optional[int] = None
@@ -62,6 +67,7 @@ class MBIERecord(BaseModel):
 
 class LINZRecord(BaseModel):
     """Schema for LINZ property records."""
+
     region: str = Field(..., min_length=1)
     year: int = Field(..., ge=1990, le=2030)
     property_count: Optional[int] = None
@@ -70,6 +76,7 @@ class LINZRecord(BaseModel):
 
 class REINZRecord(BaseModel):
     """Schema for REINZ sales records."""
+
     region: str = Field(..., min_length=1)
     year: int = Field(..., ge=1990, le=2030)
     month: Optional[int] = Field(None, ge=1, le=12)

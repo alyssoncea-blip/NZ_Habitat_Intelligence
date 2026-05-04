@@ -1,4 +1,5 @@
 """Silver layer feature engineering tasks for Prefect orchestration."""
+
 import logging
 import sys
 from datetime import datetime
@@ -33,7 +34,12 @@ def compute_affordability() -> dict:
         output = engineer.silver_dir / "affordability_features.parquet"
         df.to_parquet(output, index=False)
         print(f"Affordability features: {len(df)} rows -> {output}")
-        return {"feature": "affordability", "rows": len(df), "file": str(output), "success": True}
+        return {
+            "feature": "affordability",
+            "rows": len(df),
+            "file": str(output),
+            "success": True,
+        }
     print("Affordability features: no data generated")
     return {"feature": "affordability", "rows": 0, "success": False}
 
@@ -54,7 +60,12 @@ def compute_interest_rate_lag() -> dict:
         output = engineer.silver_dir / "interest_rate_lag_features.parquet"
         df.to_parquet(output, index=False)
         print(f"Interest rate lag features: {len(df)} rows -> {output}")
-        return {"feature": "interest_rate_lag", "rows": len(df), "file": str(output), "success": True}
+        return {
+            "feature": "interest_rate_lag",
+            "rows": len(df),
+            "file": str(output),
+            "success": True,
+        }
     print("Interest rate lag features: no data generated")
     return {"feature": "interest_rate_lag", "rows": 0, "success": False}
 
@@ -75,7 +86,12 @@ def compute_tourism_pressure() -> dict:
         output = engineer.silver_dir / "tourism_pressure_features.parquet"
         df.to_parquet(output, index=False)
         print(f"Tourism pressure features: {len(df)} rows -> {output}")
-        return {"feature": "tourism_pressure", "rows": len(df), "file": str(output), "success": True}
+        return {
+            "feature": "tourism_pressure",
+            "rows": len(df),
+            "file": str(output),
+            "success": True,
+        }
     print("Tourism pressure features: no data generated")
     return {"feature": "tourism_pressure", "rows": 0, "success": False}
 
@@ -96,7 +112,12 @@ def compute_supply_deficit() -> dict:
         output = engineer.silver_dir / "supply_deficit_features.parquet"
         df.to_parquet(output, index=False)
         print(f"Supply deficit features: {len(df)} rows -> {output}")
-        return {"feature": "supply_deficit", "rows": len(df), "file": str(output), "success": True}
+        return {
+            "feature": "supply_deficit",
+            "rows": len(df),
+            "file": str(output),
+            "success": True,
+        }
     print("Supply deficit features: no data generated")
     return {"feature": "supply_deficit", "rows": 0, "success": False}
 
@@ -117,7 +138,12 @@ def compute_rent_income_ratio() -> dict:
         output = engineer.silver_dir / "rent_income_ratio_features.parquet"
         df.to_parquet(output, index=False)
         print(f"Rent income ratio features: {len(df)} rows -> {output}")
-        return {"feature": "rent_income_ratio", "rows": len(df), "file": str(output), "success": True}
+        return {
+            "feature": "rent_income_ratio",
+            "rows": len(df),
+            "file": str(output),
+            "success": True,
+        }
     print("Rent income ratio features: no data generated")
     return {"feature": "rent_income_ratio", "rows": 0, "success": False}
 
@@ -138,6 +164,11 @@ def compute_tourism_lag_analysis() -> dict:
         output = engineer.silver_dir / "tourism_lag_analysis_features.parquet"
         df.to_parquet(output, index=False)
         print(f"Tourism lag analysis features: {len(df)} rows -> {output}")
-        return {"feature": "tourism_lag_analysis", "rows": len(df), "file": str(output), "success": True}
+        return {
+            "feature": "tourism_lag_analysis",
+            "rows": len(df),
+            "file": str(output),
+            "success": True,
+        }
     print("Tourism lag analysis features: no data generated")
     return {"feature": "tourism_lag_analysis", "rows": 0, "success": False}

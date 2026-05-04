@@ -2,6 +2,7 @@
 
 Ensures both systems produce consistent KPI values.
 """
+
 import json
 from pathlib import Path
 
@@ -89,9 +90,7 @@ class TestKPIReconciliation:
 
     def test_executive_kpis_exist(self, python_kpis):
         """Executive KPIs should be present in Python output."""
-        has_executive = any(
-            key in python_kpis for key in ["01-executive", "executive"]
-        )
+        has_executive = any(key in python_kpis for key in ["01-executive", "executive"])
         assert has_executive, "No executive KPI data found"
         df = _get_executive_df(python_kpis)
         assert not df.empty
@@ -134,9 +133,7 @@ class TestKPIReconciliation:
             val_col = "value" if "value" in df.columns else "kpi_value"
             if val_col in df.columns:
                 null_count = df[val_col].isnull().sum()
-                assert null_count == 0, (
-                    f"{null_count} null values in {dashboard}"
-                )
+                assert null_count == 0, f"{null_count} null values in {dashboard}"
 
     def test_kpi_count_minimum(self, python_kpis):
         """Each dashboard should have minimum KPI count."""

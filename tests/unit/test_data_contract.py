@@ -1,4 +1,5 @@
-﻿"""Unit tests for data contract creation, loading, and validation."""
+"""Unit tests for data contract creation, loading, and validation."""
+
 from pathlib import Path
 
 import pandas as pd
