@@ -1,0 +1,64 @@
+{
+  "data_asset_type": null,
+  "expectation_suite_name": "silver_features",
+  "ge_cloud_id": null,
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": ["year", "region"]
+      },
+      "meta": {
+        "notes": {
+          "format": "markdown",
+          "content": "Silver features must have year and region columns."
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "year"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "year",
+        "min_value": 1970,
+        "max_value": 2030
+      },
+      "meta": {
+        "notes": {
+          "format": "markdown",
+          "content": "Year values must be within reasonable range."
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "region",
+        "mostly": 1.0
+      },
+      "meta": {
+        "notes": {
+          "format": "markdown",
+          "content": "Region values must be present."
+        }
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.0",
+    "notes": "Silver layer validation: engineered feature parquet files."
+  }
+}

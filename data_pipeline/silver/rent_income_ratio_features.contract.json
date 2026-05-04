@@ -1,0 +1,194 @@
+{
+  "artifact_name": "rent_income_ratio_features",
+  "artifact_path": "data_pipeline\\silver\\rent_income_ratio_features.parquet",
+  "layer": "silver",
+  "source": "real",
+  "source_name": "bronze_real_data",
+  "source_url": null,
+  "quality": "good",
+  "confidence_score": 85.0,
+  "record_count": 336,
+  "column_count": 10,
+  "null_percentage": 5.714285714285714,
+  "columns": [
+    {
+      "name": "year",
+      "dtype": "int64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": 2020.0,
+      "max_value": 2025.0,
+      "sample_values": [
+        2020,
+        2020,
+        2020,
+        2020,
+        2021
+      ]
+    },
+    {
+      "name": "region",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 16,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Auckland",
+        "Auckland",
+        "Auckland",
+        "Auckland",
+        "Auckland"
+      ]
+    },
+    {
+      "name": "median_weekly_rent",
+      "dtype": "int64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 47,
+      "min_value": 320.0,
+      "max_value": 780.0,
+      "sample_values": [
+        580,
+        590,
+        600,
+        610,
+        620
+      ]
+    },
+    {
+      "name": "annual_rent",
+      "dtype": "int64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 47,
+      "min_value": 16640.0,
+      "max_value": 40560.0,
+      "sample_values": [
+        30160,
+        30680,
+        31200,
+        31720,
+        32240
+      ]
+    },
+    {
+      "name": "median_income",
+      "dtype": "float64",
+      "null_count": 80,
+      "null_percentage": 23.809523809523807,
+      "unique_count": 28,
+      "min_value": 49000.0,
+      "max_value": 80000.0,
+      "sample_values": [
+        73000.0,
+        73000.0,
+        73000.0,
+        73000.0,
+        76000.0
+      ]
+    },
+    {
+      "name": "rent_to_income_ratio",
+      "dtype": "float64",
+      "null_count": 80,
+      "null_percentage": 23.809523809523807,
+      "unique_count": 113,
+      "min_value": 32.4,
+      "max_value": 48.1,
+      "sample_values": [
+        41.3,
+        42.0,
+        42.7,
+        43.5,
+        42.4
+      ]
+    },
+    {
+      "name": "general_inflation",
+      "dtype": "float64",
+      "null_count": 16,
+      "null_percentage": 4.761904761904762,
+      "unique_count": 5,
+      "min_value": 1.71456170007245,
+      "max_value": 7.17222476016441,
+      "sample_values": [
+        1.71456170007245,
+        1.71456170007245,
+        1.71456170007245,
+        1.71456170007245,
+        3.94112060778728
+      ]
+    },
+    {
+      "name": "rent_inflation_rate",
+      "dtype": "float64",
+      "null_count": 16,
+      "null_percentage": 4.761904761904762,
+      "unique_count": 111,
+      "min_value": -5.882352941176472,
+      "max_value": 10.256410256410264,
+      "sample_values": [
+        1.724137931034475,
+        1.6949152542372836,
+        1.6666666666666607,
+        1.6393442622950838,
+        1.6129032258064502
+      ]
+    },
+    {
+      "name": "affordability_erosion",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 101,
+      "min_value": -11.9,
+      "max_value": 5.6,
+      "sample_values": [
+        -1.7,
+        0.0,
+        -0.0,
+        -0.0,
+        -2.3
+      ]
+    },
+    {
+      "name": "cumulative_rent_pressure",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 191,
+      "min_value": 0.0,
+      "max_value": 62.5,
+      "sample_values": [
+        0.0,
+        1.7,
+        3.4,
+        5.2,
+        6.9
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:36:00.771690",
+  "data_from_date": "2020-01-01",
+  "data_to_date": "2025-12-31",
+  "parent_contracts": [
+    "data_pipeline\\bronze\\mbie_international_visitors_raw.contract.json",
+    "data_pipeline\\bronze\\mbie_regional_tourism_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_cpi_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_mortgage_rates_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_ocr_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_building_consents_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_income_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_population_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_gdp_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_inflation_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_interest_rate_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_population_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_unemployment_raw.contract.json"
+  ],
+  "notes": "Calculated from real Bronze data (336 records)"
+}

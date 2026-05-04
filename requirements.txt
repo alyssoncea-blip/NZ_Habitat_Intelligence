@@ -1,0 +1,41 @@
+# NZ Habitat Intelligence — Dependencies
+
+# ── Core ────────────────────────────────────────────────────────────────────
+pandas>=2.1.0
+numpy>=1.26.0
+pyarrow>=14.0.0
+duckdb>=0.9.2
+python-dateutil>=2.8.2
+
+# ── Dashboard ───────────────────────────────────────────────────────────────
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+plotly>=5.18.0
+
+# ── HTTP / APIs ─────────────────────────────────────────────────────────────
+requests>=2.31.0
+urllib3>=2.0.0
+
+# ── dbt (Silver→Gold declarative transformations) ──────────────────────────
+dbt-core>=1.7.0
+dbt-duckdb>=1.7.0
+
+# ── Great Expectations (automated data quality) ─────────────────────────────
+great-expectations>=0.18.0
+
+# ── Orchestration (Prefect) ─────────────────────────────────────────────────
+prefect>=2.14.0
+prefect-dbt>=0.5.0
+prefect-shell>=0.2.0
+
+# ── Dev / QA ────────────────────────────────────────────────────────────────
+pytest>=7.4.0
+pytest-cov>=4.0.0
+pytest-asyncio>=0.23.0
+pytest-xdist>=3.0.0
+pytest-timeout>=2.2.0
+black>=23.0.0
+ruff>=0.1.0
+
+# Schema validation
+pydantic>=2.0.0

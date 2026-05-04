@@ -1,0 +1,37 @@
+name: "dbt_nz"
+version: "1.0.0"
+config-version: 2
+
+profile: "nz_habitat"
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  dbt_nz:
+    staging:
+      +materialized: view
+      +tags: ["staging"]
+    intermediate:
+      +materialized: view
+      +tags: ["intermediate"]
+    gold:
+      +materialized: table
+      +tags: ["gold"]
+
+seeds:
+  dbt_nz:
+    +column_types:
+      region: varchar
+      region_code: varchar
+
+tests:
+  dbt_nz:
+    +severity: error

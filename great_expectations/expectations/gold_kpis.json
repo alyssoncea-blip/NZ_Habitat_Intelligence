@@ -1,0 +1,67 @@
+{
+  "data_asset_type": null,
+  "expectation_suite_name": "gold_kpis",
+  "ge_cloud_id": null,
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": ["name", "value", "unit", "category"]
+      },
+      "meta": {
+        "notes": {
+          "format": "markdown",
+            "content": "Gold KPI tables must have core KPI columns."
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "name"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "value",
+        "mostly": 0.5
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "value",
+        "type_": "float"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_max_to_be_between",
+      "kwargs": {
+        "column": "value",
+        "min_value": -1000000,
+        "max_value": 1000000000
+      },
+      "meta": {
+        "notes": {
+          "format": "markdown",
+          "content": "KPI values must be within reasonable bounds."
+        }
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.0",
+    "notes": "Gold layer validation: KPI parquet files for all 6 dashboards."
+  }
+}

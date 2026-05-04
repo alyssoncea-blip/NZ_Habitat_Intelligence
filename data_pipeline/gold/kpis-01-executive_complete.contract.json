@@ -1,0 +1,116 @@
+{
+  "artifact_name": "kpis-01-executive",
+  "artifact_path": "data_pipeline\\gold\\kpis-01-executive_complete.parquet",
+  "layer": "gold",
+  "source": "real",
+  "source_name": "silver_bronze_real_data",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 95.0,
+  "record_count": 8,
+  "column_count": 6,
+  "null_percentage": 0.0,
+  "columns": [
+    {
+      "name": "name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 8,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Habitat Intelligence Score",
+        "GDP per Capita YoY",
+        "Interest Rate Stability",
+        "Tourism-Economy Link",
+        "Housing Supply Pressure"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 7,
+      "min_value": -3.6,
+      "max_value": 63.2,
+      "sample_values": [
+        63.2,
+        0.0,
+        50.0,
+        0.0,
+        55.8
+      ]
+    },
+    {
+      "name": "unit",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 3,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "pts",
+        "%",
+        "pts",
+        "%",
+        "pts"
+      ]
+    },
+    {
+      "name": "description",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 8,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Overall NZ habitat quality (0-100)",
+        "Economic growth per person",
+        "Monetary policy stability (0-100)",
+        "Tourism-GDP correlation strength",
+        "Population vs housing growth gap"
+      ]
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Executive",
+        "Executive",
+        "Executive",
+        "Executive",
+        "Executive"
+      ]
+    },
+    {
+      "name": "source",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 8,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Silver features composite",
+        "World Bank GDP",
+        "RBNZ/World Bank interest rates",
+        "MBIE tourism + World Bank GDP",
+        "Stats NZ building consents + population"
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:35:57.738834",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": "Calculated from real Silver/Bronze data (World Bank, Stats NZ, RBNZ, MBIE)"
+}

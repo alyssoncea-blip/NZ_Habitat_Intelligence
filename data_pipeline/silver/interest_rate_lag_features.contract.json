@@ -1,0 +1,146 @@
+{
+  "artifact_name": "interest_rate_lag_features",
+  "artifact_path": "data_pipeline\\silver\\interest_rate_lag_features.parquet",
+  "layer": "silver",
+  "source": "real",
+  "source_name": "bronze_real_data",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 96.0,
+  "record_count": 27,
+  "column_count": 7,
+  "null_percentage": 1.5873015873015872,
+  "columns": [
+    {
+      "name": "year",
+      "dtype": "int32",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 27,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        1999,
+        2000,
+        2001,
+        2002,
+        2003
+      ]
+    },
+    {
+      "name": "region",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "New Zealand",
+        "New Zealand",
+        "New Zealand",
+        "New Zealand",
+        "New Zealand"
+      ]
+    },
+    {
+      "name": "ocr_value",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 22,
+      "min_value": 0.25,
+      "max_value": 8.125,
+      "sample_values": [
+        6.666666666666667,
+        7.0,
+        6.625,
+        5.125,
+        5.375
+      ]
+    },
+    {
+      "name": "mortgage_rate_2yr",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 22,
+      "min_value": 0.25,
+      "max_value": 8.125,
+      "sample_values": [
+        6.666666666666667,
+        7.0,
+        6.625,
+        5.125,
+        5.375
+      ]
+    },
+    {
+      "name": "ocr_change_bps",
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 3.7037037037037033,
+      "unique_count": 24,
+      "min_value": -80.95238095238095,
+      "max_value": 437.5,
+      "sample_values": [
+        5.000000000000004,
+        -5.35714285714286,
+        -22.64150943396226,
+        4.878048780487809,
+        24.418604651162788
+      ]
+    },
+    {
+      "name": "rate_volatility",
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 3.7037037037037033,
+      "unique_count": 26,
+      "min_value": 0.1082531754730527,
+      "max_value": 2.9825883613622137,
+      "sample_values": [
+        0.2357022603955153,
+        0.20553678592984354,
+        0.9921567416492215,
+        0.8036375634160795,
+        0.8393015449368201
+      ]
+    },
+    {
+      "name": "interest_rate_impact_score",
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 3.7037037037037033,
+      "unique_count": 25,
+      "min_value": 3.6,
+      "max_value": 99.7,
+      "sample_values": [
+        7.9,
+        6.9,
+        33.2,
+        26.9,
+        28.0
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:36:00.758168",
+  "data_from_date": "1999-01-01",
+  "data_to_date": "2025-12-31",
+  "parent_contracts": [
+    "data_pipeline\\bronze\\mbie_international_visitors_raw.contract.json",
+    "data_pipeline\\bronze\\mbie_regional_tourism_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_cpi_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_mortgage_rates_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_ocr_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_building_consents_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_income_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_population_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_gdp_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_inflation_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_interest_rate_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_population_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_unemployment_raw.contract.json"
+  ],
+  "notes": "Calculated from real Bronze data (27 records)"
+}

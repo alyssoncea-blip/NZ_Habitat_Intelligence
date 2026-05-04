@@ -1,0 +1,146 @@
+{
+  "artifact_name": "tourism_pressure_features",
+  "artifact_path": "data_pipeline\\silver\\tourism_pressure_features.parquet",
+  "layer": "silver",
+  "source": "real",
+  "source_name": "bronze_real_data",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 98.0,
+  "record_count": 96,
+  "column_count": 7,
+  "null_percentage": 2.380952380952381,
+  "columns": [
+    {
+      "name": "year",
+      "dtype": "int64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": 2019.0,
+      "max_value": 2024.0,
+      "sample_values": [
+        2019,
+        2020,
+        2021,
+        2022,
+        2023
+      ]
+    },
+    {
+      "name": "region",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 16,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Auckland",
+        "Auckland",
+        "Auckland",
+        "Auckland",
+        "Auckland"
+      ]
+    },
+    {
+      "name": "tourism_expenditure",
+      "dtype": "int64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 56,
+      "min_value": 50.0,
+      "max_value": 4200.0,
+      "sample_values": [
+        4200,
+        1800,
+        2200,
+        3200,
+        3800
+      ]
+    },
+    {
+      "name": "visitor_arrivals",
+      "dtype": "int64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 56,
+      "min_value": 50.0,
+      "max_value": 4200.0,
+      "sample_values": [
+        4200,
+        1800,
+        2200,
+        3200,
+        3800
+      ]
+    },
+    {
+      "name": "tourism_pressure_index",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 94,
+      "min_value": 5130.9,
+      "max_value": 89743.6,
+      "sample_values": [
+        24475.5,
+        10728.2,
+        13024.1,
+        18926.5,
+        22187.2
+      ]
+    },
+    {
+      "name": "unemployment_rate",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": 3.299,
+      "max_value": 4.724,
+      "sample_values": [
+        4.109,
+        4.595,
+        3.776,
+        3.299,
+        3.734
+      ]
+    },
+    {
+      "name": "tourism_growth_yoy",
+      "dtype": "float64",
+      "null_count": 16,
+      "null_percentage": 16.666666666666664,
+      "unique_count": 49,
+      "min_value": -58.33333333333333,
+      "max_value": 55.55555555555556,
+      "sample_values": [
+        -57.14285714285714,
+        22.222222222222232,
+        45.45454545454546,
+        18.75,
+        7.8947368421052655
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:36:00.762679",
+  "data_from_date": "2019-01-01",
+  "data_to_date": "2024-12-31",
+  "parent_contracts": [
+    "data_pipeline\\bronze\\mbie_international_visitors_raw.contract.json",
+    "data_pipeline\\bronze\\mbie_regional_tourism_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_cpi_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_mortgage_rates_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_ocr_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_building_consents_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_income_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_population_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_gdp_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_inflation_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_interest_rate_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_population_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_unemployment_raw.contract.json"
+  ],
+  "notes": "Calculated from real Bronze data (96 records)"
+}

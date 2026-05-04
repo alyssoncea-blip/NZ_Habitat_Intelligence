@@ -1,0 +1,132 @@
+{
+  "artifact_name": "kpis-04-macro",
+  "artifact_path": "data_pipeline\\gold\\kpis-04-macro_complete.parquet",
+  "layer": "gold",
+  "source": "real",
+  "source_name": "silver_bronze_real_data",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 98.0,
+  "record_count": 55,
+  "column_count": 7,
+  "null_percentage": 0.0,
+  "columns": [
+    {
+      "name": "name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 10,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Current OCR",
+        "OCR vs 10-Year Average",
+        "Mortgage Rate (2Y Fixed)",
+        "Monthly Mortgage Cost ($750k loan)",
+        "GDP Growth YoY"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 7,
+      "min_value": -30.864197530864203,
+      "max_value": 15620.0,
+      "sample_values": [
+        3.5,
+        0.0,
+        3.5,
+        2188.0,
+        0.0
+      ]
+    },
+    {
+      "name": "unit",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "%",
+        "percentage points",
+        "%",
+        "NZD",
+        "%"
+      ]
+    },
+    {
+      "name": "description",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 10,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Reserve Bank Official Cash Rate",
+        "Current OCR minus 10-year historical average",
+        "Average 2-year fixed mortgage rate",
+        "Estimated monthly payment on $750k at current 2Y rate",
+        "Gross domestic product growth year-over-year"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "macro",
+        "macro",
+        "macro",
+        "macro",
+        "macro"
+      ]
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "monetary",
+        "monetary",
+        "mortgage",
+        "mortgage",
+        "economic"
+      ]
+    },
+    {
+      "name": "calculated_at",
+      "dtype": "datetime64[us, UTC]",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "2026-05-03 06:35:51.399407+00:00",
+        "2026-05-03 06:35:51.399407+00:00",
+        "2026-05-03 06:35:51.399407+00:00",
+        "2026-05-03 06:35:51.399407+00:00",
+        "2026-05-03 06:35:51.399407+00:00"
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:35:57.752857",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": "Calculated from real Silver/Bronze data (World Bank, Stats NZ, RBNZ, MBIE)"
+}

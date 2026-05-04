@@ -1,0 +1,425 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#CD7F32;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C0C0C0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#808080;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="sourceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90D9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E5984;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dashboardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6C3483;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Drop Shadow Filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow Marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+
+    <!-- Dashed Arrow Marker -->
+    <marker id="arrowheadDashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#888"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="600" y="40" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#2c3e50">
+    NZ Habitat Intelligence - System Architecture
+  </text>
+
+  <!-- ========== EXTERNAL DATA SOURCES ========== -->
+  <g transform="translate(50, 80)">
+    <rect x="0" y="0" width="180" height="280" rx="10" ry="10" fill="url(#sourceGrad)" filter="url(#shadow)"/>
+    <text x="90" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+      DATA SOURCES
+    </text>
+
+    <!-- World Bank -->
+    <rect x="15" y="50" width="150" height="45" rx="5" ry="5" fill="white" opacity="0.9"/>
+    <text x="90" y="70" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2c3e50">
+      🌍 World Bank API
+    </text>
+    <text x="90" y="85" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">
+      GDP, Inflation, Interest
+    </text>
+
+    <!-- Stats NZ -->
+    <rect x="15" y="105" width="150" height="45" rx="5" ry="5" fill="white" opacity="0.9"/>
+    <text x="90" y="125" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2c3e50">
+      📊 Stats NZ
+    </text>
+    <text x="90" y="140" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">
+      Income, Population
+    </text>
+
+    <!-- RBNZ -->
+    <rect x="15" y="160" width="150" height="45" rx="5" ry="5" fill="white" opacity="0.9"/>
+    <text x="90" y="180" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2c3e50">
+      🏦 RBNZ
+    </text>
+    <text x="90" y="195" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">
+      Interest Rates
+    </text>
+
+    <!-- MBIE Tourism -->
+    <rect x="15" y="215" width="150" height="45" rx="5" ry="5" fill="white" opacity="0.9"/>
+    <text x="90" y="235" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2c3e50">
+      ✈️ MBIE Tourism
+    </text>
+    <text x="90" y="250" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">
+      Visitor Statistics
+    </text>
+  </g>
+
+  <!-- Arrow from Sources to Bronze -->
+  <path d="M 230 220 L 290 220" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="260" y="210" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">ingest</text>
+
+  <!-- ========== BRONZE LAYER ========== -->
+  <g transform="translate(300, 100)">
+    <rect x="0" y="0" width="200" height="240" rx="10" ry="10" fill="url(#bronzeGrad)" filter="url(#shadow)"/>
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+      BRONZE
+    </text>
+    <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white" opacity="0.8">
+      Raw Data Ingestion
+    </text>
+
+    <!-- Orchestrator Box -->
+    <rect x="20" y="65" width="160" height="35" rx="5" ry="5" fill="white" opacity="0.9"/>
+    <text x="100" y="87" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#8B4513">
+      bronze_orchestrator.py
+    </text>
+
+    <!-- Ingestors -->
+    <rect x="20" y="110" width="75" height="25" rx="3" ry="3" fill="white" opacity="0.8"/>
+    <text x="57" y="127" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#5D4E37">ingestors/</text>
+
+    <rect x="105" y="110" width="75" height="25" rx="3" ry="3" fill="white" opacity="0.8"/>
+    <text x="142" y="127" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#5D4E37">*.json</text>
+
+    <!-- Data Files -->
+    <rect x="20" y="145" width="160" height="25" rx="3" ry="3" fill="white" opacity="0.7"/>
+    <text x="100" y="162" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#5D4E37">
+      16 raw data files
+    </text>
+
+    <!-- Contract indicator -->
+    <rect x="20" y="180" width="160" height="25" rx="3" ry="3" fill="#FFE4B5" opacity="0.9"/>
+    <text x="100" y="197" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#8B4513">
+      + .contract.json
+    </text>
+
+    <!-- Status -->
+    <rect x="60" y="210" width="80" height="20" rx="10" ry="10" fill="#228B22" opacity="0.9"/>
+    <text x="100" y="224" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">REAL DATA</text>
+  </g>
+
+  <!-- Arrow Bronze to Silver -->
+  <path d="M 500 220 L 560 220" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="530" y="210" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">transform</text>
+
+  <!-- ========== SILVER LAYER ========== -->
+  <g transform="translate(570, 100)">
+    <rect x="0" y="0" width="200" height="240" rx="10" ry="10" fill="url(#silverGrad)" filter="url(#shadow)"/>
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">
+      SILVER
+    </text>
+    <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">
+      Feature Engineering
+    </text>
+
+    <!-- Feature Engineer Box -->
+    <rect x="20" y="65" width="160" height="35" rx="5" ry="5" fill="white" opacity="0.9"/>
+    <text x="100" y="87" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#555">
+      feature_engineer.py
+    </text>
+
+    <!-- Features -->
+    <rect x="20" y="110" width="75" height="25" rx="3" ry="3" fill="white" opacity="0.8"/>
+    <text x="57" y="127" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#555">6 features</text>
+
+    <rect x="105" y="110" width="75" height="25" rx="3" ry="3" fill="white" opacity="0.8"/>
+    <text x="142" y="127" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#555">*.parquet</text>
+
+    <!-- Data Files -->
+    <rect x="20" y="145" width="160" height="25" rx="3" ry="3" fill="white" opacity="0.7"/>
+    <text x="100" y="162" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#555">
+      9 feature files
+    </text>
+
+    <!-- Contract indicator -->
+    <rect x="20" y="180" width="160" height="25" rx="3" ry="3" fill="#E8E8E8" opacity="0.9"/>
+    <text x="100" y="197" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#555">
+      + .contract.json
+    </text>
+
+    <!-- Status -->
+    <rect x="60" y="210" width="80" height="20" rx="10" ry="10" fill="#228B22" opacity="0.9"/>
+    <text x="100" y="224" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">PROCESSED</text>
+  </g>
+
+  <!-- Arrow Silver to Gold -->
+  <path d="M 770 220 L 830 220" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="800" y="210" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">calculate</text>
+
+  <!-- ========== GOLD LAYER ========== -->
+  <g transform="translate(840, 100)">
+    <rect x="0" y="0" width="200" height="240" rx="10" ry="10" fill="url(#goldGrad)" filter="url(#shadow)"/>
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#5D4E00">
+      GOLD
+    </text>
+    <text x="100" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#8B7500">
+      KPI Calculation
+    </text>
+
+    <!-- KPI Calculator Box -->
+    <rect x="20" y="65" width="160" height="35" rx="5" ry="5" fill="white" opacity="0.9"/>
+    <text x="100" y="87" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#8B7500">
+      kpi_calculator.py
+    </text>
+
+    <!-- KPIs -->
+    <rect x="20" y="110" width="75" height="25" rx="3" ry="3" fill="white" opacity="0.8"/>
+    <text x="57" y="127" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#8B7500">28 KPIs</text>
+
+    <rect x="105" y="110" width="75" height="25" rx="3" ry="3" fill="white" opacity="0.8"/>
+    <text x="142" y="127" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#8B7500">kpis_*.parquet</text>
+
+    <!-- Data Files -->
+    <rect x="20" y="145" width="160" height="25" rx="3" ry="3" fill="white" opacity="0.7"/>
+    <text x="100" y="162" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#8B7500">
+      9 KPI files
+    </text>
+
+    <!-- Contract indicator -->
+    <rect x="20" y="180" width="160" height="25" rx="3" ry="3" fill="#FFF8DC" opacity="0.9"/>
+    <text x="100" y="197" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#8B7500">
+      + .contract.json
+    </text>
+
+    <!-- Status -->
+    <rect x="60" y="210" width="80" height="20" rx="10" ry="10" fill="#228B22" opacity="0.9"/>
+    <text x="100" y="224" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">QUALITY KPIs</text>
+  </g>
+
+  <!-- Arrow Gold to Dashboards -->
+  <path d="M 940 340 L 940 420" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="960" y="385" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#555">display</text>
+
+  <!-- ========== DASHBOARDS ========== -->
+  <g transform="translate(800, 430)">
+    <rect x="0" y="0" width="280" height="300" rx="10" ry="10" fill="url(#dashboardGrad)" filter="url(#shadow)"/>
+    <text x="140" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+      DASHBOARDS
+    </text>
+    <text x="140" y="50" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white" opacity="0.8">
+      Executive Analytics
+    </text>
+
+    <!-- 6 Dashboard Boxes -->
+    <!-- Row 1 -->
+    <rect x="15" y="65" width="120" height="35" rx="5" ry="5" fill="white" opacity="0.95"/>
+    <text x="75" y="82" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#6C3483">
+      🏆 Executive
+    </text>
+    <text x="75" y="95" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#888">
+      6 KPIs | conf: 87
+    </text>
+
+    <rect x="145" y="65" width="120" height="35" rx="5" ry="5" fill="white" opacity="0.95"/>
+    <text x="205" y="82" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#6C3483">
+      🏠 Housing
+    </text>
+    <text x="205" y="95" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#888">
+      5 KPIs | conf: 70
+    </text>
+
+    <!-- Row 2 -->
+    <rect x="15" y="110" width="120" height="35" rx="5" ry="5" fill="white" opacity="0.95"/>
+    <text x="75" y="127" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#6C3483">
+      ✈️ Tourism
+    </text>
+    <text x="75" y="140" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#888">
+      4 KPIs | conf: 75
+    </text>
+
+    <rect x="145" y="110" width="120" height="35" rx="5" ry="5" fill="white" opacity="0.95"/>
+    <text x="205" y="127" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#6C3483">
+      📈 Macro
+    </text>
+    <text x="205" y="140" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#888">
+      5 KPIs | conf: 90
+    </text>
+
+    <!-- Row 3 -->
+    <rect x="15" y="155" width="120" height="35" rx="5" ry="5" fill="white" opacity="0.95"/>
+    <text x="75" y="172" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#6C3483">
+      💰 Affordability
+    </text>
+    <text x="75" y="185" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#888">
+      4 KPIs | conf: 80
+    </text>
+
+    <rect x="145" y="155" width="120" height="35" rx="5" ry="5" fill="white" opacity="0.95"/>
+    <text x="205" y="172" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#6C3483">
+      🔮 Forecast
+    </text>
+    <text x="205" y="185" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#888">
+      4 KPIs | conf: 65
+    </text>
+
+    <!-- Data Contract Info -->
+    <rect x="15" y="205" width="250" height="40" rx="5" ry="5" fill="#F8E8FF" opacity="0.9"/>
+    <text x="140" y="222" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#6C3483">
+      Data Contract Integration
+    </text>
+    <text x="140" y="238" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#6C3483">
+      source | confidence | is_trusted
+    </text>
+
+    <!-- URL -->
+    <rect x="60" y="255" width="160" height="25" rx="12" ry="12" fill="#228B22" opacity="0.9"/>
+    <text x="140" y="272" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">
+      http://127.0.0.1:8050/
+    </text>
+  </g>
+
+  <!-- ========== DATA CONTRACTS DETAIL BOX ========== -->
+  <g transform="translate(50, 430)">
+    <rect x="0" y="0" width="280" height="300" rx="10" ry="10" fill="#f0f0f0" filter="url(#shadow)" stroke="#ccc" stroke-width="2"/>
+    <text x="140" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2c3e50">
+      📋 DATA CONTRACTS
+    </text>
+    <text x="140" y="43" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">
+      Provenance Tracking &amp; Quality Signals
+    </text>
+
+    <!-- Contract Fields -->
+    <rect x="15" y="55" width="250" height="120" rx="5" ry="5" fill="white" stroke="#ddd"/>
+    <text x="25" y="73" font-family="Courier New, monospace" font-size="9" fill="#333">
+      artifact_name: "affordability"
+    </text>
+    <text x="25" y="87" font-family="Courier New, monospace" font-size="9" fill="#333">
+      source: "real" | "synthetic" | "fallback"
+    </text>
+    <text x="25" y="101" font-family="Courier New, monospace" font-size="9" fill="#333">
+      confidence_score: 0-100
+    </text>
+    <text x="25" y="115" font-family="Courier New, monospace" font-size="9" fill="#333">
+      quality: "excellent" | "good" | "fair" | "poor"
+    </text>
+    <text x="25" y="129" font-family="Courier New, monospace" font-size="9" fill="#333">
+      record_count, null_percentage, ...
+    </text>
+    <text x="25" y="143" font-family="Courier New, monospace" font-size="9" fill="#333">
+      parent_contracts: [paths...]
+    </text>
+    <text x="25" y="157" font-family="Courier New, monospace" font-size="9" fill="#333">
+      is_trusted: confidence >= 70 AND source != synthetic
+    </text>
+
+    <!-- Source Legend -->
+    <text x="140" y="193" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">
+      Data Source Classification
+    </text>
+
+    <!-- Legend Items -->
+    <rect x="20" y="203" width="60" height="18" rx="3" ry="3" fill="#228B22" opacity="0.8"/>
+    <text x="50" y="215" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="white">REAL (50)</text>
+
+    <rect x="90" y="203" width="60" height="18" rx="3" ry="3" fill="#DAA520" opacity="0.8"/>
+    <text x="120" y="215" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="white">PROXY (35)</text>
+
+    <rect x="160" y="203" width="55" height="18" rx="3" ry="3" fill="#FF8C00" opacity="0.8"/>
+    <text x="187" y="215" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="white">FALLBACK</text>
+
+    <rect x="225" y="203" width="40" height="18" rx="3" ry="3" fill="#DC143C" opacity="0.8"/>
+    <text x="245" y="215" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="white">SYN</text>
+
+    <!-- Quality Score Formula -->
+    <rect x="15" y="235" width="250" height="55" rx="5" ry="5" fill="#F8F8FF" stroke="#ccc"/>
+    <text x="140" y="252" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">
+      Confidence Score Formula
+    </text>
+    <text x="140" y="268" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#555">
+      score = source_base + null_bonus + completeness + records
+    </text>
+    <text x="140" y="282" font-family="Courier New, monospace" font-size="7" text-anchor="middle" fill="#666">
+      max(100, min(0, score))
+    </text>
+  </g>
+
+  <!-- ========== TASK RUNNER SECTION ========== -->
+  <g transform="translate(350, 430)">
+    <rect x="0" y="0" width="420" height="120" rx="10" ry="10" fill="#f8f8f8" filter="url(#shadow)" stroke="#ccc" stroke-width="2"/>
+    <text x="210" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2c3e50">
+      ⚙️ Task Runners
+    </text>
+
+    <!-- PowerShell -->
+    <rect x="15" y="40" width="185" height="65" rx="5" ry="5" fill="white" stroke="#4A90D9"/>
+    <text x="107" y="58" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#2E5984">
+      PowerShell (Windows)
+    </text>
+    <text x="107" y="75" font-family="Courier New, monospace" font-size="9" fill="#333">
+      .\run.ps1 bronze
+    </text>
+    <text x="107" y="89" font-family="Courier New, monospace" font-size="9" fill="#333">
+      .\run.ps1 all
+    </text>
+
+    <!-- Makefile -->
+    <rect x="215" y="40" width="185" height="65" rx="5" ry="5" fill="white" stroke="#228B22"/>
+    <text x="307" y="58" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#228B22">
+      Makefile (Unix/Git Bash)
+    </text>
+    <text x="307" y="75" font-family="Courier New, monospace" font-size="9" fill="#333">
+      make bronze
+    </text>
+    <text x="307" y="89" font-family="Courier New, monospace" font-size="9" fill="#333">
+      make all
+    </text>
+  </g>
+
+  <!-- ========== PIPELINE FLOW INDICATORS ========== -->
+  <g transform="translate(350, 380)">
+    <rect x="0" y="0" width="690" height="35" rx="17" ry="17" fill="#e8f4f8" stroke="#4A90D9" stroke-width="2"/>
+    <text x="345" y="23" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E5984">
+      Pipeline Flow: Bronze → Silver → Gold → Dashboards
+    </text>
+  </g>
+
+  <!-- ========== TESTS SECTION ========== -->
+  <g transform="translate(790, 380)">
+    <rect x="0" y="0" width="250" height="35" rx="17" ry="17" fill="#e8f8e8" stroke="#228B22" stroke-width="2"/>
+    <text x="125" y="23" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#228B22">
+      Tests: 31 passing ✅
+    </text>
+  </g>
+
+  <!-- ========== FOOTER ========== -->
+  <text x="600" y="780" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#888">
+    NZ Habitat Intelligence v2.0 | From complex government data to clear executive insights
+  </text>
+
+</svg>

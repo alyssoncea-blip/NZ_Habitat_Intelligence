@@ -1,0 +1,738 @@
+/* NZ Habitat Intelligence — Dashboard Styles */
+
+/* ── Design Tokens ─────────────────────────────────────────────────────── */
+:root {
+    --primary: #0D3B66;
+    --secondary: #1B4965;
+    --accent: #E09F3E;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --ink: #12263A;
+    --muted: #5C6B7A;
+    --surface: #F5F7FA;
+}
+
+/* ── Global ────────────────────────────────────────────────────────────── */
+body {
+    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    background-color: var(--surface);
+}
+
+.dashboard-container {
+    min-height: 100vh;
+    background: linear-gradient(120deg, #f7f9fc 0%, #eef3f8 40%, #f9fbfd 100%);
+}
+
+.content-row {
+    padding-bottom: 10px;
+}
+
+/* ── Navbar ────────────────────────────────────────────────────────────── */
+.dashboard-navbar .container-fluid {
+    align-items: center;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+}
+
+.navbar-brand-copy {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.navbar-brand-text {
+    font-weight: 700;
+    font-size: 1.03rem;
+    color: #f7fbff;
+}
+
+.navbar-subtitle {
+    font-size: 0.72rem;
+    color: rgba(247, 251, 255, 0.76);
+}
+
+.nav-link-custom {
+    color: rgba(247, 251, 255, 0.65) !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 8px 14px !important;
+    border-radius: 6px;
+    margin: 0 2px;
+}
+
+.nav-link-custom:hover {
+    color: rgba(247, 251, 255, 0.9) !important;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-link-custom.active {
+    color: #ffffff !important;
+    font-weight: 700;
+    background: rgba(46, 134, 171, 0.35);
+    box-shadow: 0 2px 8px rgba(46, 134, 171, 0.25);
+    border-bottom: 2px solid #2E86AB;
+}
+
+/* ── Global Summary Chips ──────────────────────────────────────────────── */
+.global-summary-row {
+    position: sticky;
+    top: 56px;
+    z-index: 100;
+    background: linear-gradient(180deg, rgba(245,247,250,0.98), rgba(245,247,250,0.92));
+    border-bottom: 1px solid rgba(13,59,102,0.08);
+    backdrop-filter: blur(4px);
+    padding-bottom: 4px;
+}
+
+.global-summary {
+    padding: 0 4px;
+}
+
+.summary-chip-link {
+    text-decoration: none;
+}
+
+.summary-chip {
+    border: 1px solid rgba(13,59,102,0.12);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(18,38,58,0.06);
+    transition: all 0.2s ease;
+    min-height: 110px;
+}
+
+.summary-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(18,38,58,0.12);
+    border-color: rgba(13,59,102,0.25);
+}
+
+.summary-domain {
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.summary-kpi-label {
+    font-size: 0.78rem;
+    line-height: 1.2;
+    color: var(--ink);
+    min-height: 30px;
+    margin-bottom: 4px;
+}
+
+.summary-kpi-value {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.2;
+    margin-bottom: 6px;
+}
+
+.summary-badge {
+    font-size: 0.66rem;
+}
+
+/* ── Hero Card ─────────────────────────────────────────────────────────── */
+.hero-card {
+    background: linear-gradient(135deg, #2E86AB 0%, #1c5d7a 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.hero-kpi-value {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #2E86AB;
+}
+
+/* ── KPI Cards ─────────────────────────────────────────────────────────── */
+.kpi-card {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.kpi-card-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* ── Section Headers ───────────────────────────────────────────────────── */
+.section-header {
+    margin-top: 14px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #12263A;
+    margin-bottom: 4px;
+}
+
+.section-subtitle {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.section-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #12263A;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── Filter Bar ────────────────────────────────────────────────────────── */
+.filter-bar {
+    background: white;
+    border-bottom: 1px solid #e9ecef;
+    padding: 12px 24px;
+    position: sticky;
+    top: 56px;
+    z-index: 1020;
+}
+
+/* ── Map & Chart Containers ────────────────────────────────────────────── */
+.map-container {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.chart-container {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    height: 100%;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    height: 100%;
+}
+
+/* ── Sparklines ────────────────────────────────────────────────────────── */
+.sparkline-container {
+    height: 40px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin-top: 12px;
+}
+
+/* ── Insights & Stats ──────────────────────────────────────────────────── */
+.insights-card {
+    border: 1px solid rgba(13,59,102,0.12);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(18,38,58,0.06);
+}
+
+.dashboard-stats .stat-card {
+    border: 1px solid rgba(13,59,102,0.08);
+    border-radius: 10px;
+}
+
+/* ── DOM Status Colors ─────────────────────────────────────────────────── */
+.dom-fast { color: #28a745; }
+.dom-normal { color: #ffc107; }
+.dom-slow { color: #dc3545; }
+
+/* ── Supply Deficit Gauge ──────────────────────────────────────────────── */
+.gauge-bar {
+    border-radius: 5px;
+    padding: 3px;
+}
+
+/* ── Executive Dashboard ───────────────────────────────────────────────── */
+.executive-dashboard {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.executive-kpi-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: white;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.executive-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+/* ── Housing Dashboard ─────────────────────────────────────────────────── */
+.housing-dashboard {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.housing-kpi-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: white;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.housing-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+/* ── Tourism Dashboard ─────────────────────────────────────────────────── */
+.tourism-dashboard {
+    padding: 0 16px 24px;
+}
+
+.tourism-dashboard .housing-kpi-card {
+    border-top: 3px solid transparent;
+}
+
+.tourism-dashboard .housing-kpi-card:nth-child(1) { border-top-color: #E74C3C; }
+.tourism-dashboard .housing-kpi-card:nth-child(2) { border-top-color: #8E44AD; }
+.tourism-dashboard .housing-kpi-card:nth-child(3) { border-top-color: #D35400; }
+.tourism-dashboard .housing-kpi-card:nth-child(4) { border-top-color: #1A5276; }
+.tourism-dashboard .housing-kpi-card:nth-child(5) { border-top-color: #148F77; }
+
+.tourism-dashboard .section-title {
+    color: #12263A;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+    border-left: 4px solid #E74C3C;
+    padding-left: 10px;
+    margin-bottom: 14px !important;
+}
+
+.tourism-dashboard .chart-title {
+    color: #495057;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+}
+
+/* ── Macroeconomic Dashboard ───────────────────────────────────────────── */
+.macro-dashboard {
+    padding: 0 16px 24px;
+}
+
+.macro-dashboard .housing-kpi-card {
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-top: 3px solid transparent;
+}
+
+.macro-dashboard .housing-kpi-card:nth-child(1) { border-top-color: #1A5276; }
+.macro-dashboard .housing-kpi-card:nth-child(2) { border-top-color: #2E86AB; }
+.macro-dashboard .housing-kpi-card:nth-child(3) { border-top-color: #148F77; }
+.macro-dashboard .housing-kpi-card:nth-child(4) { border-top-color: #D35400; }
+.macro-dashboard .housing-kpi-card:nth-child(5) { border-top-color: #8E44AD; }
+
+.macro-dashboard .section-title {
+    color: #12263A;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    border-left: 4px solid #1A5276;
+    padding-left: 10px;
+    margin-bottom: 14px !important;
+}
+
+.macro-dashboard .chart-title {
+    color: #495057;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+}
+
+/* ── Affordability Dashboard ───────────────────────────────────────────── */
+.affordability-dashboard {
+    padding: 0 16px 24px;
+}
+
+.affordability-dashboard .housing-kpi-card {
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    border-top: 3px solid transparent;
+}
+
+.affordability-dashboard .housing-kpi-card:nth-child(1) { border-top-color: #2E86AB; }
+.affordability-dashboard .housing-kpi-card:nth-child(2) { border-top-color: #E74C3C; }
+.affordability-dashboard .housing-kpi-card:nth-child(3) { border-top-color: #8E44AD; }
+.affordability-dashboard .housing-kpi-card:nth-child(4) { border-top-color: #D35400; }
+.affordability-dashboard .housing-kpi-card:nth-child(5) { border-top-color: #148F77; }
+
+.affordability-dashboard .section-title {
+    color: #12263A;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    border-left: 4px solid #2E86AB;
+    padding-left: 10px;
+    margin-bottom: 14px !important;
+}
+
+.affordability-dashboard .chart-title {
+    color: #495057;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+}
+
+/* ── Forecast Dashboard ────────────────────────────────────────────────── */
+.forecast-dashboard {
+    padding: 0 16px 24px;
+}
+
+.forecast-dashboard .housing-kpi-card {
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-top: 3px solid transparent;
+}
+
+.forecast-dashboard .housing-kpi-card:nth-child(1) { border-top-color: #2E86AB; }
+.forecast-dashboard .housing-kpi-card:nth-child(2) { border-top-color: #148F77; }
+.forecast-dashboard .housing-kpi-card:nth-child(3) { border-top-color: #1A5276; }
+.forecast-dashboard .housing-kpi-card:nth-child(4) { border-top-color: #D35400; }
+.forecast-dashboard .housing-kpi-card:nth-child(5) { border-top-color: #E74C3C; }
+.forecast-dashboard .housing-kpi-card:nth-child(6) { border-top-color: #8E44AD; }
+
+.forecast-dashboard .section-title {
+    color: #12263A;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    border-left: 4px solid #2E86AB;
+    padding-left: 10px;
+    margin-bottom: 14px !important;
+}
+
+.forecast-dashboard .chart-title {
+    color: #495057;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+    .global-summary-row {
+        top: 56px;
+    }
+    .summary-chip {
+        min-height: 96px;
+    }
+    .summary-kpi-value {
+        font-size: 0.92rem;
+    }
+    .nav-links-col {
+        display: none;
+    }
+    .action-buttons-col {
+        flex-wrap: wrap;
+    }
+    .status-col {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .executive-kpi-card, .housing-kpi-card {
+        margin-bottom: 16px;
+    }
+    .hero-kpi-value {
+        font-size: 2rem;
+    }
+    .filter-bar {
+        padding: 8px 16px;
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    .filter-bar .d-flex {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .filter-bar #region-selector {
+        width: 100% !important;
+    }
+    .filter-bar .btn-group {
+        width: 100%;
+    }
+    .filter-bar .btn-group .btn {
+        flex: 1;
+    }
+    .section-title {
+        font-size: 1.25rem;
+    }
+    .kpi-value {
+        font-size: 1.5rem;
+    }
+    .chart-container, .map-container {
+        padding: 16px;
+    }
+    .dashboard-navbar .navbar-brand-copy {
+        display: none;
+    }
+    .dashboard-navbar .navbar-logo {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+    .action-buttons-col .btn {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+    .action-buttons-col .btn span,
+    .action-buttons-col .btn svg {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-kpi-value {
+        font-size: 1.75rem;
+    }
+    .hero-card {
+        padding: 16px;
+    }
+    .section-title {
+        font-size: 1.1rem;
+    }
+    .section-subtitle {
+        font-size: 0.8rem;
+    }
+    .kpi-card {
+        padding: 12px;
+    }
+    .kpi-card-title {
+        font-size: 0.7rem;
+    }
+    .kpi-value {
+        font-size: 1.25rem;
+    }
+    .chart-container {
+        padding: 12px;
+        min-height: 250px;
+    }
+    .map-container {
+        padding: 12px;
+        min-height: 300px;
+    }
+    .dashboard-container {
+        padding: 0 8px;
+    }
+    .content-row {
+        padding-top: 72px !important;
+    }
+    .global-summary-row {
+        display: none;
+    }
+    .footer-text {
+        font-size: 0.75rem;
+    }
+    .dashboard-footer {
+        padding: 12px 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .hero-kpi-value {
+        font-size: 1.5rem;
+    }
+    .section-title {
+        font-size: 1rem;
+    }
+    .kpi-value {
+        font-size: 1.1rem;
+    }
+    .btn-group .btn {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+    }
+}
+
+/* ── Print Styles ────────────────────────────────────────────────────── */
+@media print {
+    .dashboard-navbar,
+    .filter-bar,
+    .global-summary-row,
+    .dashboard-footer,
+    #btn-dark-mode,
+    #btn-export,
+    #btn-refresh,
+    .navbar-toggler {
+        display: none !important;
+    }
+    .dashboard-container {
+        background: white !important;
+        padding: 0 !important;
+    }
+    .content-row {
+        padding-top: 0 !important;
+    }
+    .card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+    .chart-container, .map-container {
+        page-break-inside: avoid;
+    }
+    body {
+        font-size: 12pt;
+    }
+}
+
+/* ── Dark Mode ──────────────────────────────────────────────────────── */
+body.dark-mode {
+    --primary: #4DA8DA;
+    --secondary: #2E86AB;
+    --accent: #F4C430;
+    --success: #4CAF50;
+    --warning: #FFC107;
+    --danger: #EF5350;
+    --ink: #E0E0E0;
+    --muted: #9E9E9E;
+    --surface: #121212;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #E0E0E0;
+}
+
+body.dark-mode .dashboard-container {
+    background: linear-gradient(120deg, #121212 0%, #1E1E1E 40%, #121212 100%);
+}
+
+body.dark-mode .dashboard-navbar {
+    background-color: #1E1E1E !important;
+}
+
+body.dark-mode .bg-white {
+    background-color: #1E1E1E !important;
+    color: #E0E0E0;
+}
+
+body.dark-mode .card {
+    background-color: #1E1E1E;
+    border-color: #333;
+}
+
+body.dark-mode .text-muted {
+    color: #9E9E9E !important;
+}
+
+body.dark-mode .border-bottom {
+    border-color: #333 !important;
+}
+
+body.dark-mode .filter-bar {
+    background-color: #1E1E1E !important;
+}
+
+body.dark-mode .section-title {
+    color: #E0E0E0;
+}
+
+body.dark-mode .hero-card {
+    background: linear-gradient(135deg, #1E1E1E, #2D2D2D);
+}
+
+body.dark-mode .dropdown-menu {
+    background-color: #1E1E1E;
+    border-color: #333;
+}
+
+body.dark-mode .dropdown-item {
+    color: #E0E0E0;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .Select-control {
+    background-color: #1E1E1E;
+    border-color: #333;
+    color: #E0E0E0;
+}
+
+body.dark-mode .plotly .plotbg {
+    fill: #1E1E1E;
+}
+
+body.dark-mode .skeleton-card .div {
+    background-color: #333;
+}
+
+/* ── Loading Spinner ────────────────────────────────────────────────── */
+.dash-spinner {
+    border-color: var(--primary) !important;
+}
+
+._dash-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+}
+
+/* ── Skeleton Animation ─────────────────────────────────────────────── */
+@keyframes skeleton-pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.skeleton-card .div {
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}

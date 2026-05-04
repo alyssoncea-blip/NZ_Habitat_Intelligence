@@ -1,0 +1,47 @@
+﻿# NZ Habitat Intelligence - Deployment Configuration
+# Supports: Docker Compose (local), AWS ECS (production)
+
+services:
+  dashboard:
+    image: ${ECR_REPOSITORY:-nz-habitat-dashboard}:${IMAGE_TAG:-latest}
+    ports:
+      - "8050:8050"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PREFECT_API_URL=${PREFECT_API_URL:-http://prefect-server:4200/api}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8050')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  prefect-server:
+    image: prefecthq/prefect:2-python3.11
+    ports:
+      - "4200:4200"
+    command: prefect server start --host 0.0.0.0
+    environment:
+      - PREFECT_SERVER_API_HOST=0.0.0.0
+      - PREFECT_SERVER_API_PORT=4200
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4200/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  prefect-worker:
+    image: ${ECR_REPOSITORY:-nz-habitat-dashboard}:${IMAGE_TAG:-latest}
+    command: prefect worker start -p nz-habitat
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PREFECT_API_URL=http://prefect-server:4200/api
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      prefect-server:
+        condition: service_healthy
+    restart: unless-stopped

@@ -1,0 +1,24 @@
+﻿version: 2
+
+sources:
+  - name: silver
+    freshness:
+      warn_after:
+        count: 7
+        period: day
+      error_after:
+        count: 30
+        period: day
+    tables:
+      - name: affordability_features
+        description: "Affordability index features (GDP per capita + regional income)"
+      - name: interest_rate_lag_features
+        description: "Interest rate volatility features (OCR + mortgage rates)"
+      - name: tourism_pressure_features
+        description: "Tourism pressure index (visitor arrivals + regional expenditure)"
+      - name: supply_deficit_features
+        description: "Housing supply deficit (building consents vs population growth)"
+      - name: rent_income_ratio_features
+        description: "Rent-to-income ratio features"
+      - name: tourism_lag_analysis_features
+        description: "Macroeconomic volatility composite index"

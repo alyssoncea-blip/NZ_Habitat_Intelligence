@@ -1,0 +1,42 @@
+{
+  "nz_population_estimates": {
+    "2020": 5084300,
+    "2021": 5118700,
+    "2022": 5123500,
+    "2023": 5190000,
+    "2024": 5250000
+  },
+  "regional_population_shares": {
+    "Auckland": 0.330,
+    "Wellington": 0.108,
+    "Canterbury": 0.125,
+    "Waikato": 0.088,
+    "Bay of Plenty": 0.065,
+    "Otago": 0.045,
+    "Northland": 0.032,
+    "Taranaki": 0.024,
+    "Hawke's Bay": 0.032,
+    "Manawatu-Wanganui": 0.046,
+    "Southland": 0.020,
+    "Nelson": 0.011,
+    "Tasman": 0.011,
+    "Marlborough": 0.010,
+    "Gisborne": 0.010,
+    "West Coast": 0.007
+  },
+  "data_sources": {
+    "world_bank": {
+      "base_url": "https://api.worldbank.org/v2/country/NZ/indicator/",
+      "indicators": {
+        "gdp_growth": "NY.GDP.MKTP.KD.ZG",
+        "inflation": "FP.CPI.TOTL.ZG",
+        "unemployment": "SL.UEM.TOTL.ZS",
+        "interest_rate": "FR.INR.LEND",
+        "population": "SP.POP.TOTL"
+      }
+    },
+    "rbnz": {
+      "ocr_csv": "https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/interest-rates-and-security-yields/m1.csv"
+    }
+  }
+}

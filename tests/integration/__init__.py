@@ -1,0 +1,1 @@
+"""Integration tests for NZ Habitat Intelligence pipeline."""

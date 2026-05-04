@@ -1,0 +1,132 @@
+{
+  "artifact_name": "kpis-02-housing",
+  "artifact_path": "data_pipeline\\gold\\kpis-02-housing_complete.parquet",
+  "layer": "gold",
+  "source": "real",
+  "source_name": "silver_bronze_real_data",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 98.0,
+  "record_count": 52,
+  "column_count": 7,
+  "null_percentage": 0.27472527472527475,
+  "columns": [
+    {
+      "name": "name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 52,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Median House Price - Auckland",
+        "Median House Price - Wellington",
+        "Median House Price - Canterbury",
+        "Median House Price - Waikato",
+        "Median House Price - Bay of Plenty"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 1.9230769230769231,
+      "unique_count": 48,
+      "min_value": 0.56,
+      "max_value": 1275000.0,
+      "sample_values": [
+        1275000.0,
+        390000.0,
+        570000.0,
+        420000.0,
+        360000.0
+      ]
+    },
+    {
+      "name": "unit",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "NZD",
+        "NZD",
+        "NZD",
+        "NZD",
+        "NZD"
+      ]
+    },
+    {
+      "name": "('Estimated median house price for ' || ls.region)",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 52,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Estimated median house price for Auckland",
+        "Estimated median house price for Wellington",
+        "Estimated median house price for Canterbury",
+        "Estimated median house price for Waikato",
+        "Estimated median house price for Bay of Plenty"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "housing",
+        "housing",
+        "housing",
+        "housing",
+        "housing"
+      ]
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "price",
+        "price",
+        "price",
+        "price",
+        "price"
+      ]
+    },
+    {
+      "name": "calculated_at",
+      "dtype": "datetime64[us, UTC]",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "2026-05-03 06:35:51.192092+00:00",
+        "2026-05-03 06:35:51.192092+00:00",
+        "2026-05-03 06:35:51.192092+00:00",
+        "2026-05-03 06:35:51.192092+00:00",
+        "2026-05-03 06:35:51.192092+00:00"
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:35:57.743840",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": "Calculated from real Silver/Bronze data (World Bank, Stats NZ, RBNZ, MBIE)"
+}

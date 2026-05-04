@@ -1,0 +1,132 @@
+{
+  "artifact_name": "kpis-06-forecast",
+  "artifact_path": "data_pipeline\\gold\\kpis-06-forecast_complete.parquet",
+  "layer": "gold",
+  "source": "real",
+  "source_name": "silver_bronze_real_data",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 95.0,
+  "record_count": 12,
+  "column_count": 7,
+  "null_percentage": 2.380952380952381,
+  "columns": [
+    {
+      "name": "name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 12,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "12-Month Price Forecast",
+        "Forecast Growth (%)",
+        "Confidence Interval (80% Upper)",
+        "Confidence Interval (80% Lower)",
+        "Confidence Interval (95% Upper)"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "float64",
+      "null_count": 2,
+      "null_percentage": 16.666666666666664,
+      "unique_count": 4,
+      "min_value": -1.0,
+      "max_value": 100.0,
+      "sample_values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "unit",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "NZD",
+        "%",
+        "NZD",
+        "NZD",
+        "NZD"
+      ]
+    },
+    {
+      "name": "description",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 12,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Projected median price with 3% annual growth",
+        "Year-over-year projected growth",
+        "Upper bound of 80% confidence interval",
+        "Lower bound of 80% confidence interval",
+        "Upper bound of 95% confidence interval"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "forecast",
+        "forecast",
+        "forecast",
+        "forecast",
+        "forecast"
+      ]
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 7,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "forecast",
+        "growth",
+        "confidence",
+        "confidence",
+        "confidence"
+      ]
+    },
+    {
+      "name": "calculated_at",
+      "dtype": "datetime64[us, UTC]",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "2026-05-03 06:35:52.357573+00:00",
+        "2026-05-03 06:35:52.357573+00:00",
+        "2026-05-03 06:35:52.357573+00:00",
+        "2026-05-03 06:35:52.357573+00:00",
+        "2026-05-03 06:35:52.357573+00:00"
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:35:57.760876",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": "Calculated from real Silver/Bronze data (World Bank, Stats NZ, RBNZ, MBIE)"
+}

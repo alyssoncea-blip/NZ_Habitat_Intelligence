@@ -1,0 +1,20 @@
+{
+  "generated_date": "2026-05-03T03:36:00.776689",
+  "feature_count": 6,
+  "records_summary": {
+    "affordability": 800,
+    "interest_rate_lag": 27,
+    "tourism_pressure": 96,
+    "supply_deficit": 112,
+    "rent_income_ratio": 336,
+    "tourism_lag_analysis": 50
+  },
+  "feature_files": {
+    "affordability": "data_pipeline\\silver\\affordability_features.parquet",
+    "interest_rate_lag": "data_pipeline\\silver\\interest_rate_lag_features.parquet",
+    "tourism_pressure": "data_pipeline\\silver\\tourism_pressure_features.parquet",
+    "supply_deficit": "data_pipeline\\silver\\supply_deficit_features.parquet",
+    "rent_income_ratio": "data_pipeline\\silver\\rent_income_ratio_features.parquet",
+    "tourism_lag_analysis": "data_pipeline\\silver\\tourism_lag_analysis_features.parquet"
+  }
+}

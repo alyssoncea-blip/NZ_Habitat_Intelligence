@@ -1,0 +1,87 @@
+# Prefect project configuration for NZ Habitat Intelligence
+# Run: prefect deploy to deploy all flows
+
+name: nz-habitat-intelligence
+prefect-version: "2.14.0"
+
+build: null
+
+push: null
+
+pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: .
+
+deployments:
+  - name: daily-pipeline
+    entrypoint: "data_pipeline/orchestration/flows/daily_pipeline.py:run_daily_pipeline"
+    work_queue: nz-habitat
+    schedule: null
+    parameters:
+      force_refresh: false
+    tags:
+      - pipeline
+      - daily
+    infra_overrides:
+      env:
+        PYTHONUNBUFFERED: "1"
+
+  - name: daily-ingestion
+    entrypoint: "data_pipeline/orchestration/flows/scheduled_flows.py:run_daily_ingestion"
+    work_queue: nz-habitat-ingestion
+    schedule:
+      cron: "0 6 * * *"
+      timezone: "UTC"
+    parameters:
+      force_refresh: false
+    tags:
+      - ingestion
+      - daily
+    infra_overrides:
+      env:
+        PYTHONUNBUFFERED: "1"
+
+  - name: weekly-ingestion
+    entrypoint: "data_pipeline/orchestration/flows/scheduled_flows.py:run_weekly_ingestion"
+    work_queue: nz-habitat-ingestion
+    schedule:
+      cron: "0 8 * * 1"
+      timezone: "UTC"
+    parameters:
+      force_refresh: false
+    tags:
+      - ingestion
+      - weekly
+    infra_overrides:
+      env:
+        PYTHONUNBUFFERED: "1"
+
+  - name: monthly-ingestion
+    entrypoint: "data_pipeline/orchestration/flows/scheduled_flows.py:run_monthly_ingestion"
+    work_queue: nz-habitat-ingestion
+    schedule:
+      cron: "0 10 1 * *"
+      timezone: "UTC"
+    parameters:
+      force_refresh: false
+    tags:
+      - ingestion
+      - monthly
+    infra_overrides:
+      env:
+        PYTHONUNBUFFERED: "1"
+
+  - name: full-pipeline
+    entrypoint: "data_pipeline/orchestration/flows/scheduled_flows.py:run_full_pipeline"
+    work_queue: nz-habitat
+    schedule:
+      cron: "0 7 * * *"
+      timezone: "UTC"
+    parameters:
+      force_refresh: false
+    tags:
+      - pipeline
+      - full
+    infra_overrides:
+      env:
+        PYTHONUNBUFFERED: "1"

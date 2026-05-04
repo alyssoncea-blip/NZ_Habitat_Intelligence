@@ -1,0 +1,11 @@
+{
+  "generated_date": "2026-04-24T17:53:08.327540",
+  "dashboards_count": 1,
+  "total_kpis": 34,
+  "file_paths": {
+    "dashboard_01_executive": "data_pipeline\\gold\\kpis_01-executive.parquet"
+  },
+  "records_summary": {
+    "dashboard_01_executive": 6
+  }
+}

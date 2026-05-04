@@ -1,0 +1,39 @@
+{
+  "data_asset_type": null,
+  "expectation_suite_name": "bronze_data_freshness",
+  "ge_cloud_id": null,
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "date_fetched",
+        "type_": "str"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "source",
+        "regex": "^(World Bank|RBNZ|Stats NZ|MBIE|LINZ|REINZ|Tenancy Services)"
+      },
+      "meta": {
+        "notes": {
+          "format": "markdown",
+          "content": "Source must be a recognized NZ data provider."
+        }
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.0",
+    "notes": "Bronze data freshness and source validation."
+  }
+}

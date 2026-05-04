@@ -1,0 +1,132 @@
+{
+  "artifact_name": "kpis-05-affordability",
+  "artifact_path": "data_pipeline\\gold\\kpis-05-affordability_complete.parquet",
+  "layer": "gold",
+  "source": "real",
+  "source_name": "silver_bronze_real_data",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 98.0,
+  "record_count": 52,
+  "column_count": 7,
+  "null_percentage": 0.8241758241758242,
+  "columns": [
+    {
+      "name": "name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 52,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Years to Buy - Auckland",
+        "Years to Buy - Wellington",
+        "Years to Buy - Canterbury",
+        "Years to Buy - Waikato",
+        "Years to Buy - Bay of Plenty"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "float64",
+      "null_count": 3,
+      "null_percentage": 5.769230769230769,
+      "unique_count": 13,
+      "min_value": 0.0,
+      "max_value": 780.0,
+      "sample_values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "unit",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "years",
+        "years",
+        "years",
+        "years",
+        "years"
+      ]
+    },
+    {
+      "name": "('Estimated years of median income to buy median home in ' || laf.region)",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 52,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Estimated years of median income to buy median home in Auckland",
+        "Estimated years of median income to buy median home in Wellington",
+        "Estimated years of median income to buy median home in Canterbury",
+        "Estimated years of median income to buy median home in Waikato",
+        "Estimated years of median income to buy median home in Bay of Plenty"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "affordability",
+        "affordability",
+        "affordability",
+        "affordability",
+        "affordability"
+      ]
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 4,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "purchase",
+        "purchase",
+        "purchase",
+        "purchase",
+        "purchase"
+      ]
+    },
+    {
+      "name": "calculated_at",
+      "dtype": "datetime64[us, UTC]",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "2026-05-03 06:35:50.986347+00:00",
+        "2026-05-03 06:35:50.986347+00:00",
+        "2026-05-03 06:35:50.986347+00:00",
+        "2026-05-03 06:35:50.986347+00:00",
+        "2026-05-03 06:35:50.986347+00:00"
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:35:57.756859",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": "Calculated from real Silver/Bronze data (World Bank, Stats NZ, RBNZ, MBIE)"
+}

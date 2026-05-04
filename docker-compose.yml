@@ -1,0 +1,133 @@
+services:
+  dashboard:
+    build: .
+    container_name: nz-habitat-dashboard
+    ports:
+      - "8050:8050"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+      - DBT_NZ_DB_PATH=/app/data/duckdb/nz_habitat.duckdb
+    volumes:
+      - ./data:/app/data
+      - ./data_pipeline/bronze:/app/data_pipeline/bronze
+      - ./data_pipeline/silver:/app/data_pipeline/silver
+      - ./data_pipeline/gold:/app/data_pipeline/gold
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8050')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    depends_on:
+      prefect-server:
+        condition: service_healthy
+
+  pipeline:
+    build: .
+    container_name: nz-habitat-pipeline
+    entrypoint: ["python"]
+    command: ["data_pipeline/run_enhanced_pipeline.py", "--force"]
+    profiles:
+      - pipeline
+
+  dbt:
+    build: .
+    container_name: nz-habitat-dbt
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DBT_NZ_DB_PATH=/app/data/duckdb/nz_habitat.duckdb
+    volumes:
+      - ./data:/app/data
+      - ./data_pipeline/bronze:/app/data_pipeline/bronze
+      - ./data_pipeline/silver:/app/data_pipeline/silver
+      - ./data_pipeline/gold:/app/data_pipeline/gold
+    working_dir: /app/dbt_nz
+    command: ["run", "--profiles-dir", "."]
+    profiles:
+      - dbt
+
+  ge-validation:
+    build: .
+    container_name: nz-habitat-ge
+    entrypoint: ["python"]
+    command: ["great_expectations/validate.py"]
+    profiles:
+      - ge
+
+  # ── Prefect Server (local UI + API) ─────────────────────────────────────
+  prefect-server:
+    image: prefecthq/prefect:2-python3.11
+    container_name: nz-habitat-prefect-server
+    ports:
+      - "4200:4200"
+    command: prefect server start --host 0.0.0.0
+    environment:
+      - PREFECT_SERVER_API_HOST=0.0.0.0
+      - PREFECT_SERVER_API_PORT=4200
+    volumes:
+      - prefect-data:/root/.prefect
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4200/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ── Prefect Worker (executes flows) ─────────────────────────────────────
+  prefect-worker:
+    build: .
+    container_name: nz-habitat-prefect-worker
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PREFECT_API_URL=http://prefect-server:4200/api
+      - LOG_LEVEL=INFO
+      - DBT_NZ_DB_PATH=/app/data/duckdb/nz_habitat.duckdb
+      - ALERT_WEBHOOK_URL=${ALERT_WEBHOOK_URL:-}
+      - ALERT_EMAIL_RECIPIENTS=${ALERT_EMAIL_RECIPIENTS:-}
+    volumes:
+      - ./data:/app/data
+      - ./data_pipeline/bronze:/app/data_pipeline/bronze
+      - ./data_pipeline/silver:/app/data_pipeline/silver
+      - ./data_pipeline/gold:/app/data_pipeline/gold
+      - ./logs:/app/logs
+      - ./great_expectations:/app/great_expectations
+      - ./dbt_nz:/app/dbt_nz
+    entrypoint: ["sh", "-c"]
+    command: ["pip install prefect prefect-dbt prefect-shell && prefect worker start -p nz-habitat -t ${PREFECT_API_KEY:-local}"]
+    depends_on:
+      prefect-server:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles:
+      - prefect
+
+  # ── Prefect Worker (ingestion queue) ────────────────────────────────────
+  prefect-worker-ingestion:
+    build: .
+    container_name: nz-habitat-prefect-worker-ingestion
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PREFECT_API_URL=http://prefect-server:4200/api
+      - LOG_LEVEL=INFO
+      - DBT_NZ_DB_PATH=/app/data/duckdb/nz_habitat.duckdb
+    volumes:
+      - ./data:/app/data
+      - ./data_pipeline/bronze:/app/data_pipeline/bronze
+      - ./data_pipeline/silver:/app/data_pipeline/silver
+      - ./data_pipeline/gold:/app/data_pipeline/gold
+      - ./logs:/app/logs
+    entrypoint: ["sh", "-c"]
+    command: ["pip install prefect prefect-dbt prefect-shell && prefect worker start -p nz-habitat-ingestion -t ${PREFECT_API_KEY:-local}"]
+    depends_on:
+      prefect-server:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles:
+      - prefect
+
+volumes:
+  prefect-data:

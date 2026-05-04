@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-04-27T16:24:01.511254",
+  "success": true,
+  "duration_seconds": 0.9189016819000244,
+  "stages": {
+    "bronze": {
+      "status": "success",
+      "duration_seconds": 0.016001462936401367,
+      "error": null
+    },
+    "silver": {
+      "status": "success",
+      "duration_seconds": 0.7892746925354004,
+      "error": null
+    },
+    "gold": {
+      "status": "success",
+      "duration_seconds": 0.06362485885620117,
+      "error": null
+    },
+    "contracts": {
+      "status": "success",
+      "duration_seconds": 0.050000667572021484,
+      "error": null
+    }
+  },
+  "alerts": {
+    "total": 6,
+    "by_severity": {
+      "info": 6
+    },
+    "alerts_this_run": 2,
+    "latest": {
+      "severity": "info",
+      "title": "Pipeline completed",
+      "message": "All stages finished in 0.9s",
+      "source": "",
+      "pipeline_stage": "orchestrator",
+      "timestamp": "2026-04-27T16:24:01.510254",
+      "metadata": {
+        "duration_seconds": 0.9189016819000244
+      }
+    }
+  }
+}

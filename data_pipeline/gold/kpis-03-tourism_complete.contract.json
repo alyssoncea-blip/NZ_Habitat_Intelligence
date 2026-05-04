@@ -1,0 +1,132 @@
+{
+  "artifact_name": "kpis-03-tourism",
+  "artifact_path": "data_pipeline\\gold\\kpis-03-tourism_complete.parquet",
+  "layer": "gold",
+  "source": "real",
+  "source_name": "silver_bronze_real_data",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 95.0,
+  "record_count": 6,
+  "column_count": 7,
+  "null_percentage": 0.0,
+  "columns": [
+    {
+      "name": "name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Tourism Pressure Index",
+        "Visitor Arrivals (Annual)",
+        "Tourism Expenditure (Annual)",
+        "Tourism to Rent Lag",
+        "Visitor Seasonality Strength"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": 0.5076521510780985,
+      "max_value": 37170.52,
+      "sample_values": [
+        37170.52,
+        15620.0,
+        15620.0,
+        0.5076521510780985,
+        34.17
+      ]
+    },
+    {
+      "name": "unit",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "index",
+        "thousands",
+        "NZD millions",
+        "index",
+        "ratio"
+      ]
+    },
+    {
+      "name": "description",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Overall tourism pressure on housing market",
+        "Total international visitor arrivals",
+        "Total regional tourism expenditure",
+        "Average lag between tourism growth and rent changes",
+        "Peak to low visitor ratio"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "tourism",
+        "tourism",
+        "tourism",
+        "tourism",
+        "tourism"
+      ]
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "pressure",
+        "volume",
+        "economic",
+        "lag",
+        "seasonality"
+      ]
+    },
+    {
+      "name": "calculated_at",
+      "dtype": "datetime64[us, UTC]",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "2026-05-03 06:35:51.980390+00:00",
+        "2026-05-03 06:35:51.980390+00:00",
+        "2026-05-03 06:35:51.980390+00:00",
+        "2026-05-03 06:35:51.980390+00:00",
+        "2026-05-03 06:35:51.980390+00:00"
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:35:57.748347",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": "Calculated from real Silver/Bronze data (World Bank, Stats NZ, RBNZ, MBIE)"
+}

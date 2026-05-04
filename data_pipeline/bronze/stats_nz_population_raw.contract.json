@@ -1,0 +1,76 @@
+{
+  "artifact_name": "stats_nz_population_raw",
+  "artifact_path": "data_pipeline\\bronze\\stats_nz_population_raw.json",
+  "layer": "bronze",
+  "source": "real",
+  "source_name": "stats_nz_csv",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 100,
+  "record_count": 300,
+  "column_count": 4,
+  "null_percentage": 0.0,
+  "columns": [
+    {
+      "name": "population",
+      "dtype": "string",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 10,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        1504217,
+        150920,
+        529185
+      ]
+    },
+    {
+      "name": "territorial_authority",
+      "dtype": "string",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 10,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Auckland",
+        "Hamilton",
+        "Wellington"
+      ]
+    },
+    {
+      "name": "region",
+      "dtype": "string",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 9,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Auckland",
+        "Waikato",
+        "Wellington"
+      ]
+    },
+    {
+      "name": "year",
+      "dtype": "string",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        2010,
+        2010,
+        2010
+      ]
+    }
+  ],
+  "created_at": "2026-04-27T16:24:00.601354",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": ""
+}

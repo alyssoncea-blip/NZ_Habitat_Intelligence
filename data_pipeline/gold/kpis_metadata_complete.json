@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-05-03T03:35:57.761877",
+  "dashboards": {
+    "dashboard_01_executive": 8,
+    "dashboard_02_housing": 52,
+    "dashboard_03_tourism": 6,
+    "dashboard_04_macro": 55,
+    "dashboard_05_affordability": 52,
+    "dashboard_06_forecast": 12
+  },
+  "total_kpis": 185,
+  "source": "real_silver_bronze_data"
+}

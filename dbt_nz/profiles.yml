@@ -1,0 +1,14 @@
+nz_habitat:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "data/duckdb/nz_habitat.duckdb"
+      extensions:
+        - parquet
+
+    prod:
+      type: duckdb
+      path: "data/duckdb/nz_habitat.duckdb"
+      extensions:
+        - parquet

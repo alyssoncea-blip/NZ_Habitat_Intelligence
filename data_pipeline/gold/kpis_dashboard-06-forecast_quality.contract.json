@@ -1,0 +1,116 @@
+{
+  "artifact_name": "kpis_dashboard-06-forecast",
+  "artifact_path": "data_pipeline\\gold\\kpis_dashboard-06-forecast_quality.parquet",
+  "layer": "gold",
+  "source": "real",
+  "source_name": "silver_layer_features",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 95.0,
+  "record_count": 13,
+  "column_count": 6,
+  "null_percentage": 0.0,
+  "columns": [
+    {
+      "name": "name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 13,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "12-Month Price Forecast",
+        "Current Median Price",
+        "Forecast Growth",
+        "Confidence 80% Lower",
+        "Confidence 80% Upper"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 12,
+      "min_value": -0.1,
+      "max_value": 654639.0,
+      "sample_values": [
+        601580.0,
+        600000.0,
+        0.3,
+        566929.0,
+        636231.0
+      ]
+    },
+    {
+      "name": "unit",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "NZD",
+        "NZD",
+        "%",
+        "NZD",
+        "NZD"
+      ]
+    },
+    {
+      "name": "description",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 13,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Projected median price in 12 months (GDP-based)",
+        "Current national median house price",
+        "Expected annual price growth",
+        "80% confidence interval lower bound",
+        "80% confidence interval upper bound"
+      ]
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Forecast",
+        "Forecast",
+        "Forecast",
+        "Forecast",
+        "Forecast"
+      ]
+    },
+    {
+      "name": "source",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 10,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "GDP growth linear regression",
+        "Regional price proxy",
+        "GDP per capita YoY",
+        "Macroeconomic volatility",
+        "Macroeconomic volatility"
+      ]
+    }
+  ],
+  "created_at": "2026-04-27T02:56:08.563168",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": "Quality format for dashboard consumption"
+}

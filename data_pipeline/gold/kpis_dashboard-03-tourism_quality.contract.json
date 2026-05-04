@@ -1,0 +1,116 @@
+{
+  "artifact_name": "kpis_dashboard-03-tourism",
+  "artifact_path": "data_pipeline\\gold\\kpis_dashboard-03-tourism_quality.parquet",
+  "layer": "gold",
+  "source": "real",
+  "source_name": "silver_layer_features",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 95.0,
+  "record_count": 5,
+  "column_count": 6,
+  "null_percentage": 0.0,
+  "columns": [
+    {
+      "name": "name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Tourism Pressure Index",
+        "Airbnb Share of Rentals",
+        "Tourism to Rent Lag",
+        "Visitor Seasonality Strength",
+        "Visitors \u00d7 DOM Correlation"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": -0.6,
+      "max_value": 69.8,
+      "sample_values": [
+        69.8,
+        22.4,
+        7.0,
+        2.0,
+        -0.6
+      ]
+    },
+    {
+      "name": "unit",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "pts",
+        "%",
+        "months",
+        "x",
+        "r"
+      ]
+    },
+    {
+      "name": "description",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 5,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Tourism impact on housing (0-100)",
+        "Estimated Airbnb % of total rental stock",
+        "Optimal lag tourism peak to rent increase",
+        "Peak-to-low season visitor ratio",
+        "Pearson correlation visitor volume vs DOM"
+      ]
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Tourism",
+        "Tourism",
+        "Tourism",
+        "Tourism",
+        "Tourism"
+      ]
+    },
+    {
+      "name": "source",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 3,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Unemployment + inflation proxy",
+        "Tourism pressure model",
+        "Tourism-economy correlation",
+        "Tourism-economy correlation",
+        "Tourism pressure model"
+      ]
+    }
+  ],
+  "created_at": "2026-04-27T02:56:08.553168",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": "Quality format for dashboard consumption"
+}

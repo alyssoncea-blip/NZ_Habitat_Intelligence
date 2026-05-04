@@ -1,0 +1,146 @@
+{
+  "artifact_name": "tourism_lag_analysis_features",
+  "artifact_path": "data_pipeline\\silver\\tourism_lag_analysis_features.parquet",
+  "layer": "silver",
+  "source": "real",
+  "source_name": "bronze_real_data",
+  "source_url": null,
+  "quality": "fair",
+  "confidence_score": 68.0,
+  "record_count": 50,
+  "column_count": 7,
+  "null_percentage": 22.285714285714285,
+  "columns": [
+    {
+      "name": "region",
+      "dtype": "object",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "New Zealand",
+        "New Zealand",
+        "New Zealand",
+        "New Zealand",
+        "New Zealand"
+      ]
+    },
+    {
+      "name": "year",
+      "dtype": "int32",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 50,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        1976,
+        1977,
+        1978,
+        1979,
+        1980
+      ]
+    },
+    {
+      "name": "macroeconomic_volatility_index",
+      "dtype": "float64",
+      "null_count": 30,
+      "null_percentage": 60.0,
+      "unique_count": 20,
+      "min_value": 0.0,
+      "max_value": 100.0,
+      "sample_values": [
+        10.0,
+        0.0,
+        0.8,
+        22.9,
+        70.2
+      ]
+    },
+    {
+      "name": "gdp_volatility",
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 2.0,
+      "unique_count": 49,
+      "min_value": 126941252.11294499,
+      "max_value": 23648260600.493385,
+      "sample_values": [
+        1302485666.5626078,
+        2488790974.6417465,
+        2654474954.543793,
+        2358741082.5340495,
+        1883354494.2570326
+      ]
+    },
+    {
+      "name": "inflation_volatility",
+      "dtype": "float64",
+      "null_count": 1,
+      "null_percentage": 2.0,
+      "unique_count": 49,
+      "min_value": 0.03308488554556631,
+      "max_value": 5.609229451448468,
+      "sample_values": [
+        1.7842479054214475,
+        2.4752758735222367,
+        1.25138315747027,
+        2.6433536166319036,
+        1.7257664209572532
+      ]
+    },
+    {
+      "name": "unemployment_volatility",
+      "dtype": "float64",
+      "null_count": 16,
+      "null_percentage": 32.0,
+      "unique_count": 34,
+      "min_value": 0.037476659402886976,
+      "max_value": 1.6763849001149256,
+      "sample_values": [
+        0.037476659402886976,
+        0.48367999062741146,
+        1.1688482935493947,
+        1.6763849001149256,
+        1.1454828676152233
+      ]
+    },
+    {
+      "name": "interest_rate_volatility",
+      "dtype": "float64",
+      "null_count": 30,
+      "null_percentage": 60.0,
+      "unique_count": 20,
+      "min_value": 0.09000439038715398,
+      "max_value": 1.447206707368614,
+      "sample_values": [
+        1.3721371289161512,
+        0.9776298709009855,
+        0.39255206919570207,
+        0.32451483408197757,
+        0.30708786324622767
+      ]
+    }
+  ],
+  "created_at": "2026-05-03T03:36:00.776689",
+  "data_from_date": "1976-01-01",
+  "data_to_date": "2025-12-31",
+  "parent_contracts": [
+    "data_pipeline\\bronze\\mbie_international_visitors_raw.contract.json",
+    "data_pipeline\\bronze\\mbie_regional_tourism_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_cpi_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_mortgage_rates_raw.contract.json",
+    "data_pipeline\\bronze\\rbnz_ocr_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_building_consents_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_income_raw.contract.json",
+    "data_pipeline\\bronze\\stats_nz_population_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_gdp_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_inflation_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_interest_rate_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_population_raw.contract.json",
+    "data_pipeline\\bronze\\world_bank_unemployment_raw.contract.json"
+  ],
+  "notes": "Calculated from real Bronze data (50 records)"
+}

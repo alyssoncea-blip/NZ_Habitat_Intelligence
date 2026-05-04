@@ -1,0 +1,76 @@
+{
+  "artifact_name": "world_bank_population_raw",
+  "artifact_path": "data_pipeline\\bronze\\world_bank_population_raw.json",
+  "layer": "bronze",
+  "source": "real",
+  "source_name": "world_bank_api",
+  "source_url": null,
+  "quality": "excellent",
+  "confidence_score": 100,
+  "record_count": 50,
+  "column_count": 4,
+  "null_percentage": 0.0,
+  "columns": [
+    {
+      "name": "indicator",
+      "dtype": "string",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "Population, total",
+        "Population, total",
+        "Population, total"
+      ]
+    },
+    {
+      "name": "value",
+      "dtype": "string",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 9,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        5287500,
+        5200000,
+        5081700
+      ]
+    },
+    {
+      "name": "country",
+      "dtype": "string",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 1,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "New Zealand",
+        "New Zealand",
+        "New Zealand"
+      ]
+    },
+    {
+      "name": "year",
+      "dtype": "string",
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 10,
+      "min_value": null,
+      "max_value": null,
+      "sample_values": [
+        "2025",
+        "2024",
+        "2023"
+      ]
+    }
+  ],
+  "created_at": "2026-04-27T16:24:00.604354",
+  "data_from_date": null,
+  "data_to_date": null,
+  "parent_contracts": [],
+  "notes": ""
+}
