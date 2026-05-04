@@ -5,6 +5,7 @@ with proper DataContext, ExpectationSuites, and Checkpoints.
 """
 import json
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -76,9 +77,6 @@ class NZHabitatValidator:
     ) -> Dict[str, Any]:
         """Validate using the official GE library."""
         try:
-            import great_expectations as gx
-            from great_expectations.core.batch import BatchRequest
-
             suite = self._ensure_expectation_suite(suite_name)
             if suite is None:
                 return self._validate_custom(file_path, suite_name, file_type)
