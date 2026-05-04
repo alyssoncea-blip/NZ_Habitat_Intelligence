@@ -213,33 +213,33 @@ class TestDataQualityValidation:
 
     def test_world_bank_data_validity(self, sample_bronze_world_bank):
         """Test World Bank data meets validity requirements."""
-        assert (
-            sample_bronze_world_bank["value"].notna().sum() > 0
-        ), "Should have non-null values"
-        assert (
-            sample_bronze_world_bank["year"].min() >= 1960
-        ), "Year should be reasonable"
-        assert (
-            sample_bronze_world_bank["country"].nunique() > 0
-        ), "Should have countries"
+        assert sample_bronze_world_bank["value"].notna().sum() > 0, (
+            "Should have non-null values"
+        )
+        assert sample_bronze_world_bank["year"].min() >= 1960, (
+            "Year should be reasonable"
+        )
+        assert sample_bronze_world_bank["country"].nunique() > 0, (
+            "Should have countries"
+        )
 
     def test_population_data_validity(self, sample_bronze_population):
         """Test population data meets validity requirements."""
-        assert (
-            sample_bronze_population["population"] > 0
-        ).all(), "Population should be positive"
-        assert (
-            sample_bronze_population["growth_rate"] >= -10
-        ).all(), "Growth rate should be reasonable"
-        assert (
-            sample_bronze_population["growth_rate"] <= 20
-        ).all(), "Growth rate should be reasonable"
+        assert (sample_bronze_population["population"] > 0).all(), (
+            "Population should be positive"
+        )
+        assert (sample_bronze_population["growth_rate"] >= -10).all(), (
+            "Growth rate should be reasonable"
+        )
+        assert (sample_bronze_population["growth_rate"] <= 20).all(), (
+            "Growth rate should be reasonable"
+        )
 
     def test_tourism_data_validity(self, sample_bronze_mbie_tourism):
         """Test tourism data meets validity requirements."""
-        assert (
-            sample_bronze_mbie_tourism["visitors"] >= 0
-        ).all(), "Visitors should be non-negative"
+        assert (sample_bronze_mbie_tourism["visitors"] >= 0).all(), (
+            "Visitors should be non-negative"
+        )
         assert sample_bronze_mbie_tourism["region"].nunique() > 0, "Should have regions"
 
 

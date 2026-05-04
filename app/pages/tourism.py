@@ -329,7 +329,9 @@ def _make_scatter_chart(scatter_data: list) -> go.Figure:
         color = (
             color_map["high"]
             if pressure > 70
-            else color_map["medium"] if pressure > 50 else color_map["low"]
+            else color_map["medium"]
+            if pressure > 50
+            else color_map["low"]
         )
         fig.add_trace(
             go.Scatter(

@@ -619,7 +619,9 @@ def _build_divergence_table(risk_data: list) -> dbc.Card:
         conf_color = (
             "#28a745"
             if item["confidence"] >= 75
-            else "#ffc107" if item["confidence"] >= 65 else "#dc3545"
+            else "#ffc107"
+            if item["confidence"] >= 65
+            else "#dc3545"
         )
         rows.append(
             html.Tr(

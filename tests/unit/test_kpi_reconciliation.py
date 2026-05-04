@@ -122,9 +122,9 @@ class TestKPIReconciliation:
         for dashboard, df in python_kpis.items():
             val_col = "value" if "value" in df.columns else "kpi_value"
             if val_col in df.columns:
-                assert pd.api.types.is_numeric_dtype(
-                    df[val_col]
-                ), f"Non-numeric values in {dashboard}"
+                assert pd.api.types.is_numeric_dtype(df[val_col]), (
+                    f"Non-numeric values in {dashboard}"
+                )
 
     def test_no_null_kpi_values(self, python_kpis):
         """KPI values should not be null."""
@@ -199,6 +199,6 @@ class TestKPIReconciliation:
             with open(fp) as f:
                 contract = json.load(f)
             if contract.get("source") == "real":
-                assert (
-                    contract.get("confidence_score", 0) >= 50
-                ), f"Low confidence for {fp.name}: {contract.get('confidence_score')}"
+                assert contract.get("confidence_score", 0) >= 50, (
+                    f"Low confidence for {fp.name}: {contract.get('confidence_score')}"
+                )
