@@ -198,9 +198,7 @@ def get_kpi_color(kpi_name, value, category=None):
             status = (
                 "High Risk"
                 if val_float > 50
-                else "Moderate Risk"
-                if val_float > 25
-                else "Low Risk"
+                else "Moderate Risk" if val_float > 25 else "Low Risk"
             )
             return status, color
 
