@@ -9,10 +9,9 @@ import os
 import time
 import random
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from pathlib import Path
 
-import pandas as pd
 
 try:
     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout

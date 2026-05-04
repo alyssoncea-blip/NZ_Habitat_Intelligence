@@ -2,11 +2,9 @@
 import hashlib
 import json
 import logging
-import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
-import pandas as pd
 
 # Import individual ingestors
 try:
@@ -14,7 +12,6 @@ try:
     from data_pipeline.bronze.ingestors.stats_nz_ingestor import StatsNZIngestor
     from data_pipeline.bronze.ingestors.linz_ingestor import LINZIngestor
     from data_pipeline.bronze.ingestors.mbie_tourism_ingestor import MBIEIngestor
-    from data_pipeline.bronze.ingestors.trade_me_scraper import TradeMeScraper
     from data_pipeline.bronze.ingestors.world_bank_ingestor import WorldBankIngestor
     from data_pipeline.bronze.ingestors.reinz_ingestor import REINZIngestor
     HAS_INGESTORS = True
@@ -576,13 +573,13 @@ if __name__ == "__main__":
 
         elif args.freshness:
             freshness = orchestrator.check_data_freshness()
-            print(f"Data Freshness Report:")
+            print("Data Freshness Report:")
             print(f"Overall score: {freshness['overall_freshness_score']}/100")
             for source, info in freshness.get("sources", {}).items():
                 status_icon = {"fresh": "✓", "aging": "~", "stale": "✗", "missing": "?"}.get(info.get("status"), "?")
                 print(f"  {status_icon} {source}: {info.get('freshness_score')}/100 (age: {info.get('age_days', 'N/A')} days)")
             if freshness.get("warnings"):
-                print(f"\nWarnings:")
+                print("\nWarnings:")
                 for w in freshness["warnings"]:
                     print(f"  - {w}")
 
@@ -595,7 +592,7 @@ if __name__ == "__main__":
 
         elif args.validate:
             quality_report = orchestrator.validate_data_quality()
-            print(f"Data Quality Report:")
+            print("Data Quality Report:")
             print(f"Overall score: {quality_report['overall_quality_score']}/100")
             for source, info in quality_report.get("sources", {}).items():
                 status = "✓" if info.get("status") == "present" else "✗"

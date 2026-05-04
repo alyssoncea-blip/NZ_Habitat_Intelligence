@@ -3,12 +3,11 @@
 
 import json
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import plotly.graph_objects as go
 from dash import dcc, html
 
-from ..data.executive_kpi_data import REGION_COORDINATES, NZ_REGIONS_LIST
 
 NAME_MAPPING = {
     "Southland": "Southland",

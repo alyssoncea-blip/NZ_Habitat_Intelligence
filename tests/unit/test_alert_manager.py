@@ -1,7 +1,4 @@
 ﻿"""Unit tests for AlertManager and pipeline monitoring."""
-import json
-import tempfile
-from pathlib import Path
 
 import pytest
 
@@ -125,7 +122,7 @@ class TestPipelineMonitor:
 
     def test_monitor_initialization(self):
         """Test MonitoringClient initializes correctly."""
-        from data_pipeline.utils.pipeline_monitor import MonitoringClient, MetricType
+        from data_pipeline.utils.pipeline_monitor import MonitoringClient
         monitor = MonitoringClient()
         assert monitor is not None
 

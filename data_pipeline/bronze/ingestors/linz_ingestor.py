@@ -6,7 +6,7 @@ Falls back to curated regional centroid data if WFS is unavailable.
 import json
 import logging
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from pathlib import Path
 
 import requests

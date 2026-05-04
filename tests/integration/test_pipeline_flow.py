@@ -3,8 +3,6 @@ Integration tests for NZ Habitat Intelligence pipeline.
 Tests the complete flow from Bronze -> Silver -> Gold.
 """
 import os
-import tempfile
-from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -15,9 +13,9 @@ import sys
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from data_pipeline.utils.data_contract import (
+from data_pipeline.utils.data_contract import (  # noqa: E402
     DataSource, DataQuality, create_contract, save_dataframe_with_contract,
-    load_with_contract, get_layer_contracts
+    load_with_contract
 )
 
 

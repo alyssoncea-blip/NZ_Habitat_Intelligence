@@ -1,10 +1,8 @@
 """Notification blocks for Prefect flow alerts."""
 import os
 import logging
-from pathlib import Path
 
-from prefect.blocks.notifications import SlackWebhook, PagerDutyWebHook
-from prefect.blocks.core import Block
+from prefect.blocks.notifications import SlackWebhook
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,6 @@
 """Macroeconomic Dashboard - Premium Edition (KPI 18-22)."""
 
+import numpy as np
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 import plotly.graph_objects as go
@@ -162,7 +163,6 @@ def _make_yield_curve_chart(ts: dict) -> go.Figure:
 def _make_suburb_cost_chart(suburbs: list, costs: list) -> go.Figure:
     sorted_data = sorted(zip(suburbs, costs), key=lambda x: x[1], reverse=True)
     s, c = zip(*sorted_data)
-    colors = [ACCENT["cost"] if v > 4500 else "#adb5bd" for v in c]
     fig = go.Figure(go.Bar(
         x=list(c), y=list(s),
         orientation="h",
@@ -333,8 +333,6 @@ def _make_correlation_matrix(matrix: dict, variables: list) -> go.Figure:
             return "#f5b7b1"
         return "#e74c3c"
 
-    colors = [[corr_color(v) for v in row] for row in z_values]
-
     fig = go.Figure(go.Heatmap(
         z=z_values,
         x=variables,
@@ -377,6 +375,3 @@ def _make_lag_indicator(lag_data: dict) -> html.Div:
             ], className="d-flex flex-column align-items-center"))
 
     return html.Div(step_elems, className="d-flex flex-row align-items-center flex-wrap gap-2")
-
-
-import numpy as np

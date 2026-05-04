@@ -26,9 +26,9 @@ if _ge_validate_path.exists():
 else:
     NZHabitatValidator = None
 
-from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator
-from data_pipeline.dbt_runner import run_full_pipeline as run_dbt_pipeline
-from data_pipeline.utils.alert_manager import AlertManager, SLATracker
+from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator  # noqa: E402
+from data_pipeline.dbt_runner import run_full_pipeline as run_dbt_pipeline  # noqa: E402
+from data_pipeline.utils.alert_manager import AlertManager, SLATracker  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

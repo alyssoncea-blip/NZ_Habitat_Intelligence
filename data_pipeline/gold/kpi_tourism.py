@@ -5,7 +5,6 @@ and visitor-DOM correlation.
 """
 import logging
 
-import numpy as np
 import pandas as pd
 
 from .kpi_base import KPIBaseCalculator
@@ -20,8 +19,8 @@ class TourismKPICalculator(KPIBaseCalculator):
         """Calculate all 5 tourism KPIs."""
         logger.info("Calculating KPIs 13-17: Tourism Impact")
         df = self.features.get("tourism_pressure")
-        unemployment = self._get_unemployment_latest()
-        inflation = self._get_inflation_latest()
+        self._get_unemployment_latest()
+        self._get_inflation_latest()
 
         tour_pressure = 50.0
         if df is not None and not df.empty and "tourism_pressure_index" in df.columns:

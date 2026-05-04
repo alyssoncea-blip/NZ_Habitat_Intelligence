@@ -10,12 +10,10 @@ print("=" * 60)
 try:
     from app.main import app
     print("\n[OK] App carregado com sucesso")
-    print(f"     - URL: http://localhost:8050")
-    print(f"     - Callbacks registrados: verifique no console")
+    print("     - URL: http://localhost:8050")
+    print("     - Callbacks registrados: verifique no console")
     
     # Verificar se os componentes estão disponíveis
-    from app.pages.executive import create_executive_dashboard
-    from app.components.cards import ExecutiveKPICard
     from app.data.executive_kpi_data import load_executive_data
     
     print("\n[OK] Componentes carregados:")
@@ -25,7 +23,7 @@ try:
     
     # Carregar dados
     data = load_executive_data()
-    print(f"\n[OK] Dados carregados:")
+    print("\n[OK] Dados carregados:")
     print(f"     - {len(data['hero_kpis'])} KPIs")
     print(f"     - {len(data['regions'])} regiões")
     print(f"     - {len(data['scatter_data'])} pontos scatter")

@@ -50,8 +50,8 @@ def load_macro_data() -> Dict[str, Any]:
         return float(kpi.get("value", default)) if isinstance(kpi, dict) else default
 
     ocr = _get_val("Current OCR", 5.5)
-    inflation = _get_val("Inflation (CPI)", 4.0)
-    gdp_growth = _get_val("GDP Growth YoY", 2.0)
+    _get_val("Inflation (CPI)", 4.0)
+    _get_val("GDP Growth YoY", 2.0)
     mortgage_2y = _get_val("Mortgage Rate 2Y Fixed", 7.2)
     monthly_cost = _get_val("Monthly Mortgage Cost ($750k)", 4500)
 

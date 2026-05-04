@@ -1,7 +1,6 @@
 ﻿"""Unit tests for Great Expectations validator."""
 import json
 import sys
-import tempfile
 from pathlib import Path
 
 import pandas as pd
@@ -12,7 +11,7 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 # Import using importlib to avoid conflict with installed great_expectations package
-import importlib.util
+import importlib.util  # noqa: E402
 spec = importlib.util.spec_from_file_location(
     "nz_ge_validator",
     str(project_root / "great_expectations" / "validate.py"),

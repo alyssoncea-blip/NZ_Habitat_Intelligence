@@ -4,7 +4,6 @@ Calculates years to buy, rent burden, affordability ranking,
 demographic vs supply gap, and net migration.
 """
 import logging
-from typing import Any, Dict
 
 import numpy as np
 import pandas as pd

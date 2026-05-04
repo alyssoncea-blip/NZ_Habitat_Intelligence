@@ -3,10 +3,11 @@ Dashboard Factory - Shared utilities for creating premium dashboards.
 Consolidates duplicated dashboard logic across tourism, macro, affordability, and forecast pages.
 """
 
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
+
+from dash import dcc, html
 
 import dash_bootstrap_components as dbc
-from dash import html
 
 from ..components.cards import HeroKPICard, PremiumCard, create_dashboard_stats
 from ..components.layout import create_section_header
@@ -278,6 +279,3 @@ class DashboardFactory:
             className=f"{self.dashboard_name}-dashboard",
             children=children,
         )
-
-
-from dash import dcc

@@ -59,7 +59,6 @@ class SecretsManager:
         """Initialize AWS Secrets Manager client."""
         try:
             import boto3
-            from botocore.exceptions import ClientError
 
             self._aws_client = boto3.client(
                 "secretsmanager",

@@ -1,17 +1,13 @@
 ﻿"""Unit tests for data contract creation, loading, and validation."""
-import json
-from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
-import pytest
 
 from data_pipeline.utils.data_contract import (
     DataContract,
     DataSource,
     DataQuality,
     create_contract,
-    load_with_contract,
     save_dataframe_with_contract,
 )
 

@@ -89,15 +89,7 @@ class TestPrefectImports:
         """Test config settings import."""
         from data_pipeline.orchestration.config.settings import (
             PROJECT_ROOT,
-            DATA_PIPELINE,
-            BRONZE_DIR,
-            SILVER_DIR,
-            GOLD_DIR,
-            DBT_PROJECT_DIR,
-            GE_DIR,
             RETRY_CONFIG,
-            SCHEDULES,
-            INGESTOR_SCHEDULE,
         )
         assert PROJECT_ROOT is not None
         assert RETRY_CONFIG is not None

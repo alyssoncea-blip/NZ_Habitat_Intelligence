@@ -3,13 +3,10 @@ Shared pytest fixtures for NZ Habitat Intelligence tests.
 Provides reusable test data and mocks across all test modules.
 """
 import json
-import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
 
-import numpy as np
 import pandas as pd
 import pytest
 

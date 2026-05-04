@@ -5,12 +5,11 @@ and produces corresponding .contract.json files with provenance metadata.
 """
 import json
 import logging
-from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 from data_pipeline.utils.data_contract import (
-    DataSource, DataQuality, DataContract, ColumnContract,
+    DataSource, DataContract, ColumnContract,
     get_data_quality,
 )
 

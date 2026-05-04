@@ -5,7 +5,6 @@ Interface with Gold parquet outputs.
 import json
 import os
 from datetime import datetime
-from functools import lru_cache
 from pathlib import Path
 from threading import Lock
 from typing import Dict, List, Optional, Tuple, Any

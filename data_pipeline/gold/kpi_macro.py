@@ -20,7 +20,7 @@ class MacroKPICalculator(KPIBaseCalculator):
         logger.info("Calculating KPIs 18-22: Macro")
         ocr = self._get_ocr_current()
         inflation = self._get_inflation_latest()
-        ir_score = self._get_ir_impact_score()
+        self._get_ir_impact_score()
         gdp_yoy = self._get_gdp_per_capita_yoy()
         unemployment = self._get_unemployment_latest()
 

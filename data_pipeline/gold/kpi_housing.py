@@ -4,7 +4,6 @@ Calculates regional median prices, days on market, listings, property types,
 supply deficit, and price per square metre.
 """
 import logging
-from typing import Any, Dict
 
 import numpy as np
 import pandas as pd

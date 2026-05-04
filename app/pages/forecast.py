@@ -189,7 +189,6 @@ def _make_trend_chart(data: dict) -> go.Figure:
 def _build_scenario_comparison(chart_data: dict) -> html.Div:
     scenarios = chart_data["scenario_data"]
 
-    ocr_fig = _make_scenario_chart(scenarios)
     dom_fig = _make_dom_forecast_chart(chart_data["dom_forecast"], chart_data["months"])
 
     return html.Div([

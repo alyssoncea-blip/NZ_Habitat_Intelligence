@@ -1,11 +1,11 @@
 """Tourism Impact Dashboard page - Premium Edition."""
 
 import dash_bootstrap_components as dbc
-from dash import dcc, html, callback, Output, Input
+from dash import dcc, html
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from app.components.cards import TourismKPICard, PremiumCard
+from app.components.cards import TourismKPICard
 from app.components.layout import create_section_header
 from app.data.tourism_kpi_data import load_tourism_data
 from app.utils.logger import get_logger
@@ -62,7 +62,6 @@ def _build_analytics_section(data: dict) -> html.Div:
     months = chart_data["dual_axis"]["months"]
     visitors = chart_data["dual_axis"]["visitors"]
     rent_index = chart_data["dual_axis"]["rent"]
-    regions = data["regions"]
 
     dual_axis_fig = _make_dual_axis_chart(months, visitors, rent_index)
     seasonality_fig = _make_seasonality_chart(chart_data["seasonality_lines"])
@@ -147,7 +146,7 @@ def _make_seasonality_chart(seasonality: dict) -> go.Figure:
                 name=origin,
                 line=dict(color=origins_colors.get(origin, "#6c757d"), width=2),
                 marker=dict(size=5),
-                hovertemplate=f"<b>{{origin}}</b><br>%{{x}}: %{{y:.0f}}<extra></extra>",
+                hovertemplate="<b>{origin}</b><br>%{x}: %{y:.0f}<extra></extra>",
             ))
     fig.update_layout(
         plot_bgcolor="white", paper_bgcolor="white",

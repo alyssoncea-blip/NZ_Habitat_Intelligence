@@ -9,8 +9,8 @@ from prefect import task
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from data_pipeline.dbt_runner import run_dbt_seed, run_dbt_run, run_dbt_test
-from data_pipeline.orchestration.config.settings import RETRY_CONFIG, DBT_PROJECT_DIR
+from data_pipeline.dbt_runner import run_dbt_seed, run_dbt_run, run_dbt_test  # noqa: E402
+from data_pipeline.orchestration.config.settings import RETRY_CONFIG  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

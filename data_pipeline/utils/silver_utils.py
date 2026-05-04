@@ -2,8 +2,8 @@
 Silver Layer - Data Transformation Utilities
 Additional transformation functions for silver layer
 """
+import logging
 import pandas as pd
-import numpy as np
 from typing import List
 
 def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
@@ -167,16 +167,7 @@ class SilverTransformer:
         if missing_cols:
             logger = logging.getLogger(__name__)
             logger.warning(f"Missing expected columns after transformation: {missing_cols}")
-    
-    def validate_transformation(self, df: pd.DataFrame, expected_columns: list):
-        """Validate transformation results
-        
-        Args:
-            df: Transformed DataFrame
-            expected_columns: List of expected column names
-        """
-        self.validate_transformation(df, expected_columns)
-    
+
     def run(self, df: pd.DataFrame) -> pd.DataFrame:
         """Apply all transformations to DataFrame
         

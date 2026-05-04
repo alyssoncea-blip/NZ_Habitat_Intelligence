@@ -4,7 +4,7 @@ Provides metrics collection, health checks, and alerting capabilities for produc
 """
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Callable
@@ -161,7 +161,7 @@ class MonitoringClient:
         }
 
         self.record_metric(
-            f"pipeline.duration",
+            "pipeline.duration",
             duration_seconds,
             MetricType.TIMER,
             tags=tags,
@@ -169,7 +169,7 @@ class MonitoringClient:
         )
 
         self.record_metric(
-            f"pipeline.records",
+            "pipeline.records",
             records_processed,
             MetricType.GAUGE,
             tags=tags,

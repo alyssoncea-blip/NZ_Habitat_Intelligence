@@ -232,9 +232,6 @@ def format_kpi_value_vectorized(df):
     Vectorized version of format_kpi_value.
     Formats values for display based on unit type.
     """
-    values = df.get('value', pd.Series([None]*len(df)))
-    units = df.get('unit', pd.Series(['']*len(df))).astype(str).fillna('')
-
     def format_single(val, unit):
         if val is None or pd.isna(val):
             return 'N/A'

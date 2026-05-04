@@ -5,7 +5,6 @@ Modular entry point with premium structure
 import dash
 import dash_bootstrap_components as dbc
 from dash import html, dcc
-import pandas as pd
 from .components.layout import create_layout
 from .pages import (
     create_executive_dashboard,

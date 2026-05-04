@@ -1,6 +1,5 @@
 """Scheduled ingestion flows for NZ Habitat Intelligence."""
 import sys
-from datetime import datetime
 from pathlib import Path
 
 from prefect import flow, get_run_logger
@@ -9,7 +8,7 @@ from prefect.schedules import CronSchedule
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from data_pipeline.orchestration.tasks.bronze_tasks import (
+from data_pipeline.orchestration.tasks.bronze_tasks import (  # noqa: E402
     ingest_world_bank,
     ingest_rbnz,
     ingest_stats_nz,

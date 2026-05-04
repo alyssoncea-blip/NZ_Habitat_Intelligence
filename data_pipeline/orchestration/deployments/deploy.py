@@ -5,12 +5,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from prefect.deployments import Deployment
-from prefect.filesystems import LocalFileSystem
-from prefect.infrastructure import Process
+from prefect.deployments import Deployment  # noqa: E402
 
-from data_pipeline.orchestration.flows.daily_pipeline import run_daily_pipeline
-from data_pipeline.orchestration.flows.scheduled_flows import (
+from data_pipeline.orchestration.flows.daily_pipeline import (  # noqa: E402
+    run_daily_pipeline,
+)
+from data_pipeline.orchestration.flows.scheduled_flows import (  # noqa: E402
     run_daily_ingestion,
     run_weekly_ingestion,
     run_monthly_ingestion,

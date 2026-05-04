@@ -9,8 +9,8 @@ from prefect import task
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator
-from data_pipeline.orchestration.config.settings import RETRY_CONFIG
+from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator  # noqa: E402
+from data_pipeline.orchestration.config.settings import RETRY_CONFIG  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

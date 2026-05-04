@@ -3,7 +3,7 @@ Schema validation for NZ Habitat Intelligence pipeline.
 Provides validation at Bronze, Silver, and Gold layers to catch data issues early.
 """
 import logging
-from typing import Dict, List, Optional, Any, Callable
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
 
@@ -234,7 +234,7 @@ class SchemaValidator:
                 series.dropna().astype(int)
                 return True, ""
             except (ValueError, TypeError):
-                return False, f"cannot convert to integer"
+                return False, "cannot convert to integer"
         elif expected_type == "float":
             if pd.api.types.is_float_dtype(series):
                 return True, ""
@@ -242,7 +242,7 @@ class SchemaValidator:
                 series.dropna().astype(float)
                 return True, ""
             except (ValueError, TypeError):
-                return False, f"cannot convert to float"
+                return False, "cannot convert to float"
         elif expected_type == "datetime":
             if pd.api.types.is_datetime64_any_dtype(series):
                 return True, ""
@@ -250,7 +250,7 @@ class SchemaValidator:
                 pd.to_datetime(series.dropna())
                 return True, ""
             except Exception:
-                return False, f"cannot convert to datetime"
+                return False, "cannot convert to datetime"
         return True, ""
 
     def _check_constraints(

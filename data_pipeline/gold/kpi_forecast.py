@@ -4,7 +4,6 @@ Calculates 12-month price forecast, confidence intervals, OCR/tourism scenario
 impacts, trend decomposition, divergence alert, and model confidence.
 """
 import logging
-from typing import Any, Dict
 
 import numpy as np
 import pandas as pd

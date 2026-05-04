@@ -1,6 +1,5 @@
 ﻿"""Unit tests for dashboard pages and components."""
 import pandas as pd
-import pytest
 
 
 class TestDashboardImports:

@@ -1,6 +1,5 @@
 ﻿"""Unit tests for KPI processor."""
 import pandas as pd
-import pytest
 
 from app.utils.kpi_processor import process_kpis_for_visualization
 

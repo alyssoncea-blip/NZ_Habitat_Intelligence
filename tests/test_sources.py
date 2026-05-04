@@ -71,7 +71,7 @@ for name, url, params in sources:
                                                     json.dump(geo, f)
                                                 print('      ** SAVED **')
                                                 break
-                                        except:
+                                        except Exception:
                                             print('      Not GeoJSON')
                     else:
                         print(f'  JSON keys: {list(data.keys())[:5]}')

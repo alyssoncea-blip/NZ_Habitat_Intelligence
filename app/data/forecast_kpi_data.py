@@ -58,7 +58,7 @@ def load_forecast_data() -> Dict[str, Any]:
     ci_95_upper = _get_val("Confidence 95% Upper", 820000)
     ocr_impact = _get_val("OCR +0.5% Price Impact", -0.6)
     model_confidence = _get_val("Model Confidence Score", 70)
-    divergence = _get_val("Divergence Alert Score", 5)
+    _get_val("Divergence Alert Score", 5)
 
     # Real time series from Silver
     gdp_ts = _get_silver_timeseries("affordability", "gdp_per_capita", 12)

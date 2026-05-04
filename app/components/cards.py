@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 import numpy as np
 
-from ..utils.style_config import COLORS, get_kpi_color
+from ..utils.style_config import get_kpi_color
 from ..utils.kpi_labels import to_executive_label
 
 class PremiumCard:
@@ -664,7 +664,7 @@ class HousingKPICard:
                 html.Div([
                     html.Span(f"{value:.1f}",
                               style={"fontSize": "2.8rem", "fontWeight": "700", "lineHeight": "1"}),
-                    html.Span(f"/week", style={"fontSize": "1rem", "color": "#6c757d", "marginLeft": "4px"}),
+                    html.Span("/week", style={"fontSize": "1rem", "color": "#6c757d", "marginLeft": "4px"}),
                 ], className="d-flex align-items-center justify-content-center mb-2"),
                 html.Div([
                     html.Span(trend_icon, style={"color": trend_color, "fontWeight": "600"}),
@@ -997,7 +997,7 @@ class TourismKPICard:
                 html.Div([
                     html.Span(f"{value:.1f}",
                               style={"fontSize": "2.6rem", "fontWeight": "700", "lineHeight": "1", "color": accent}),
-                    html.Span(f"%", style={"fontSize": "1.1rem", "color": accent, "marginLeft": "2px"}),
+                    html.Span("%", style={"fontSize": "1.1rem", "color": accent, "marginLeft": "2px"}),
                 ], className="d-flex align-items-center justify-content-center mb-2"),
                 html.Div([
                     html.Span(trend_icon, style={"color": trend_color, "fontWeight": "600"}),
@@ -1286,7 +1286,7 @@ class MacroKPICard:
         return dbc.Card([
             dbc.CardBody([
                 html.H6("KPI 20 — Monthly Mortgage Cost", style=MacroKPICard._title_style()),
-                html.P(f"$750K loan @ 6.20% (2Y)", className="text-muted mb-1", style={"fontSize": "0.75rem"}),
+                html.P("$750K loan @ 6.20% (2Y)", className="text-muted mb-1", style={"fontSize": "0.75rem"}),
                 html.Div([
                     html.Span(f"${value:,.0f}",
                               style={"fontSize": "2.4rem", "fontWeight": "700", "lineHeight": "1", "color": accent}),
@@ -1328,7 +1328,7 @@ class MacroKPICard:
                 ], className="d-flex align-items-center justify-content-center mb-1"),
                 html.Div([
                     html.Span(f"{change:+.1f}%", style={"color": trend_color, "fontWeight": "600", "fontSize": "0.82rem"}),
-                    html.Span(f" MoM", style={"color": "#8898aa", "fontSize": "0.72rem"}),
+                    html.Span(" MoM", style={"color": "#8898aa", "fontSize": "0.72rem"}),
                     html.Span(" ● ", style={"color": "#dee2e6", "fontSize": "0.8rem"}),
                     html.Span(status, style={"color": status_color, "fontWeight": "700", "fontSize": "0.78rem"}),
                 ], className="text-center mb-2"),
@@ -1440,7 +1440,6 @@ class AffordabilityKPICard:
                                  status: str = "Expensive",
                                  color_scale: str = "#e74c3c",
                                  sparkline: list = None, by_region: dict = None):
-        accent = AffordabilityKPICard._accent_colors["years"]
         trend_icon = "↑" if trend == "up" else "↓"
         trend_color = "#dc3545" if trend == "up" else "#28a745"
 
@@ -1477,14 +1476,12 @@ class AffordabilityKPICard:
                                  status: str = "Warning",
                                  threshold: int = 30,
                                  sparkline: list = None, by_region: dict = None):
-        accent = AffordabilityKPICard._accent_colors["rent_burden"]
         trend_color = "#dc3545" if trend == "up" else "#28a745"
 
         status_colors = {"Critical": "#dc3545", "Warning": "#ffc107", "Healthy": "#28a745"}
         sc = status_colors.get(status, "#6c757d")
 
         pct_filled = min(value / 50 * 100, 100)
-        threshold_pos = threshold / 50 * 100
 
         return dbc.Card([
             dbc.CardBody([
@@ -1596,7 +1593,6 @@ class AffordabilityKPICard:
                                inflow_regions: list = None,
                                outflow_regions: list = None,
                                by_region: dict = None):
-        accent = AffordabilityKPICard._accent_colors["migration"]
         is_positive = value >= 0
 
         return dbc.Card([
@@ -1791,7 +1787,6 @@ class ForecastKPICard:
     def create_tourism_impact_card(value: float, unit: str = "days",
                                     direction: str = "up",
                                     scenario_pct: int = 20):
-        accent = ForecastKPICard._accent_colors["tourism"]
         direction_color = "#dc3545" if direction == "up" else "#28a745"
         direction_icon = "↑" if direction == "up" else "↓"
 
