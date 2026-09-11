@@ -65,7 +65,7 @@ class TestFeatureEngineer:
             "rbnz": {
                 "ocr": pd.DataFrame(
                     {
-                        "date": pd.date_range("2020-01-01", periods=48, freq="M"),
+                        "date": pd.date_range("2020-01-01", periods=48, freq="ME"),
                         "ocr_rate": [0.25] * 24 + [0.50] * 24,
                     }
                 ),

@@ -105,7 +105,7 @@ def create_choropleth_map(
         )
 
     fig = go.Figure(
-        go.Choroplethmapbox(
+        go.Choroplethmap(
             geojson=NZ_REGIONS_GEOJSON,
             locations=feature_names,
             z=values,
@@ -126,7 +126,7 @@ def create_choropleth_map(
     )
 
     fig.update_layout(
-        mapbox={
+        map={
             "style": "carto-positron",
             "center": {"lat": -41.5, "lon": 173.5},
             "zoom": 4.2,
@@ -166,7 +166,7 @@ def create_mini_map_preview(
     )
     fig.update_layout(
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
-        mapbox={"zoom": 4.0},
+        map={"zoom": 4.0},
         paper_bgcolor="rgba(0,0,0,0)",
     )
     fig.update_traces(

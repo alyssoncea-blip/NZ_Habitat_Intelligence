@@ -61,7 +61,7 @@ def sample_bronze_population():
 @pytest.fixture(scope="function")
 def sample_bronze_rbnz_ocr():
     """Sample RBNZ OCR data for testing."""
-    dates = pd.date_range("2020-01-01", periods=24, freq="M")
+    dates = pd.date_range("2020-01-01", periods=24, freq="ME")
     return pd.DataFrame(
         {
             "date": dates,
