@@ -3,10 +3,11 @@ Components de charts para dashboard premium
 Wrapper para Plotly com estilos executives
 """
 
-from ..utils.style_config import COLORS
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+
+from ..utils.style_config import COLORS
 
 
 def create_line_chart(df, x_col, y_col, title="", color=None, show_range=True):
@@ -71,15 +72,25 @@ def create_line_chart(df, x_col, y_col, title="", color=None, show_range=True):
 
     # Estilo premium
     fig.update_layout(
-        title=dict(
-            text=title, font=dict(size=16, color=COLORS["neutral"]["dark"]), x=0.5
-        ),
+        title={
+            "text": title,
+            "font": {"size": 16, "color": COLORS["neutral"]["dark"]},
+            "x": 0.5,
+        },
         plot_bgcolor="white",
         paper_bgcolor="white",
         hovermode="x unified",
-        margin=dict(l=60, r=30, t=50, b=50),
-        xaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)", tickfont=dict(size=12)),
-        yaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)", tickfont=dict(size=12)),
+        margin={"l": 60, "r": 30, "t": 50, "b": 50},
+        xaxis={
+            "showgrid": True,
+            "gridcolor": "rgba(0,0,0,0.05)",
+            "tickfont": {"size": 12},
+        },
+        yaxis={
+            "showgrid": True,
+            "gridcolor": "rgba(0,0,0,0.05)",
+            "tickfont": {"size": 12},
+        },
         showlegend=False,
     )
 
@@ -143,7 +154,9 @@ def create_gauge_chart(value, title="", min_val=0, max_val=100, color=None):
     )
 
     fig.update_layout(
-        paper_bgcolor="white", margin=dict(l=30, r=30, t=50, b=30), height=300
+        paper_bgcolor="white",
+        margin={"l": 30, "r": 30, "t": 50, "b": 30},
+        height=300,
     )
 
     return fig
@@ -181,29 +194,39 @@ def create_bar_chart(df, x_col, y_col, title="", color_scale=None, horizontal=Fa
             x=x,
             y=y,
             orientation=orientation,
-            marker=dict(
-                color=y,
-                colorscale=color_scale,
-                showscale=False,
-                line=dict(color="white", width=1),
-            ),
+            marker={
+                "color": y,
+                "colorscale": color_scale,
+                "showscale": False,
+                "line": {"color": "white", "width": 1},
+            },
             hovertemplate='<b>%{y if horizontal else "%{x}"}</b><br>%{x if horizontal else "%{y}"}<extra></extra>',
             text=y.round(1) if y.dtype.kind in "ifc" else y,
             textposition="outside",
         )
     )
 
-    title_config = dict(
-        text=title, font=dict(size=16, color=COLORS["neutral"]["dark"]), x=0.5
-    )
+    title_config = {
+        "text": title,
+        "font": {"size": 16, "color": COLORS["neutral"]["dark"]},
+        "x": 0.5,
+    }
 
     fig.update_layout(
         title=title_config,
         plot_bgcolor="white",
         paper_bgcolor="white",
-        margin=dict(l=60, r=30, t=50, b=50),
-        xaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)", tickfont=dict(size=12)),
-        yaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)", tickfont=dict(size=12)),
+        margin={"l": 60, "r": 30, "t": 50, "b": 50},
+        xaxis={
+            "showgrid": True,
+            "gridcolor": "rgba(0,0,0,0.05)",
+            "tickfont": {"size": 12},
+        },
+        yaxis={
+            "showgrid": True,
+            "gridcolor": "rgba(0,0,0,0.05)",
+            "tickfont": {"size": 12},
+        },
         showlegend=False,
     )
 
@@ -241,9 +264,17 @@ def create_scatter_plot(df, x_col, y_col, color_col=None, title="", size_col=Non
     fig.update_layout(
         plot_bgcolor="white",
         paper_bgcolor="white",
-        margin=dict(l=60, r=30, t=50, b=50),
-        xaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)", tickfont=dict(size=12)),
-        yaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)", tickfont=dict(size=12)),
+        margin={"l": 60, "r": 30, "t": 50, "b": 50},
+        xaxis={
+            "showgrid": True,
+            "gridcolor": "rgba(0,0,0,0.05)",
+            "tickfont": {"size": 12},
+        },
+        yaxis={
+            "showgrid": True,
+            "gridcolor": "rgba(0,0,0,0.05)",
+            "tickfont": {"size": 12},
+        },
     )
 
     return fig
@@ -275,14 +306,16 @@ def create_heatmap(matrix_df, title="", color_scale=None):
     )
 
     fig.update_layout(
-        title=dict(
-            text=title, font=dict(size=16, color=COLORS["neutral"]["dark"]), x=0.5
-        ),
+        title={
+            "text": title,
+            "font": {"size": 16, "color": COLORS["neutral"]["dark"]},
+            "x": 0.5,
+        },
         plot_bgcolor="white",
         paper_bgcolor="white",
-        margin=dict(l=80, r=30, t=50, b=80),
-        xaxis=dict(tickangle=45, tickfont=dict(size=11)),
-        yaxis=dict(tickfont=dict(size=11)),
+        margin={"l": 80, "r": 30, "t": 50, "b": 80},
+        xaxis={"tickangle": 45, "tickfont": {"size": 11}},
+        yaxis={"tickfont": {"size": 11}},
     )
 
     return fig
@@ -324,7 +357,7 @@ def create_multi_chart(df, x_col, y_cols, title="", chart_types=None):
                     x=df[x_col],
                     y=df[y_col],
                     name=y_col,
-                    line=dict(color=color, width=2 if i == 0 else 1.5),
+                    line={"color": color, "width": 2 if i == 0 else 1.5},
                     mode="lines",
                     hovertemplate=f"<b>{y_col}</b><br>%{{x}}<br>%{{y:.1f}}<extra></extra>",
                 ),
@@ -344,18 +377,18 @@ def create_multi_chart(df, x_col, y_cols, title="", chart_types=None):
             )
 
     fig.update_layout(
-        title=dict(text=title, font=dict(size=16)),
+        title={"text": title, "font": {"size": 16}},
         plot_bgcolor="white",
         paper_bgcolor="white",
         hovermode="x unified",
-        margin=dict(l=60, r=60, t=50, b=50),
-        legend=dict(
-            yanchor="top",
-            y=0.99,
-            xanchor="left",
-            x=0.01,
-            bgcolor="rgba(255,255,255,0.9)",
-        ),
+        margin={"l": 60, "r": 60, "t": 50, "b": 50},
+        legend={
+            "yanchor": "top",
+            "y": 0.99,
+            "xanchor": "left",
+            "x": 0.01,
+            "bgcolor": "rgba(255,255,255,0.9)",
+        },
     )
 
     fig.update_xaxes(title_text=x_col, showgrid=True, gridcolor="rgba(0,0,0,0.05)")
