@@ -3,12 +3,14 @@ Premium Card Components for Executive Dashboard
 Reusable card components with executive design
 """
 
-import dash_bootstrap_components as dbc
-from dash import html
-import numpy as np
+import math
 
-from ..utils.style_config import get_kpi_color
+import dash_bootstrap_components as dbc
+import numpy as np
+from dash import html
+
 from ..utils.kpi_labels import to_executive_label
+from ..utils.style_config import get_kpi_color
 
 
 class PremiumCard:
@@ -203,12 +205,12 @@ def format_value_for_card(value):
     try:
         if value is None:
             return "N/A"
-        if isinstance(value, float) and value != value:
+        if isinstance(value, float) and math.isnan(value):
             return "N/A"
         if isinstance(value, float):
             return f"{value:.2f}".rstrip("0").rstrip(".")
         return str(value)
-    except Exception:
+    except (TypeError, ValueError):
         return "N/A"
 
 
@@ -228,7 +230,7 @@ class ExecutiveKPICard:
         value: float,
         trend: str = "up",
         change: float = 3.2,
-        sparkline_data: list = None,
+        sparkline_data: list | None = None,
         unit: str = "pts",
     ):
         """
@@ -416,7 +418,7 @@ class ExecutiveKPICard:
 
     @staticmethod
     def create_price_mom_card(
-        value: float, trend: str = "up", sparkline_data: list = None
+        value: float, trend: str = "up", sparkline_data: list | None = None
     ):
         """
         Card 3: Asking Price MoM % Change
@@ -830,7 +832,7 @@ class HousingKPICard:
         unit: str = "NZD",
         trend: str = "up",
         change: float = 2.3,
-        sparkline_data: list = None,
+        sparkline_data: list | None = None,
         subtitle: str = "Median Listing Price",
     ):
         """
@@ -922,7 +924,7 @@ class HousingKPICard:
         unit: str = "days",
         trend: str = "down",
         status: str = "Normal",
-        sparkline_data: list = None,
+        sparkline_data: list | None = None,
         subtitle: str = "Days Until Sale",
     ):
         """
@@ -1024,7 +1026,7 @@ class HousingKPICard:
         unit: str = "listings/week",
         trend: str = "up",
         change: float = 5.2,
-        weekly_data: list = None,
+        weekly_data: list | None = None,
         subtitle: str = "Weekly Market Supply",
     ):
         """
@@ -1113,7 +1115,7 @@ class HousingKPICard:
     @staticmethod
     def create_property_type_card(
         dominant_pct: float,
-        breakdown: dict = None,
+        breakdown: dict | None = None,
         unit: str = "%",
         subtitle: str = "Houses as % of Listings",
     ):
@@ -1214,7 +1216,7 @@ class HousingKPICard:
         unit: str = "NZD/m²",
         trend: str = "up",
         change: float = 1.8,
-        bedrooms: dict = None,
+        bedrooms: dict | None = None,
         subtitle: str = "Price per m² (by bedrooms)",
     ):
         """
@@ -1605,8 +1607,8 @@ class TourismKPICard:
         unit: str = "pts",
         trend: str = "up",
         change: float = 4.2,
-        sparkline: list = None,
-        by_region: dict = None,
+        sparkline: list | None = None,
+        by_region: dict | None = None,
     ):
         accent = TourismKPICard._accent_colors["pressure"]
         trend_icon = "↑" if trend == "up" else "↓"
@@ -1725,9 +1727,9 @@ class TourismKPICard:
         unit: str = "%",
         trend: str = "up",
         change: float = 1.8,
-        breakdown: dict = None,
-        sparkline: list = None,
-        by_region: dict = None,
+        breakdown: dict | None = None,
+        sparkline: list | None = None,
+        by_region: dict | None = None,
     ):
         accent = TourismKPICard._accent_colors["airbnb"]
         trend_icon = "↑" if trend == "up" else "↓"
@@ -1905,8 +1907,8 @@ class TourismKPICard:
         value: float,
         unit: str = "months",
         trend: str = "up",
-        sparkline: list = None,
-        by_region: dict = None,
+        sparkline: list | None = None,
+        by_region: dict | None = None,
     ):
         accent = TourismKPICard._accent_colors["lag"]
         trend_icon = "↑" if trend == "up" else "↓"
@@ -2038,8 +2040,8 @@ class TourismKPICard:
         value: float,
         unit: str = "pts",
         trend: str = "down",
-        by_origin: dict = None,
-        sparklines: dict = None,
+        by_origin: dict | None = None,
+        sparklines: dict | None = None,
     ):
         accent = TourismKPICard._accent_colors["seasonality"]
         trend_icon = "↓" if trend == "down" else "↑"
@@ -2153,7 +2155,7 @@ class TourismKPICard:
         unit: str = "r",
         trend: str = "neutral",
         strength: str = "Strong",
-        by_region: dict = None,
+        by_region: dict | None = None,
     ):
         accent = TourismKPICard._accent_colors["correlation"]
 
@@ -2327,8 +2329,8 @@ class MacroKPICard:
         trend: str = "down",
         change: float = -0.25,
         next_decision: str = "",
-        sparkline: list = None,
-        history: list = None,
+        sparkline: list | None = None,
+        history: list | None = None,
     ):
         accent = MacroKPICard._accent_colors["ocr"]
         trend_icon = "↓" if trend == "down" else "↑"
@@ -2433,8 +2435,8 @@ class MacroKPICard:
     # ── KPI 19: Mortgage Rates (1Y / 2Y / 5Y) ─────────────────────────────
     @staticmethod
     def create_mortgage_rates_card(
-        rates: dict = None,
-        rates_prev: dict = None,
+        rates: dict | None = None,
+        rates_prev: dict | None = None,
         subtitle: str = "by Term (1Y / 2Y / 5Y)",
     ):
         accent = MacroKPICard._accent_colors["mortgage"]
@@ -2533,7 +2535,7 @@ class MacroKPICard:
         unit: str = "NZD/month",
         trend: str = "down",
         change: float = -320,
-        by_suburb: dict = None,
+        by_suburb: dict | None = None,
         subtitle: str = "",
     ):
         accent = MacroKPICard._accent_colors["cost"]
@@ -2634,8 +2636,8 @@ class MacroKPICard:
         trend: str = "down",
         change: float = -0.3,
         status: str = "Declining",
-        sparkline: list = None,
-        history: list = None,
+        sparkline: list | None = None,
+        history: list | None = None,
     ):
         accent = MacroKPICard._accent_colors["construction"]
         trend_color = "#dc3545" if trend == "down" else "#28a745"
@@ -2727,9 +2729,9 @@ class MacroKPICard:
         unit: str = "r",
         strength: str = "Strong",
         type: str = "Negative",
-        lag_periods: list = None,
-        listings_data: list = None,
-        lagged_ocr: list = None,
+        lag_periods: list | None = None,
+        listings_data: list | None = None,
+        lagged_ocr: list | None = None,
     ):
         accent = MacroKPICard._accent_colors["correlation"]
 
@@ -2926,8 +2928,8 @@ class AffordabilityKPICard:
         change: float = 0.8,
         status: str = "Expensive",
         color_scale: str = "#e74c3c",
-        sparkline: list = None,
-        by_region: dict = None,
+        sparkline: list | None = None,
+        by_region: dict | None = None,
     ):
         trend_icon = "↑" if trend == "up" else "↓"
         trend_color = "#dc3545" if trend == "up" else "#28a745"
@@ -3045,8 +3047,8 @@ class AffordabilityKPICard:
         change: float = 2.5,
         status: str = "Warning",
         threshold: int = 30,
-        sparkline: list = None,
-        by_region: dict = None,
+        sparkline: list | None = None,
+        by_region: dict | None = None,
     ):
         trend_color = "#dc3545" if trend == "up" else "#28a745"
 
@@ -3175,8 +3177,8 @@ class AffordabilityKPICard:
         region_count: int = 16,
         best_region: str = "",
         worst_region: str = "",
-        sparkline: list = None,
-        by_region: dict = None,
+        sparkline: list | None = None,
+        by_region: dict | None = None,
     ):
         accent = AffordabilityKPICard._accent_colors["ranking"]
         trend_icon = "↑" if trend == "up" else "↓"
@@ -3290,9 +3292,9 @@ class AffordabilityKPICard:
         unit: str = "%",
         trend: str = "up",
         status: str = "Growing Gap",
-        sparkline: list = None,
-        by_region_growth: dict = None,
-        by_region_supply: dict = None,
+        sparkline: list | None = None,
+        by_region_growth: dict | None = None,
+        by_region_supply: dict | None = None,
     ):
         accent = AffordabilityKPICard._accent_colors["gap"]
         trend_color = "#dc3545" if trend == "up" else "#28a745"
@@ -3422,9 +3424,9 @@ class AffordabilityKPICard:
         trend: str = "up",
         inflow_count: int = 5,
         outflow_count: int = 4,
-        inflow_regions: list = None,
-        outflow_regions: list = None,
-        by_region: dict = None,
+        inflow_regions: list | None = None,
+        outflow_regions: list | None = None,
+        by_region: dict | None = None,
     ):
         is_positive = value >= 0
 
@@ -3659,8 +3661,8 @@ class ForecastKPICard:
         current: float = 0,
         change_pct: float = 0,
         trend: str = "up",
-        sparkline: list = None,
-        forecast_series: list = None,
+        sparkline: list | None = None,
+        forecast_series: list | None = None,
     ):
         accent = ForecastKPICard._accent_colors["forecast"]
         trend_color = "#28a745" if trend == "up" else "#dc3545"
@@ -4019,7 +4021,7 @@ class ForecastKPICard:
     # ── KPI 33: High Risk Regions ───────────────────────────────────────
     @staticmethod
     def create_risk_regions_card(
-        regions: list = None, risk_data: dict = None, count: int = 7
+        regions: list | None = None, risk_data: dict | None = None, count: int = 7
     ):
         accent = ForecastKPICard._accent_colors["risk"]
         if regions is None:
@@ -4109,7 +4111,7 @@ class ForecastKPICard:
     # ── KPI 34: Model Confidence Score ──────────────────────────────────
     @staticmethod
     def create_model_confidence_card(
-        value: float, unit: str = "/100", metrics: dict = None
+        value: float, unit: str = "/100", metrics: dict | None = None
     ):
         accent = ForecastKPICard._accent_colors["model"]
 
