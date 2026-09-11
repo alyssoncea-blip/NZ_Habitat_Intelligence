@@ -775,6 +775,14 @@ class FeatureEngineer:
             sources["tourism_lag_analysis"] = DataSource.REAL
             logger.info("  Macro volatility: %d rows (real data)", len(df))
 
+        # Enforce the GE silver contract: year must be within [1970, 2030].
+        # World Bank series go back to 1960, which would fail validation.
+        for name, df in list(features.items()):
+            if df is not None and not df.empty and "year" in df.columns:
+                filtered = df[(df["year"] >= 1970) & (df["year"] <= 2030)]
+                if not filtered.empty:
+                    features[name] = filtered.reset_index(drop=True)
+
         if features:
             self.save_features(features, source_tracking=sources)
         else:
