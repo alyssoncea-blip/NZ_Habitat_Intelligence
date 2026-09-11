@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from prefect import flow, get_run_logger
-from prefect.schedules import CronSchedule
+from prefect.schedules import Cron
 
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
@@ -40,10 +40,7 @@ def run_daily_ingestion(force_refresh: bool = False) -> dict:
     return {"schedule": "daily", "success": success, "results": results}
 
 
-daily_ingestion_schedule = CronSchedule(
-    cron="0 6 * * *",
-    timezone="UTC",
-)
+daily_ingestion_schedule = Cron("0 6 * * *", timezone="UTC")
 
 
 @flow(
@@ -68,10 +65,7 @@ def run_weekly_ingestion(force_refresh: bool = False) -> dict:
     return {"schedule": "weekly", "success": success, "results": results}
 
 
-weekly_ingestion_schedule = CronSchedule(
-    cron="0 8 * * 1",
-    timezone="UTC",
-)
+weekly_ingestion_schedule = Cron("0 8 * * 1", timezone="UTC")
 
 
 @flow(
@@ -94,10 +88,7 @@ def run_monthly_ingestion(force_refresh: bool = False) -> dict:
     return {"schedule": "monthly", "success": success, "results": results}
 
 
-monthly_ingestion_schedule = CronSchedule(
-    cron="0 10 1 * *",
-    timezone="UTC",
-)
+monthly_ingestion_schedule = Cron("0 10 1 * *", timezone="UTC")
 
 
 @flow(
@@ -112,10 +103,7 @@ def run_full_pipeline(force_refresh: bool = False) -> dict:
     return run_daily_pipeline(force_refresh=force_refresh)
 
 
-full_pipeline_schedule = CronSchedule(
-    cron="0 7 * * *",
-    timezone="UTC",
-)
+full_pipeline_schedule = Cron("0 7 * * *", timezone="UTC")
 
 
 if __name__ == "__main__":

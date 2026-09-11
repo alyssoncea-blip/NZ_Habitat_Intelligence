@@ -66,7 +66,7 @@ jobs:
           python -c "from app.main import app; print('App import OK')"
           python -c "from data_pipeline.bronze.bronze_orchestrator import BronzeOrchestrator; print('Orchestrator import OK')"
           python -c "from data_pipeline.dbt_runner import run_full_pipeline; print('dbt runner import OK')"
-          python -c "from great_expectations.validate import NZHabitatValidator; print('GE validator import OK')"
+          python -c "import sys; sys.path.insert(0, 'great_expectations'); from validate import NZHabitatValidator; print('GE validator import OK')"
           python -c "from data_pipeline.orchestration.flows.daily_pipeline import run_daily_pipeline; print('Prefect daily pipeline import OK')"
           python -c "from data_pipeline.orchestration.tasks.bronze_tasks import ingest_world_bank; print('Prefect bronze tasks import OK')"
           python -c "from data_pipeline.orchestration.tasks.silver_tasks import compute_affordability; print('Prefect silver tasks import OK')"

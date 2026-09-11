@@ -24,7 +24,7 @@ from data_pipeline.orchestration.tasks.silver_tasks import (  # noqa: E402
     compute_tourism_pressure,
     compute_supply_deficit,
     compute_rent_income_ratio,
-    compute_macro_volatility,
+    compute_tourism_lag_analysis,
 )
 from data_pipeline.orchestration.tasks.dbt_tasks import (  # noqa: E402
     dbt_seed_task,
@@ -102,7 +102,7 @@ def run_daily_pipeline(force_refresh: bool = False) -> dict:
         compute_tourism_pressure.submit(wait_for=bronze_futures),
         compute_supply_deficit.submit(wait_for=bronze_futures),
         compute_rent_income_ratio.submit(wait_for=bronze_futures),
-        compute_macro_volatility.submit(wait_for=bronze_futures),
+        compute_tourism_lag_analysis.submit(wait_for=bronze_futures),
     ]
     silver_results = [f.result() for f in silver_futures]
     silver_success_count = sum(1 for r in silver_results if r.get("success"))

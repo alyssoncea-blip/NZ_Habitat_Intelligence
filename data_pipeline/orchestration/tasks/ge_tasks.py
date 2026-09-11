@@ -9,8 +9,9 @@ from prefect import task
 
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "great_expectations"))
 
-from great_expectations.validate import NZHabitatValidator  # noqa: E402
+from validate import NZHabitatValidator  # noqa: E402
 from data_pipeline.orchestration.config.settings import RETRY_CONFIG  # noqa: E402
 
 logger = logging.getLogger(__name__)

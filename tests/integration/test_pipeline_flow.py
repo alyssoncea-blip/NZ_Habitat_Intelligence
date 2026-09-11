@@ -41,13 +41,16 @@ class TestBronzeToSilverFlow:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         contract = create_contract(
+            df=sample_bronze_world_bank,
             artifact_name="gdp",
+            artifact_path=str(output_path),
             layer="bronze",
             source=DataSource.REAL,
             source_name="world_bank_api",
         )
 
-        save_dataframe_with_contract(sample_bronze_world_bank, output_path, contract)
+        contract.save(output_path.with_suffix(".parquet.contract.json"))
+        sample_bronze_world_bank.to_parquet(output_path, index=False)
 
         assert output_path.exists(), "Parquet file should exist"
 
@@ -60,13 +63,16 @@ class TestBronzeToSilverFlow:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         contract = create_contract(
+            df=sample_bronze_world_bank,
             artifact_name="gdp",
+            artifact_path=str(output_path),
             layer="bronze",
             source=DataSource.REAL,
             source_name="world_bank_api",
         )
 
-        save_dataframe_with_contract(sample_bronze_world_bank, output_path, contract)
+        contract.save(output_path.with_suffix(".contract.json"))
+        sample_bronze_world_bank.to_parquet(output_path, index=False)
 
         loaded_df, loaded_contract = load_with_contract(output_path)
 
@@ -98,13 +104,16 @@ class TestSilverToGoldFlow:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         contract = create_contract(
+            df=sample_silver_affordability,
             artifact_name="affordability",
+            artifact_path=str(output_path),
             layer="silver",
             source=DataSource.REAL,
             source_name="stats_nz",
         )
 
-        save_dataframe_with_contract(sample_silver_affordability, output_path, contract)
+        contract.save(output_path.with_suffix(".contract.json"))
+        sample_silver_affordability.to_parquet(output_path, index=False)
 
         loaded_df, loaded_contract = load_with_contract(output_path)
 
@@ -135,13 +144,16 @@ class TestPipelineIntegration:
                     output_path = bronze_dir / f"{artifact_name}.parquet"
 
                     contract = create_contract(
+                        df=df,
                         artifact_name=artifact_name,
+                        artifact_path=str(output_path),
                         layer="bronze",
                         source=DataSource.REAL,
                         source_name=source_name,
                     )
 
-                    save_dataframe_with_contract(df, output_path, contract)
+                    contract.save(output_path.with_suffix(".contract.json"))
+                    df.to_parquet(output_path, index=False)
                     saved_contracts.append(contract)
 
         bronze_files = list(bronze_dir.glob("*.parquet"))
@@ -158,12 +170,11 @@ class TestPipelineIntegration:
 
         habitat_scores = []
         for feature_name, df in all_features.items():
-            if "index" in df.columns or "score" in df.columns:
-                score_cols = [c for c in df.columns if "index" in c or "score" in c]
-                for col in score_cols:
-                    values = df[col].dropna().values
-                    if len(values) > 0:
-                        habitat_scores.extend(values)
+            score_cols = [c for c in df.columns if "index" in c.lower() or "score" in c.lower()]
+            for col in score_cols:
+                values = df[col].dropna().values
+                if len(values) > 0:
+                    habitat_scores.extend(values)
 
         assert len(habitat_scores) > 0, "Should have extracted score values"
 
@@ -173,13 +184,15 @@ class TestPipelineIntegration:
     def test_pipeline_quality_gates(self, sample_bronze_world_bank):
         """Test that pipeline enforces quality gates."""
         contract = create_contract(
+            df=sample_bronze_world_bank,
             artifact_name="gdp",
+            artifact_path="/tmp/gdp.parquet",
             layer="bronze",
             source=DataSource.REAL,
             source_name="world_bank_api",
         )
 
-        quality = contract.get("quality", DataQuality.UNKNOWN)
+        quality = contract.quality
 
         assert quality in [
             DataQuality.EXCELLENT,
@@ -194,13 +207,16 @@ class TestPipelineIntegration:
         output_path = temp_dir / "test_artifact.parquet"
 
         contract = create_contract(
+            df=sample_bronze_world_bank,
             artifact_name="test_artifact",
+            artifact_path=str(output_path),
             layer="bronze",
             source=DataSource.REAL,
             source_name="world_bank_api",
         )
 
-        save_dataframe_with_contract(sample_bronze_world_bank, output_path, contract)
+        contract.save(output_path.with_suffix(".contract.json"))
+        sample_bronze_world_bank.to_parquet(output_path, index=False)
 
         loaded_df, loaded_contract = load_with_contract(output_path)
 
@@ -248,11 +264,11 @@ class TestKPICalculation:
 
     def test_confidence_score_calculation(self, sample_kpi_data):
         """Test confidence score calculation."""
-        from data_pipeline.utils.data_contract import calculate_confidence_score
+        from data_pipeline.utils.data_contract import calculate_confidence_score, DataSource
 
         for _, row in sample_kpi_data.iterrows():
             df_row = pd.DataFrame([row])
-            score = calculate_confidence_score(df_row)
+            score = calculate_confidence_score(df_row, DataSource.REAL, 0.0)
             assert 0 <= score <= 100, f"Confidence score {score} should be 0-100"
 
     def test_habitat_intelligence_score_bounds(self, sample_silver_all):
@@ -308,11 +324,14 @@ class TestDashboardIntegration:
 
         processed = process_kpis_for_visualization(sample_kpi_data)
 
-        assert "status" in processed.columns, "Should have status field"
-        assert "color" in processed.columns, "Should have color field"
-        assert "trend" in processed.columns, "Should have trend field"
-        assert "display_value" in processed.columns, "Should have display_value field"
-        assert "importance" in processed.columns, "Should have importance field"
+        assert "kpis" in processed, "Should have kpis list"
+        assert len(processed["kpis"]) > 0, "Should have processed KPIs"
+        kpi = processed["kpis"][0]
+        assert "status" in kpi, "Should have status field"
+        assert "color" in kpi, "Should have color field"
+        assert "trend" in kpi, "Should have trend field"
+        assert "display_value" in kpi, "Should have display_value field"
+        assert "importance" in kpi, "Should have importance field"
 
     def test_dashboard_factory_create_hero_section(self, sample_kpi_data):
         """Test DashboardFactory creates hero section correctly."""
