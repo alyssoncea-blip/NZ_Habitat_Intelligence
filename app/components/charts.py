@@ -3,10 +3,10 @@ Components de charts para dashboard premium
 Wrapper para Plotly com estilos executives
 """
 
-import plotly.graph_objects as go
-import plotly.express as px
-from plotly.subplots import make_subplots
 from ..utils.style_config import COLORS
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 def create_line_chart(df, x_col, y_col, title="", color=None, show_range=True):
@@ -35,7 +35,7 @@ def create_line_chart(df, x_col, y_col, title="", color=None, show_range=True):
             y=df[y_col],
             mode="lines",
             name=y_col,
-            line=dict(color=color, width=3),
+            line={"color": color, "width": 3},
             hovertemplate="<b>%{x}</b><br>%{y:.1f}<extra></extra>",
         )
     )
@@ -50,7 +50,7 @@ def create_line_chart(df, x_col, y_col, title="", color=None, show_range=True):
                 x=df[x_col],
                 y=y_rolling + y_std,
                 mode="lines",
-                line=dict(width=0),
+                line={"width": 0},
                 showlegend=False,
                 hoverinfo="skip",
             )
@@ -63,7 +63,7 @@ def create_line_chart(df, x_col, y_col, title="", color=None, show_range=True):
                 mode="lines",
                 fill="tonexty",
                 fillcolor=f"{color}20",
-                line=dict(width=0),
+                line={"width": 0},
                 showlegend=False,
                 hoverinfo="skip",
             )

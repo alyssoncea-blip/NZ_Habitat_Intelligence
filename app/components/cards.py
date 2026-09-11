@@ -4,6 +4,7 @@ Reusable card components with executive design
 """
 
 import math
+from typing import ClassVar
 
 import dash_bootstrap_components as dbc
 import numpy as np
@@ -1525,7 +1526,7 @@ class HousingKPICard:
 class TourismKPICard:
     """KPIs 13–17: Tourism Impact on Housing Market."""
 
-    _accent_colors = {
+    _accent_colors: ClassVar[dict[str, str]] = {
         "pressure": "#E74C3C",
         "airbnb": "#8E44AD",
         "lag": "#D35400",
@@ -2261,7 +2262,7 @@ class TourismKPICard:
 class MacroKPICard:
     """KPIs 18-22: Macroeconomic (OCR, Mortgage Rates, Construction, Correlation)."""
 
-    _accent_colors = {
+    _accent_colors: ClassVar[dict[str, str]] = {
         "ocr": "#1A5276",
         "mortgage": "#2E86AB",
         "cost": "#148F77",
@@ -2859,7 +2860,7 @@ class MacroKPICard:
 class AffordabilityKPICard:
     """KPIs 23-27: Housing Affordability (Years to Buy, Rent Burden, Ranking, Gap, Migration)."""
 
-    _accent_colors = {
+    _accent_colors: ClassVar[dict[str, str]] = {
         "years": "#2E86AB",
         "rent_burden": "#E74C3C",
         "ranking": "#8E44AD",
@@ -3564,7 +3565,7 @@ class AffordabilityKPICard:
 class ForecastKPICard:
     """KPIs 28-34: Forecast & Risk (Price Forecast, Confidence, OCR/Tourism Impact, Risk, Model Confidence)."""
 
-    _accent_colors = {
+    _accent_colors: ClassVar[dict[str, str]] = {
         "forecast": "#2E86AB",
         "confidence": "#148F77",
         "ocr": "#1A5276",
