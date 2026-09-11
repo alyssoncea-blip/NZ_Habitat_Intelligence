@@ -94,6 +94,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Generate bronze layer (APIs with historical fallbacks)
+        env:
+          PYTHONPATH: .
+        run: python data_pipeline/bronze/bronze_orchestrator.py --run all
+
+      - name: Generate silver features
+        env:
+          PYTHONPATH: .
+        run: python -c "from data_pipeline.silver.feature_engineer import FeatureEngineer; features = FeatureEngineer().run_all_feature_engineering(); print(sorted(features))"
+
       - name: Run dbt seed
         working-directory: dbt_nz
         run: dbt seed --profiles-dir .
