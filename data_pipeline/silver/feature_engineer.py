@@ -724,6 +724,20 @@ class FeatureEngineer:
             return _REGIONAL_POP_SHARES.get(region, 0.01)
         return 0.01
 
+    @staticmethod
+    def enforce_year_contract(df: Optional[pd.DataFrame]) -> Optional[pd.DataFrame]:
+        """Drop rows outside the GE silver year contract [1970, 2030].
+
+        World Bank series go back to 1960; keeping those rows would fail
+        the silver_features validation suite.
+        """
+        if df is None or df.empty or "year" not in df.columns:
+            return df
+        filtered = df[(df["year"] >= 1970) & (df["year"] <= 2030)]
+        if filtered.empty:
+            return df
+        return filtered.reset_index(drop=True)
+
     # ── Main pipeline ─────────────────────────────────────────────────
     def run_all_feature_engineering(self) -> Dict[str, pd.DataFrame]:
         """Run all feature engineering from real Bronze data."""
@@ -778,10 +792,7 @@ class FeatureEngineer:
         # Enforce the GE silver contract: year must be within [1970, 2030].
         # World Bank series go back to 1960, which would fail validation.
         for name, df in list(features.items()):
-            if df is not None and not df.empty and "year" in df.columns:
-                filtered = df[(df["year"] >= 1970) & (df["year"] <= 2030)]
-                if not filtered.empty:
-                    features[name] = filtered.reset_index(drop=True)
+            features[name] = self.enforce_year_contract(df)
 
         if features:
             self.save_features(features, source_tracking=sources)

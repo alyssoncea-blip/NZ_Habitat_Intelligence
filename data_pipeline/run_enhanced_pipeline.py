@@ -91,6 +91,7 @@ def run_enhanced_pipeline(force_refresh: bool = False) -> dict:
         ]:
             try:
                 df = calc_fn(bronze_data)
+                df = FeatureEngineer.enforce_year_contract(df)
                 if df is not None and not df.empty:
                     output = engineer.silver_dir / f"{name}_features.parquet"
                     df.to_parquet(output, index=False)
